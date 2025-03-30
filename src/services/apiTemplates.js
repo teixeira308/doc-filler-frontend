@@ -7,9 +7,11 @@ const ApiTemplates = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const apiUrl = process.env.REACT_DOCFILLER_APP_API;
+
     const getTemplates = async () => {
 
-        const response = await fetch(`http://localhost/docfiller-api/v1/templates/${user?.userId}`, {
+        const response = await fetch(`${apiUrl}/templates/${user?.userId}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${user?.token}`,
@@ -30,7 +32,7 @@ const ApiTemplates = () => {
     const createTemplate = async (templateData) => {
         try {
             
-            const response = await fetch("http://localhost/docfiller-api/v1/templates", {
+            const response = await fetch("${apiUrl}/templates", {
                 method: "POST",
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -61,7 +63,7 @@ const ApiTemplates = () => {
 
     const deleteTemplate = async (templateData) =>{
 
-        const response = await fetch(`http://localhost/docfiller-api/v1/templates/${templateData}`, {
+        const response = await fetch(`${apiUrl}/templates/${templateData}`, {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${user?.token}`,
@@ -83,7 +85,7 @@ const ApiTemplates = () => {
 
     const updateTemplate  = async (id,templateData) => {
         console.log(templateData)
-        const response = await fetch(`http://localhost/docfiller-api/v1/templates/${id}`, {
+        const response = await fetch(`${apiUrl}/templates/${id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -106,7 +108,7 @@ const ApiTemplates = () => {
     }
 
     const downloadTemplate = async (templateNome) =>{
-        const response = await fetch(`http://localhost/docfiller-api/v1/templates/${user?.userId}/download?arquivo=${templateNome}`, {
+        const response = await fetch(`${apiUrl}/templates/${user?.userId}/download?arquivo=${templateNome}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${user?.token}`,
@@ -129,7 +131,7 @@ const ApiTemplates = () => {
     }
 
     const downloadFilledFile = async (templateId,pessoaId) =>{
-        const response = await fetch(`http://localhost/docfiller-api/v1//fill-docx-template/${templateId}/pessoa/${pessoaId}`, {
+        const response = await fetch(`${apiUrl}//fill-docx-template/${templateId}/pessoa/${pessoaId}`, {
             ///fill-docx-template/:idtemplate/pessoa/:idpessoa
             method: "GET",
             headers: {

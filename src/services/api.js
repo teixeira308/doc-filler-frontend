@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 const useApi = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_DOCFILLER_APP_API;
 
   const getPessoas = async () => {
-    const response = await fetch("http://localhost/docfiller-api/v1/pessoas", {
+    const response = await fetch("${apiUrl}/pessoas", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +29,7 @@ const useApi = () => {
 
   const createPessoa = async (pessoaData) => {
     const json = removeEmptyFields(pessoaData)
-    const response = await fetch("http://localhost/docfiller-api/v1/pessoas", {
+    const response = await fetch("${apiUrl}/pessoas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +51,7 @@ const useApi = () => {
   };
 
   const deletePessoa = async (id) => {
-    const response = await fetch(`http://localhost/docfiller-api/v1/pessoas/${id}`, {
+    const response = await fetch(`${apiUrl}/pessoas/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${user?.token}`,
@@ -80,7 +81,7 @@ const useApi = () => {
 const updatePessoa = async (id, pessoaData) => {
   //const json = removeEmptyFields(pessoaData);
   //console.log(json)
-  const response = await fetch(`http://localhost/docfiller-api/v1/pessoas/${id}`, {
+  const response = await fetch(`${apiUrl}/pessoas/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
