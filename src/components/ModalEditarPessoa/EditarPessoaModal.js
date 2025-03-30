@@ -121,12 +121,12 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
               />
             </C.FormColumn>
             <C.FormColumn>
-              <C.Label htmlFor="dataNascimento">Data de Nascimento</C.Label>
+              <C.Label htmlFor="datanascimento">Data de Nascimento</C.Label>
               <C.Input
                 type="text"
-                name="dataNascimento"
-                id="dataNascimento"
-                value={formData.dataNascimento}
+                name="datanascimento"
+                id="datanascimento"
+                value={formData.datanascimento}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -134,14 +134,14 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
 
           <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="numeroCarteiraTrabalho">
+              <C.Label htmlFor="numerocarteiratrabalho">
                 Número da Carteira de Trabalho
               </C.Label>
               <C.Input
                 type="text"
-                name="numeroCarteiraTrabalho"
-                id="numeroCarteiraTrabalho"
-                value={formData.numeroCarteiraTrabalho}
+                name="numerocarteiratrabalho"
+                id="numerocarteiratrabalho"
+                value={formData.numerocarteiratrabalho}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -159,22 +159,22 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
 
           <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="dataAdmissao">Data de Admissão</C.Label>
+              <C.Label htmlFor="dataadmissao">Data de Admissão</C.Label>
               <C.Input
                 type="text"
-                name="dataAdmissao"
-                id="dataAdmissao"
-                value={formData.dataAdmissao}
+                name="dataadmissao"
+                id="dataadmissao"
+                value={formData.dataadmissao}
                 onChange={handleChange}
               />
             </C.FormColumn>
             <C.FormColumn>
-              <C.Label htmlFor="nomeMae">Nome da Mãe</C.Label>
+              <C.Label htmlFor="nomemae">Nome da Mãe</C.Label>
               <C.Input
                 type="text"
-                name="nomeMae"
-                id="nomeMae"
-                value={formData.nomeMae}
+                name="nomemae"
+                id="nomemae"
+                value={formData.nomemae}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -182,12 +182,12 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
 
           <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="nomePai">Nome do Pai</C.Label>
+              <C.Label htmlFor="nomepai">Nome do Pai</C.Label>
               <C.Input
                 type="text"
-                name="nomePai"
-                id="nomePai"
-                value={formData.nomePai}
+                name="nomepai"
+                id="nomepai"
+                value={formData.nomepai}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -215,12 +215,12 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
               />
             </C.FormColumn>
             <C.FormColumn>
-              <C.Label htmlFor="estadoCivil">Estado Civil</C.Label>
+              <C.Label htmlFor="estadocivil">Estado Civil</C.Label>
               <C.Input
                 type="text"
-                name="estadoCivil"
-                id="estadoCivil"
-                value={formData.estadoCivil}
+                name="estadocivil"
+                id="estadocivil"
+                value={formData.estadocivil}
                 onChange={handleChange}
               />
             </C.FormColumn>

@@ -73,7 +73,7 @@ const Tutorial = () => {
                         <C.VideoIframe
                             width="300"
                             height="500"
-                            src="https://www.youtube.com/embed/BOkfMq92UPw?si=uTDDaynQecJ0lerH"
+                            src="https://www.youtube.com/embed/tJI8UGll-d0?si=UFsEPXHaLqRInQsz"
                             title="YouTube video player"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
