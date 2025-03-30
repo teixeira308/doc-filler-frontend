@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signin = (email, password) => {
-    return fetch("http://backend_docfiller:3005/v1/users/login", {
+    return fetch("http://localhost/docfiller-api/v1/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

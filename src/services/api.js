@@ -8,7 +8,7 @@ const useApi = () => {
   const navigate = useNavigate();
 
   const getPessoas = async () => {
-    const response = await fetch("http://backend_docfiller:3005/v1/pessoas", {
+    const response = await fetch("http://localhost/docfiller-api/v1/pessoas", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ const useApi = () => {
 
   const createPessoa = async (pessoaData) => {
     const json = removeEmptyFields(pessoaData)
-    const response = await fetch("http://backend_docfiller:3005/v1/pessoas", {
+    const response = await fetch("http://localhost/docfiller-api/v1/pessoas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const useApi = () => {
   };
 
   const deletePessoa = async (id) => {
-    const response = await fetch(`http://backend_docfiller:3005/v1/pessoas/${id}`, {
+    const response = await fetch(`http://localhost/docfiller-api/v1/pessoas/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${user?.token}`,
@@ -80,7 +80,7 @@ const useApi = () => {
 const updatePessoa = async (id, pessoaData) => {
   //const json = removeEmptyFields(pessoaData);
   //console.log(json)
-  const response = await fetch(`http://backend_docfiller:3005/v1/pessoas/${id}`, {
+  const response = await fetch(`http://localhost/docfiller-api/v1/pessoas/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
