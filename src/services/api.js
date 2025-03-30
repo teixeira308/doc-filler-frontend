@@ -9,7 +9,7 @@ const useApi = () => {
   const apiUrl = process.env.REACT_DOCFILLER_APP_API;
 
   const getPessoas = async () => {
-    const response = await fetch("${apiUrl}/pessoas", {
+    const response = await fetch(`${apiUrl}/pessoas`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const useApi = () => {
 
   const createPessoa = async (pessoaData) => {
     const json = removeEmptyFields(pessoaData)
-    const response = await fetch("${apiUrl}/pessoas", {
+    const response = await fetch(`${apiUrl}/pessoas`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -32,7 +32,7 @@ const ApiTemplates = () => {
     const createTemplate = async (templateData) => {
         try {
             
-            const response = await fetch("${apiUrl}/templates", {
+            const response = await fetch(`${apiUrl}/templates`, {
                 method: "POST",
                 headers: {
                     'Access-Control-Allow-Origin': '*',
