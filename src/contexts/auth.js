@@ -4,7 +4,7 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const apiUrl = process.env.REACT_DOCFILLER_APP_API;
+  const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
   // Carregar o usuário do localStorage quando o componente monta
   useEffect(() => {
@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signin = (email, password) => {
-    console.log(apiUrl)
+    
     return fetch(`${apiUrl}/users/login`, {
       method: "POST",
       headers: {

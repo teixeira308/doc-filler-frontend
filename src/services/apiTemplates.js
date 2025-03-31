@@ -7,7 +7,7 @@ const ApiTemplates = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const apiUrl = process.env.REACT_DOCFILLER_APP_API;
+    const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
     const getTemplates = async () => {
 

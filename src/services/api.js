@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const useApi = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_DOCFILLER_APP_API;
+  const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
   const getPessoas = async () => {
     const response = await fetch(`${apiUrl}/pessoas`, {
