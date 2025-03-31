@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signin = (email, password) => {
+    console.log(apiUrl)
     return fetch(`${apiUrl}/users/login`, {
       method: "POST",
       headers: {
