@@ -115,3 +115,30 @@ export const ListItem = styled.div`
     border-bottom: none;
   }
 `;
+
+export const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+export const PageButton = styled.button`
+  margin: 0 5px;
+  padding: 5px 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  &:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+`;
