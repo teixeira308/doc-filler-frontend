@@ -4,7 +4,7 @@ import useApi from "../../services/apiTemplates";
 import GerarDocumentoPessoaModal from "../ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
 
 
-const GerarDocumentoMassivoModal = ({ isOpen, onClose, template, onEdit }) => {
+const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
   const [formData, setFormData] = useState({
     descricao: ""
@@ -44,7 +44,6 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template, onEdit }) => {
       const filteredData = filterFormData(formData);
       console.log(template.id)
       await updateTemplate(template.id, filteredData);
-      onEdit();
     } catch (error) {
       console.error("Erro ao editar template:", error);
     }

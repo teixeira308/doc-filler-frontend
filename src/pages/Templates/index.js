@@ -14,6 +14,7 @@ const Templates = ()  => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isGerarDocumentoMassivoModalOpen, setIsGerarDocumentoMassivoModalOpen] = useState(false);
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState(false);
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -89,6 +90,11 @@ const Templates = ()  => {
     setIsEditModalOpen(false);
     setSelectedTemplate(null);
   };
+
+  const handleGerarDocumentoMassivoModalClose = () =>{
+    setIsGerarDocumentoMassivoModalOpen(false);
+    setSelectedTemplate(null)
+  }
 
   const handleTemplateUpdated = async () => {
     const data = await getTemplates();
@@ -196,10 +202,9 @@ const generateAndDownloadDocx = (data, fileName) => {
         onEdit={handleTemplateUpdated}
       />
        <GerarDocumentoMassivoModal
-        isOpen={isEditModalOpen}
-        onClose={handleEditModalClose}
+        isOpen={isGerarDocumentoMassivoModalOpen}
+        onClose={handleGerarDocumentoMassivoModalClose}
         template={selectedTemplate}
-        onEdit={handleTemplateUpdated}
       />
      {/*  <DetalhesTemplateModal
         isOpen={isViewDetailsModalOpen}
