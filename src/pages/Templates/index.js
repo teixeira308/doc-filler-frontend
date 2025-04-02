@@ -6,7 +6,7 @@ import CreateTemplateModal from "../../components/ModalCreateTemplate/CreateTemp
 import DeleteTemplateModal from "../../components/ModalDeleteTemplate/DeleteTemplateModal"; 
 import EditarTemplateModal from "../../components/ModalEditarTemplate/EditarTemplateModal"; 
 import GerarDocumentoMassivoModal from "../../components/ModalGerarDocumentoMassivo/GerarDocumentoMassivoModal";
-import { BsPencil,BsTrash3, BsCloudDownload, BsCardChecklist } from "react-icons/bs";
+import { BsPencil,BsTrash3, BsCloudDownload, BsCardChecklist,BsPlusCircle } from "react-icons/bs";
 
 
 const Templates = ()  => {
@@ -163,7 +163,7 @@ const generateAndDownloadDocx = (data, fileName) => {
         value={searchQuery} 
         onChange={handleSearchChange} 
       />
-      <C.Button onClick={handleCreateButtonClick}>Criar Novo Template</C.Button>
+      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Novo Template</C.Button>
       <C.Table>
         <thead>
           <tr>

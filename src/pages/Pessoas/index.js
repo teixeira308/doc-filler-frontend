@@ -7,7 +7,7 @@ import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaMo
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil,BsTrash3, BsFillClipboard2Fill, BsCardChecklist } from "react-icons/bs";
+import { BsPencil,BsTrash3, BsZoomIn, BsCardChecklist,BsPlusCircle } from "react-icons/bs";
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -138,7 +138,7 @@ const Pessoas = () => {
         value={searchQuery} 
         onChange={handleSearchChange} 
       />
-      <C.Button onClick={handleCreateButtonClick}>Criar Nova Pessoa</C.Button>
+      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Nova Pessoa</C.Button>
       <C.Table>
         <thead>
           <tr>
@@ -157,10 +157,10 @@ const Pessoas = () => {
                 {new Date(pessoa.createdAt).toLocaleDateString()}
               </C.TableData>
               <C.TableData>
-                <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil />Editar</C.ActionButton>
-                <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsFillClipboard2Fill />Detalhes</C.DetailsButton>
-                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3/>Excluir</C.DeleteButton>
-                <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist />Gerar documento</C.ActionButton>
+                <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil /> Editar</C.ActionButton>
+                <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsZoomIn /> Detalhes</C.DetailsButton>
+                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3/> Excluir</C.DeleteButton>
+                <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> Gerar documento</C.ActionButton>
               </C.TableData>
             </C.TableRow>
           ))}
