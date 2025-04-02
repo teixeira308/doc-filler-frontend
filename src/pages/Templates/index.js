@@ -5,6 +5,7 @@ import useApi from "../../services/apiTemplates";
 import CreateTemplateModal from "../../components/ModalCreateTemplate/CreateTemplateModal";
 import DeleteTemplateModal from "../../components/ModalDeleteTemplate/DeleteTemplateModal"; 
 import EditarTemplateModal from "../../components/ModalEditarTemplate/EditarTemplateModal"; 
+import GerarDocumentoMassivoModal from "../../components/ModalGerarDocumentoMassivo/GerarDocumentoMassivoModal";
 
 const Templates = ()  => {
   const [templates, setTemplates] = useState([]);
@@ -171,7 +172,8 @@ const generateAndDownloadDocx = (data, fileName) => {
                 <C.ActionButton onClick={() => openEditModal(template)}>Editar</C.ActionButton>
                {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
                 <C.DeleteButton onClick={() => openDeleteModal(template.id)}>Excluir</C.DeleteButton>
-                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Baixar</C.DetailsButton>
+                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Baixar Template</C.DetailsButton>
+                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Gerar documentos em massa</C.DetailsButton>
               </C.TableData>
             </C.TableRow>
           ))}
@@ -188,6 +190,12 @@ const generateAndDownloadDocx = (data, fileName) => {
         onDelete={handleDelete}
       />
        <EditarTemplateModal
+        isOpen={isEditModalOpen}
+        onClose={handleEditModalClose}
+        template={selectedTemplate}
+        onEdit={handleTemplateUpdated}
+      />
+       <GerarDocumentoMassivoModal
         isOpen={isEditModalOpen}
         onClose={handleEditModalClose}
         template={selectedTemplate}
