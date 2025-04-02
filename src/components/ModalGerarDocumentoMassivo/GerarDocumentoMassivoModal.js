@@ -58,7 +58,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
           <h2>Gerar documentos massivamente</h2>
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
-        <p>{template.descricao}</p>
+        <p>Template: {template.descricao}</p>
         <C.ModalForm onSubmit={handleSubmit}>
           <C.FormRow>
             <C.FormColumn>
