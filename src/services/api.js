@@ -8,24 +8,26 @@ const useApi = () => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
-  const getPessoas = async () => {
-    const response = await fetch(`${apiUrl}/pessoas`, {
+  const getPessoas = async (page = 1) => {
+    const response = await fetch(`${apiUrl}/pessoas?page=${page}&pageSize=${pageSize}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${user?.token}`,
       },
     });
+  
     if (response.status === 403) {
-      // Redireciona para a tela de login
       navigate('/login');
-  }
+    }
+  
     if (!response.ok) {
       throw new Error("Erro ao buscar pessoas");
     }
-
+  
     return await response.json();
   };
+  
 
   const createPessoa = async (pessoaData) => {
     const json = removeEmptyFields(pessoaData)

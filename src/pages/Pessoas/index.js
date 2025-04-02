@@ -3,11 +3,11 @@ import * as C from "./styles";
 import Navbar from "../../components/Navbar/Navbar";
 import useApi from "../../services/api";
 import CreatePessoaModal from "../../components/ModalCreatePessoa/CreatePessoaModal";
-import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaModal"; 
+import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaModal";
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil,BsTrash3, BsZoomIn, BsCardChecklist,BsPlusCircle } from "react-icons/bs";
+import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle } from "react-icons/bs";
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -21,26 +21,34 @@ const Pessoas = () => {
   const [selectedPessoaId, setSelectedPessoaId] = useState(null);
   const [selectedPessoa, setSelectedPessoa] = useState(null);
   const { getPessoas, deletePessoa } = useApi();
-  
+
+  //paginacao
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const pageSize = 10; // Número de itens por página
+
+
   //Use effect
   useEffect(() => {
     const fetchPessoas = async () => {
       try {
-        const data = await getPessoas();
+        const data = await getPessoas(currentPage);
         setPessoas(data.data);
-        setFilteredPessoas(data.data); // Inicialize o filtro com todos os dados
+        setFilteredPessoas(data.data);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Erro ao carregar pessoas:", error);
       }
     };
     fetchPessoas();
-  }, []);
+  }, [currentPage]); // Atualiza quando `currentPage` muda
+
 
   useEffect(() => {
     // Filtra a lista de pessoas com base na consulta de busca
     setFilteredPessoas(
       pessoas.filter((pessoa) =>
-        pessoa.nome.toLowerCase().includes(searchQuery.toLowerCase()) 
+        pessoa.nome.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
   }, [searchQuery, pessoas]);
@@ -72,7 +80,7 @@ const Pessoas = () => {
     }
   };
 
-  
+
 
   //Open Modal
 
@@ -91,7 +99,7 @@ const Pessoas = () => {
     setIsGenerateFileModalOpen(true);
   };
 
-  
+
   const handlePessoaUpdated = async () => {
     const data = await getPessoas();
     setPessoas(data.data);
@@ -132,13 +140,31 @@ const Pessoas = () => {
     <C.Container>
       <Navbar />
       <C.Title>Pessoas</C.Title>
-      <C.SearchInput 
-        type="text" 
-        placeholder="Pesquisar por nome" 
-        value={searchQuery} 
-        onChange={handleSearchChange} 
+      <C.SearchInput
+        type="text"
+        placeholder="Pesquisar por nome"
+        value={searchQuery}
+        onChange={handleSearchChange}
       />
       <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
+      <C.PaginationContainer>
+        <C.PageButton
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Anterior
+        </C.PageButton>
+
+        <span>Página {currentPage} de {totalPages}</span>
+
+        <C.PageButton
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          Próxima
+        </C.PageButton>
+      </C.PaginationContainer>
+
       <C.Table>
         <thead>
           <tr>
@@ -159,7 +185,7 @@ const Pessoas = () => {
               <C.TableData>
                 <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil /> Editar</C.ActionButton>
                 <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsZoomIn /> Detalhes</C.DetailsButton>
-                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3/> Excluir</C.DeleteButton>
+                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3 /> Excluir</C.DeleteButton>
                 <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> Gerar documento</C.ActionButton>
               </C.TableData>
             </C.TableRow>
