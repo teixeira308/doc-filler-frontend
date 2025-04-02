@@ -7,7 +7,7 @@ import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaMo
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle,BsFillCaretLeftFill,BsFillCaretRightFill } from "react-icons/bs";
+import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle, BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -148,21 +148,21 @@ const Pessoas = () => {
       />
       <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
       <C.PaginationContainer>
-        <C.PageButton
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
+        <C.Button
+          style={{ visibility: page === 1 ? "hidden" : "visible" }}
+          onClick={prevPage}
         >
-          <BsFillCaretLeftFill/>
-        </C.PageButton>
+          <BsFillCaretLeftFill />
+        </C.Button>
 
-        <span>Página {currentPage} de {totalPages}</span>
+        <span>Página {page} de {totalPages}</span>
 
-        <C.PageButton
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
+        <C.Button
+          style={{ visibility: page === totalPages ? "hidden" : "visible" }}
+          onClick={nextPage}
         >
           <BsFillCaretRightFill />
-        </C.PageButton>
+        </C.Button>
       </C.PaginationContainer>
 
       <C.Table>
