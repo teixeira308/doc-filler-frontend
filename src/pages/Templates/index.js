@@ -6,6 +6,8 @@ import CreateTemplateModal from "../../components/ModalCreateTemplate/CreateTemp
 import DeleteTemplateModal from "../../components/ModalDeleteTemplate/DeleteTemplateModal"; 
 import EditarTemplateModal from "../../components/ModalEditarTemplate/EditarTemplateModal"; 
 import GerarDocumentoMassivoModal from "../../components/ModalGerarDocumentoMassivo/GerarDocumentoMassivoModal";
+import { BsPencil,BsTrash3, BsCloudDownload, BsCardChecklist } from "react-icons/bs";
+
 
 const Templates = ()  => {
   const [templates, setTemplates] = useState([]);
@@ -180,11 +182,11 @@ const generateAndDownloadDocx = (data, fileName) => {
                 {new Date(template.createdAt).toLocaleDateString()}
               </C.TableData>
               <C.TableData>
-                <C.ActionButton onClick={() => openEditModal(template)}>Editar</C.ActionButton>
+                <C.ActionButton onClick={() => openEditModal(template)}><BsPencil /> Editar</C.ActionButton>
                {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
-                <C.DeleteButton onClick={() => openDeleteModal(template.id)}>Excluir</C.DeleteButton>
-                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Baixar Template</C.DetailsButton>
-                <C.ActionButton onClick={() => openGerarDocumentoMassivoModal(template)}>Gerar documentos em massa</C.ActionButton>
+                <C.DeleteButton onClick={() => openDeleteModal(template.id)}><BsTrash3 /> Excluir</C.DeleteButton>
+                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}><BsCloudDownload /> Baixar Template</C.DetailsButton>
+                <C.ActionButton onClick={() => openGerarDocumentoMassivoModal(template)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
               </C.TableData>
             </C.TableRow>
           ))}
