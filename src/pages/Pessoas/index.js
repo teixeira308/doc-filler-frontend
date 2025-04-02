@@ -7,7 +7,7 @@ import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaMo
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle } from "react-icons/bs";
+import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle,BsFillCaretLeftFill,BsFillCaretRightFill } from "react-icons/bs";
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -152,7 +152,7 @@ const Pessoas = () => {
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
         >
-          Anterior
+          <BsFillCaretLeftFill/>
         </C.PageButton>
 
         <span>Página {currentPage} de {totalPages}</span>
@@ -161,7 +161,7 @@ const Pessoas = () => {
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
         >
-          Próxima
+          <BsFillCaretRightFill />
         </C.PageButton>
       </C.PaginationContainer>
 
