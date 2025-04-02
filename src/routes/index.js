@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {  Route, Routes } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Home from "../pages/Home";
 import Signin from "../pages/Signin";
@@ -19,7 +19,7 @@ const Private = ({ Item }) => {
 
 const RoutesApp = () => {
   return (
-    <BrowserRouter basename='/docfiller'>
+   
       <Fragment>
         <Routes>
           <Route exact path="/home" element={<Private Item={Home} />} />
@@ -33,7 +33,7 @@ const RoutesApp = () => {
           <Route path="*" element={<Signin />} />
         </Routes>
       </Fragment>
-    </BrowserRouter>
+   
   );
 };
 

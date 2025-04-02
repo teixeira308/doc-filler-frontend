@@ -4,18 +4,19 @@ export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
-  // Carregar o usuário do localStorage quando o componente monta
+  // Carregar o usuário do localStorage ao iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    setLoading(false); // Marca como carregado
   }, []);
 
   const signin = (email, password) => {
-    
     return fetch(`${apiUrl}/users/login`, {
       method: "POST",
       headers: {
@@ -33,10 +34,10 @@ export const AuthProvider = ({ children }) => {
       })
       .then(data => {
         const token = data.token;
-        const userId = data.userId
+        const userId = data.userId;
         const loggedInUser = { email, token, userId };
         setUser(loggedInUser);
-        localStorage.setItem("user", JSON.stringify(loggedInUser)); // Salva o usuário no localStorage
+        localStorage.setItem("user", JSON.stringify(loggedInUser)); // Salva no localStorage
         return null;
       })
       .catch(error => {
@@ -68,13 +69,11 @@ export const AuthProvider = ({ children }) => {
 
   const signout = () => {
     setUser(null);
-    localStorage.removeItem("user"); // Remove o usuário do localStorage ao fazer logout
+    localStorage.removeItem("user"); // Remove ao fazer logout
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, signed: !!user, signin, signup, signout }}
-    >
+    <AuthContext.Provider value={{ user, signed: !!user, loading, signin, signup, signout }}>
       {children}
     </AuthContext.Provider>
   );
