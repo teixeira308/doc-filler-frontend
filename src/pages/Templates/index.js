@@ -163,7 +163,7 @@ const generateAndDownloadDocx = (data, fileName) => {
         value={searchQuery} 
         onChange={handleSearchChange} 
       />
-      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Novo Template</C.Button>
+      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Template</C.Button>
       <C.Table>
         <thead>
           <tr>

@@ -138,7 +138,7 @@ const Pessoas = () => {
         value={searchQuery} 
         onChange={handleSearchChange} 
       />
-      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Nova Pessoa</C.Button>
+      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
       <C.Table>
         <thead>
           <tr>
