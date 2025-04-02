@@ -1,14 +1,31 @@
 import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApi from "../../services/apiTemplates";
-import GerarDocumentoPessoaModal from "../ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
+import useApiPessoas from "../../services/api";
+
 
 
 const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
+  const { getPessoas } = useApiPessoas();
+  const [pessoas, setPessoas] = useState([]); // Estado para armazenar a lista de pessoas
+
   const [formData, setFormData] = useState({
     descricao: ""
   });
+
+   useEffect(() => {
+      const fetchPessoas = async () => {
+        try {
+          const data = await getPessoas();
+          setPessoas(data.data);
+          setFilteredPessoas(data.data); // Inicialize o filtro com todos os dados
+        } catch (error) {
+          console.error("Erro ao carregar pessoas:", error);
+        }
+      };
+      fetchPessoas();
+    }, []);
 
   const filterFormData = (data) => {
     // Campos permitidos
@@ -58,20 +75,21 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
           <h2>Gerar documentos massivamente</h2>
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
-        <p>Template: {template.descricao}</p>
+        <p><strong>Template:</strong> {template.descricao}</p>
         <C.ModalForm onSubmit={handleSubmit}>
-          <C.FormRow>
+        <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="nome">Descrição</C.Label>
-              <C.Input
-                type="text"
-                name="descricao"
-                id="descricao"
-                value={formData.descricao}
-                onChange={handleChange}
-                required
-              />
-            </C.FormColumn>  
+              <C.Label>Lista de Pessoas</C.Label>
+              <C.ListContainer>
+                {pessoas.length > 0 ? (
+                  pessoas.map((pessoa) => (
+                    <C.ListItem key={pessoa.id}>{pessoa.nome}</C.ListItem>
+                  ))
+                ) : (
+                  <p>Nenhuma pessoa encontrada.</p>
+                )}
+              </C.ListContainer>
+            </C.FormColumn>
           </C.FormRow>
           <C.Button type="submit">Salvar</C.Button>
         </C.ModalForm>
