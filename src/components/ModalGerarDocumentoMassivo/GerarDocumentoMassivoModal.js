@@ -7,53 +7,52 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const [formData, setFormData] = useState({
-    descricao: ""
-  });
+  const [selectedPessoas, setSelectedPessoas] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     const fetchPessoas = async () => {
       try {
-        const data = await getPessoas(page, 10);
+        const data = await getPessoas();
         setPessoas(data.data);
-        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Erro ao carregar pessoas:", error);
       }
     };
     fetchPessoas();
-  }, [page]);
+  }, []);
 
-  const filterFormData = (data) => {
-    const allowedFields = ['descricao'];
-    return Object.fromEntries(
-      Object.entries(data).filter(([key]) => allowedFields.includes(key))
+  // Alternar seleção de uma pessoa específica
+  const togglePessoaSelection = (id) => {
+    setSelectedPessoas((prev) =>
+      prev.includes(id) ? prev.filter((pessoaId) => pessoaId !== id) : [...prev, id]
     );
   };
 
-  useEffect(() => {
-    if (template) {
-      setFormData(template);
+  // Alternar seleção de todas as pessoas
+  const toggleSelectAll = () => {
+    if (selectAll) {
+      setSelectedPessoas([]);
+    } else {
+      setSelectedPessoas(pessoas.map((pessoa) => pessoa.id));
     }
-  }, [template]);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setSelectAll(!selectAll);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const filteredData = filterFormData(formData);
-      await updateTemplate(template.id, filteredData);
+      const dataToSend = selectAll ? pessoas.map((p) => p.id) : selectedPessoas;
+      console.log("IDs Selecionados:", dataToSend);
+
+      if (dataToSend.length === 0) {
+        alert("Selecione pelo menos uma pessoa!");
+        return;
+      }
+
+      await updateTemplate(template.id, { pessoas: dataToSend });
     } catch (error) {
-      console.error("Erro ao editar template:", error);
+      console.error("Erro ao gerar documentos:", error);
     }
   };
 
@@ -66,32 +65,37 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
           <h2>Gerar documentos massivamente</h2>
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
+
         <p><strong>Template:</strong> {template.descricao}</p>
+
         <C.ModalForm onSubmit={handleSubmit}>
           <C.FormRow>
             <C.FormColumn>
-              <C.Label>Lista de Pessoas</C.Label>
+              <C.Label>
+                <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} />
+                Selecionar Todos
+              </C.Label>
+
               <C.ListContainer>
                 {pessoas.length > 0 ? (
                   pessoas.map((pessoa) => (
-                    <C.ListItem key={pessoa.id}>{pessoa.nome}</C.ListItem>
+                    <C.ListItem key={pessoa.id}>
+                      <input
+                        type="checkbox"
+                        checked={selectedPessoas.includes(pessoa.id)}
+                        onChange={() => togglePessoaSelection(pessoa.id)}
+                      />
+                      {pessoa.nome}
+                    </C.ListItem>
                   ))
                 ) : (
                   <p>Nenhuma pessoa encontrada.</p>
                 )}
               </C.ListContainer>
-              <C.Pagination>
-                <C.PageButton disabled={page === 1} onClick={() => setPage(page - 1)}>
-                  Anterior
-                </C.PageButton>
-                <span>Página {page} de {totalPages}</span>
-                <C.PageButton disabled={page === totalPages} onClick={() => setPage(page + 1)}>
-                  Próxima
-                </C.PageButton>
-              </C.Pagination>
             </C.FormColumn>
           </C.FormRow>
-          <C.Button type="submit">Salvar</C.Button>
+
+          <C.Button type="submit">Gerar Documentos</C.Button>
         </C.ModalForm>
       </C.ModalContainer>
     </C.ModalOverlay>
