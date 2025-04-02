@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApi from "../../services/apiTemplates";
 import useApiPessoas from "../../services/api";
-import { BsFillCaretLeftFill,BsFillCaretRightFill } from "react-icons/bs";
 
 const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
@@ -10,11 +9,12 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const [pessoas, setPessoas] = useState([]);
   const [selectedPessoas, setSelectedPessoas] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
-  
+
   // Paginação
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(10);
+  const pageSize = 100; // Carregar sempre 100 pessoas por página
   const [totalPages, setTotalPages] = useState(1);
+  const [totalPessoas, setTotalPessoas] = useState(0);
 
   useEffect(() => {
     const fetchPessoas = async () => {
@@ -22,6 +22,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         const data = await getPessoas(page, pageSize);
         setPessoas(data.data);
         setTotalPages(data.totalPages);
+        setTotalPessoas(data.totalCount);
       } catch (error) {
         console.error("Erro ao carregar pessoas:", error);
       }
@@ -38,19 +39,10 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     });
   };
 
-  // Alternar seleção de todas as pessoas na página atual
+  // Alternar seleção global
   const toggleSelectAll = () => {
-    const currentPageIds = pessoas.map((pessoa) => pessoa.id);
-    setSelectedPessoas((prev) => {
-      const newSet = new Set(prev);
-      if (selectAll) {
-        currentPageIds.forEach((id) => newSet.delete(id));
-      } else {
-        currentPageIds.forEach((id) => newSet.add(id));
-      }
-      return newSet;
-    });
     setSelectAll(!selectAll);
+    setSelectedPessoas(new Set()); // Limpa seleção manual ao marcar "Selecionar Tudo"
   };
 
   // Troca de página
@@ -60,14 +52,22 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const dataToSend = [...selectedPessoas];
+      let dataToSend;
 
-      if (dataToSend.length === 0) {
-        alert("Selecione pelo menos uma pessoa!");
-        return;
+      if (selectAll) {
+        // Envia flag de "todos" e backend cuida da geração em lotes de 100
+        dataToSend = { selectAll: true };
+      } else {
+        // Envia apenas IDs selecionados manualmente
+        dataToSend = { pessoas: [...selectedPessoas] };
+
+        if (dataToSend.pessoas.length === 0) {
+          alert("Selecione pelo menos uma pessoa!");
+          return;
+        }
       }
 
-      await updateTemplate(template.id, { pessoas: dataToSend });
+      await updateTemplate(template.id, dataToSend);
     } catch (error) {
       console.error("Erro ao gerar documentos:", error);
     }
@@ -90,7 +90,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
             <C.FormColumn>
               <C.Label>
                 <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} />
-                Selecionar Todos da Página
+                Selecionar TODAS as Pessoas (100 por vez)
               </C.Label>
 
               <C.ListContainer>
@@ -101,6 +101,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
                         type="checkbox"
                         checked={selectedPessoas.has(pessoa.id)}
                         onChange={() => togglePessoaSelection(pessoa.id)}
+                        disabled={selectAll} // Desativa se "Selecionar Todas" estiver ativo
                       />
                       {pessoa.nome}
                     </C.ListItem>
