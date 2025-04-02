@@ -12,10 +12,15 @@ import Tutorial from "../pages/Tutorial";
 
 
 const Private = ({ Item }) => {
-  const { signed } = useAuth();
-  
-  return signed > 0 ? <Item /> : <Signin />;
+  const { signed, loading } = useAuth();
+
+  if (loading) {
+    return <div>Carregando...</div>; // Pode substituir por um spinner
+  }
+
+  return signed ? <Item /> : <Signin />;
 };
+
 
 const RoutesApp = () => {
   return (
