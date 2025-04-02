@@ -95,3 +95,23 @@ export const Button = styled.button`
     background-color: #0056b3;
   }
 `;
+
+export const ListContainer = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #fff;
+`;
+
+export const ListItem = styled.div`
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
