@@ -19,7 +19,6 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         try {
           const data = await getPessoas();
           setPessoas(data.data);
-          setFilteredPessoas(data.data); // Inicialize o filtro com todos os dados
         } catch (error) {
           console.error("Erro ao carregar pessoas:", error);
         }
