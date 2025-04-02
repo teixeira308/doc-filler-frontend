@@ -33,7 +33,7 @@ export const Button = styled.button`
 `;
 
 export const Table = styled.table`
-  width: 100%;
+  width: 50%;
   border-collapse: collapse;
   margin: 20px 0;
   font-size: 14px;
