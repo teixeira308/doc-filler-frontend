@@ -7,7 +7,7 @@ import GlobalStyle from "./styles/global";
 const App = () => (
   <AuthProvider>
     <GlobalStyle />
-    <BrowserRouter>
+    <BrowserRouter basename="/docfiller" >
       <RoutesApp />
     </BrowserRouter>
   </AuthProvider>
