@@ -179,7 +179,7 @@ const generateAndDownloadDocx = (data, fileName) => {
                {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
                 <C.DeleteButton onClick={() => openDeleteModal(template.id)}>Excluir</C.DeleteButton>
                 <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Baixar Template</C.DetailsButton>
-                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}>Gerar documentos em massa</C.DetailsButton>
+                <C.ActionButton onClick={() => handleDownloadTemplate(template)}>Gerar documentos em massa</C.ActionButton>
               </C.TableData>
             </C.TableRow>
           ))}
