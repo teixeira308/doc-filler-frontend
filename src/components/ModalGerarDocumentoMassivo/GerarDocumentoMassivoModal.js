@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApi from "../../services/apiTemplates";
 import useApiPessoas from "../../services/api";
+import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 
 const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
@@ -115,11 +116,22 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
 
           {/* Paginação */}
           <C.Pagination>
-            <C.Button disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill/></C.Button>
-            <span>Página {page} de {totalPages}</span>
-            <C.Button disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill/></C.Button>
-          </C.Pagination>
+            <C.Button
+              style={{ visibility: page === 1 ? "hidden" : "visible" }}
+              onClick={prevPage}
+            >
+              <BsFillCaretLeftFill />
+            </C.Button>
 
+            <span>Página {page} de {totalPages}</span>
+
+            <C.Button
+              style={{ visibility: page === totalPages ? "hidden" : "visible" }}
+              onClick={nextPage}
+            >
+              <BsFillCaretRightFill />
+            </C.Button>
+          </C.Pagination>
           <C.Button type="submit">Gerar Documentos</C.Button>
         </C.ModalForm>
       </C.ModalContainer>
