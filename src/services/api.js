@@ -8,7 +8,7 @@ const useApi = () => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
-  const getPessoas = async (page = 1) => {
+  const getPessoas = async (page = 1, pageSize = 10) => {
     const response = await fetch(`${apiUrl}/pessoas?page=${page}&pageSize=${pageSize}`, {
       method: "GET",
       headers: {
