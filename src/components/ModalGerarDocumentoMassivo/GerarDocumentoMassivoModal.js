@@ -89,21 +89,10 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         <C.ModalForm onSubmit={handleSubmit}>
           <C.FormRow>
             <C.FormColumn>
-              <C.Label>
-                <input type="checkbox" checked={selectAll} onChange={toggleSelectAll} />
-                Selecionar TODAS as Pessoas (100 por vez)
-              </C.Label>
-
               <C.ListContainer>
                 {pessoas.length > 0 ? (
                   pessoas.map((pessoa) => (
                     <C.ListItem key={pessoa.id}>
-                      <input
-                        type="checkbox"
-                        checked={selectedPessoas.has(pessoa.id)}
-                        onChange={() => togglePessoaSelection(pessoa.id)}
-                        disabled={selectAll} // Desativa se "Selecionar Todas" estiver ativo
-                      />
                       {pessoa.nome}
                     </C.ListItem>
                   ))
@@ -113,25 +102,6 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
               </C.ListContainer>
             </C.FormColumn>
           </C.FormRow>
-
-          {/* Paginação */}
-          <C.Pagination>
-            <C.Button
-              style={{ visibility: page === 1 ? "hidden" : "visible" }}
-              onClick={prevPage}
-            >
-              <BsFillCaretLeftFill />
-            </C.Button>
-
-            <span>Página {page} de {totalPages}</span>
-
-            <C.Button
-              style={{ visibility: page === totalPages ? "hidden" : "visible" }}
-              onClick={nextPage}
-            >
-              <BsFillCaretRightFill />
-            </C.Button>
-          </C.Pagination>
           <C.Button type="submit">Gerar Documentos</C.Button>
         </C.ModalForm>
       </C.ModalContainer>
