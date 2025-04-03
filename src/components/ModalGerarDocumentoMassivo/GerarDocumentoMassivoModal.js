@@ -84,21 +84,11 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
 
-        <p><strong>Template:</strong> {template.descricao}</p>
-
         <C.ModalForm onSubmit={handleSubmit}>
           <C.FormRow>
             <C.FormColumn>
               <C.ListContainer>
-                {pessoas.length > 0 ? (
-                  pessoas.map((pessoa) => (
-                    <C.ListItem key={pessoa.id}>
-                      {pessoa.nome}
-                    </C.ListItem>
-                  ))
-                ) : (
-                  <p>Nenhuma pessoa encontrada.</p>
-                )}
+              <p><strong>Template:</strong> {template.descricao}</p>
               </C.ListContainer>
             </C.FormColumn>
           </C.FormRow>
