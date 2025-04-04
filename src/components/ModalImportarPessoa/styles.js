@@ -83,7 +83,7 @@ export const Input = styled.input`
 
 // Estilos para o botão de submit
 export const Button = styled.button`
-  margin-top: 10px; /* Espaçamento entre o input acima */
+  margin-top: 20px; /* Espaçamento entre o input acima */
   padding: 10px 15px;
   background-color: #007bff;
   color: #fff;
