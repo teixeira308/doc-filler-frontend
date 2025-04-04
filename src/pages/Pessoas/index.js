@@ -7,7 +7,7 @@ import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaMo
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle,BsFillCaretLeftFill,BsFillCaretRightFill ,BsUpload} from "react-icons/bs";
+import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle, BsFillCaretLeftFill, BsFillCaretRightFill, BsUpload } from "react-icons/bs";
 import ImportarPessoaModal from "../../components/ModalImportarPessoa/ImportarPessoaModal";
 
 const Pessoas = () => {
@@ -158,14 +158,21 @@ const Pessoas = () => {
         value={searchQuery}
         onChange={handleSearchChange}
       />
-      <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
-      <C.Button onClick={handleImportarPessoaButtonClick}><BsUpload /> Importar Excel(.xlsx)</C.Button>
+      <C.ButtonGroup> {/* Novo container flex */}
+        <C.Button onClick={handleCreateButtonClick}>
+          <BsPlusCircle /> Pessoa
+        </C.Button>
+
+        <C.Button onClick={handleImportarPessoaButtonClick}>
+          <BsUpload /> Importar Excel(.xlsx)
+        </C.Button>
+      </C.ButtonGroup>
       <C.PaginationContainer>
         <C.PageButton
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
         >
-          <BsFillCaretLeftFill/>
+          <BsFillCaretLeftFill />
         </C.PageButton>
 
         <span>Página {currentPage} de {totalPages}</span>

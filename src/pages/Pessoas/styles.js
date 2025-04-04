@@ -122,3 +122,9 @@ export const PageButton = styled.button`
     cursor: not-allowed;
   }
 `;
+
+export const ButtonGroup = styled.div`
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+`;
