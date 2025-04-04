@@ -1,41 +1,48 @@
 import React, { useState } from "react";
-import * as C from "./styles"; 
-import useApiPessoas from "../../services/api"; 
+import * as C from "./styles";
+import useApiPessoas from "../../services/api";
 
 const ImportarPessoaModal = ({ isOpen, onClose }) => {
-  const { importExcelPessoas } = useApiPessoas(); // Assumindo que você já criou esse endpoint no service
+  const { importExcelPessoas } = useApiPessoas();
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setSuccess(false);
+    setError("");
+
     if (!file) {
-      alert("Selecione um arquivo Excel (.xlsx)");
+      setError("Selecione um arquivo Excel (.xlsx)");
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", file); // deve bater com o nome usado no multer
+    formData.append("file", file); // Certifique-se que este nome bate com o do multer
 
     try {
       setIsLoading(true);
-      await importExcelPessoas(formData); // chamada à API
-      alert("Importação concluída!");
-      onClose();
-    } catch (error) {
-      console.error("Erro ao importar:", error);
-      alert("Erro ao importar o arquivo.");
+      await importExcelPessoas(formData);
+      setSuccess(true);
+      setFile(null);
+    } catch (err) {
+      console.error("Erro ao importar:", err);
+      setError(err.message || "Erro ao importar o arquivo.");
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setSuccess(false);
+    setError("");
+  };
+
+  if (!isOpen) return null;
 
   return (
     <C.ModalOverlay>
@@ -46,12 +53,15 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
         </C.ModalHeader>
 
         <C.ModalForm onSubmit={handleSubmit}>
-          <C.Label>Selecione um arquivo Excel (.xlsx)</C.Label>
-          <input type="file" accept=".xlsx" onChange={handleFileChange} />
-          
+          <C.Label>Selecione um arquivo .xlsx:</C.Label>
+          <C.Input type="file" accept=".xlsx" onChange={handleFileChange} />
+
           <C.Button type="submit" disabled={isLoading}>
             {isLoading ? "Importando..." : "Importar"}
           </C.Button>
+
+          {success && <p style={{ color: "green", marginTop: "10px" }}>Importação realizada com sucesso!</p>}
+          {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
         </C.ModalForm>
       </C.ModalContainer>
     </C.ModalOverlay>
