@@ -77,7 +77,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
 
       
       //console.log(fileContent)
-      generateAndDownloadDocx(fileContent,"Arquivos-gerados");
+      generateZipFile(fileContent,"Arquivos-gerados");
 
     } catch (err) {
       console.error("Erro ao gerar documentos:", err);
@@ -87,28 +87,22 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     }
   };
 
-  const generateAndDownloadDocx = (data, fileName) => {
-    try {
-      // Converta os dados em um Blob
-      const blob = new Blob([data], {
-        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      });
-      //console.log(blob);
-      // Crie um URL para o Blob
-      const url = URL.createObjectURL(blob);
+  const generateZipFile = (data, fileName) => {
+    const blob = new Blob([data], { type: "application/zip" });
   
-      // Crie um link ancorado para fazer o download
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = fileName;
-      link.click();
-      // Libere o URL criado
-      URL.revokeObjectURL(url);
-      //console.log("Document created and downloaded successfully");
-    } catch (error) {
-      console.error("Error generating or downloading document:", error);
-    }
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${fileName}.zip`);
+  
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  
+    // Libera a memória depois
+    window.URL.revokeObjectURL(url);
   };
+  
 
 
   const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
