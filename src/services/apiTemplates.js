@@ -156,28 +156,28 @@ const ApiTemplates = () => {
     }
 
     const generateBatchDocuments = async (templateId, payload) => {
-        const response = await fetch(`${apiUrl}/fill-docx-template/${templateId}/batch`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${user?.token}`,
-            },
-            body: JSON.stringify(payload),
-        });
-    
-        if (response.status === 403) {
-            navigate('/login');
-        }
-    
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Erro ao gerar documentos em lote");
-        }
-    
-        return await response.blob(); // supondo que ele retorna um ZIP ou DOCX
-    };
+    const response = await fetch(`${apiUrl}/fill-docx-template/${templateId}/batch`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+        },
+        body: JSON.stringify(payload),
+    });
 
-    
+    if (response.status === 403) {
+        navigate('/login');
+    }
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Erro ao gerar documentos em lote");
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    return arrayBuffer;
+};
+
     return {
         getTemplates,
         createTemplate,

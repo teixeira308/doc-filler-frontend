@@ -5,7 +5,7 @@ import useApiPessoas from "../../services/api";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
 
 const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
-  const { updateTemplate } = useApi();
+  const { updateTemplate, generateBatchDocuments } = useApi();
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
   const [selectedPessoas, setSelectedPessoas] = useState([]);
@@ -73,7 +73,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         };
       }
 
-      const result = await generateBatch(dataToSend);
+      const result = await generateBatchDocuments(dataToSend);
 
       if (result.success) {
         setSuccess(true);
