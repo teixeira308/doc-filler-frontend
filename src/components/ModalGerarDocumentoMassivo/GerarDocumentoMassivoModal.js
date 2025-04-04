@@ -11,27 +11,27 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const [selectedPessoas, setSelectedPessoas] = useState(new Set());
   const [selectAll, setSelectAll] = useState(false);
 
-  // Paginação
   const [page, setPage] = useState(1);
-  const pageSize = 100; // Carregar sempre 100 pessoas por página
+  const pageSize = 100;
   const [totalPages, setTotalPages] = useState(1);
   const [totalPessoas, setTotalPessoas] = useState(0);
 
   useEffect(() => {
-    const fetchPessoas = async () => {
-      try {
-        const data = await getPessoas(page, pageSize);
-        setPessoas(data.data);
-        setTotalPages(data.totalPages);
-        setTotalPessoas(data.totalCount);
-      } catch (error) {
-        console.error("Erro ao carregar pessoas:", error);
-      }
-    };
-    fetchPessoas();
-  }, [page]);
+    if (!selectAll) {
+      const fetchPessoas = async () => {
+        try {
+          const data = await getPessoas(page, pageSize);
+          setPessoas(data.data);
+          setTotalPages(data.totalPages);
+          setTotalPessoas(data.totalCount);
+        } catch (error) {
+          console.error("Erro ao carregar pessoas:", error);
+        }
+      };
+      fetchPessoas();
+    }
+  }, [page, selectAll]);
 
-  // Alternar seleção de uma pessoa específica
   const togglePessoaSelection = (id) => {
     setSelectedPessoas((prev) => {
       const newSet = new Set(prev);
@@ -40,39 +40,27 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     });
   };
 
-  // Alternar seleção global
-  const toggleSelectAll = () => {
-    setSelectAll(!selectAll);
-    setSelectedPessoas(new Set()); // Limpa seleção manual ao marcar "Selecionar Tudo"
-  };
-
-  // Troca de página
-  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
-  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       let dataToSend;
-
       if (selectAll) {
-        // Envia flag de "todos" e backend cuida da geração em lotes de 100
         dataToSend = { selectAll: true };
       } else {
-        // Envia apenas IDs selecionados manualmente
         dataToSend = { pessoas: [...selectedPessoas] };
-
         if (dataToSend.pessoas.length === 0) {
           alert("Selecione pelo menos uma pessoa!");
           return;
         }
       }
-
       await updateTemplate(template.id, dataToSend);
     } catch (error) {
       console.error("Erro ao gerar documentos:", error);
     }
   };
+
+  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
+  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
 
   if (!isOpen) return null;
 
@@ -85,13 +73,58 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         </C.ModalHeader>
 
         <C.ModalForm onSubmit={handleSubmit}>
-          <C.FormRow>
-            <C.FormColumn>
+          <p><strong>Template:</strong> {template.descricao}</p>
+
+          <C.RadioGroup>
+            <C.RadioOption>
+              <input
+                type="radio"
+                id="manual"
+                name="geracao"
+                value="manual"
+                checked={!selectAll}
+                onChange={() => setSelectAll(false)}
+              />
+              <label htmlFor="manual">Selecionar manualmente as pessoas</label>
+            </C.RadioOption>
+            <C.RadioOption>
+              <input
+                type="radio"
+                id="todos"
+                name="geracao"
+                value="todos"
+                checked={selectAll}
+                onChange={() => setSelectAll(true)}
+              />
+              <label htmlFor="todos">Gerar documentos para todas as pessoas</label>
+            </C.RadioOption>
+          </C.RadioGroup>
+
+          {!selectAll && (
+            <>
               <C.ListContainer>
-              <p><strong>Template:</strong> {template.descricao}</p>
+                {pessoas.map((pessoa) => (
+                  <C.ListItem key={pessoa.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={selectedPessoas.has(pessoa.id)}
+                        onChange={() => togglePessoaSelection(pessoa.id)}
+                      />
+                      {pessoa.nome}
+                    </label>
+                  </C.ListItem>
+                ))}
               </C.ListContainer>
-            </C.FormColumn>
-          </C.FormRow>
+
+              <C.Pagination>
+                <C.Button disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.Button>
+                <span>Página {page} de {totalPages}</span>
+                <C.Button disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.Button>
+              </C.Pagination>
+            </>
+          )}
+
           <C.Button type="submit">Gerar Documentos</C.Button>
         </C.ModalForm>
       </C.ModalContainer>

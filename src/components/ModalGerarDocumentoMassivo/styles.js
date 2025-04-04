@@ -142,3 +142,54 @@ export const Pagination = styled.div`
   gap: 10px;
   margin-top: 20px;
 `;
+
+export const SelectAllContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+`;
+
+export const Checkbox = styled.input.attrs({ type: "checkbox" })`
+  transform: scale(1.2);
+  cursor: pointer;
+`;
+
+export const ListItemCheckbox = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+export const Counter = styled.p`
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 5px;
+  text-align: right;
+`;
+
+export const RadioGroup = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-bottom: 15px;
+`;
+
+export const RadioOption = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+
+  input[type="radio"] {
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+`;
