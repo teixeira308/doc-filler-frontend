@@ -7,7 +7,8 @@ import DeletePessoaModal from "../../components/ModalDeletePessoa/DeletePessoaMo
 import EditPessoaModal from "../../components/ModalEditarPessoa/EditarPessoaModal";
 import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPessoaModal";
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
-import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle,BsFillCaretLeftFill,BsFillCaretRightFill } from "react-icons/bs";
+import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle,BsFillCaretLeftFill,BsFillCaretRightFill ,BsUpload} from "react-icons/bs";
+import ImportarPessoaModal from "../../components/ModalImportarPessoa/ImportarPessoaModal";
 
 const Pessoas = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -15,6 +16,7 @@ const Pessoas = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isImportarPessoaModalOpen, setIsImportarPessoaModalOpen] = useState(false);
   const [isGenerateFileModalOpen, setIsGenerateFileModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState(false);
@@ -117,6 +119,12 @@ const Pessoas = () => {
     setSelectedPessoa(null);
   };
 
+  const handleImportarPessoaModalClose = async () => {
+    setIsImportarPessoaModalOpen(false);
+    const data = await getPessoas();
+    setPessoas(data.data);
+  };
+
   const handleGenerateFileModalClose = () => {
     setIsGenerateFileModalOpen(false);
     setSelectedPessoa(null);
@@ -147,6 +155,7 @@ const Pessoas = () => {
         onChange={handleSearchChange}
       />
       <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
+      <C.Button onClick={handleCreateButtonClick}><BsUpload /> Importar Excel(.xlsx)</C.Button>
       <C.PaginationContainer>
         <C.PageButton
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -217,6 +226,10 @@ const Pessoas = () => {
         isOpen={isGenerateFileModalOpen}
         onClose={handleGenerateFileModalClose}
         pessoa={selectedPessoa}
+      />
+      <ImportarPessoaModal
+        isOpen={isImportarPessoaModalOpen}
+        onClose={handleImportarPessoaModalClose}
       />
     </C.Container>
   );
