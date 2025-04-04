@@ -9,7 +9,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
   const [selectedPessoas, setSelectedPessoas] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = useState(true);
 
   const [page, setPage] = useState(1);
   const pageSize = 100;
