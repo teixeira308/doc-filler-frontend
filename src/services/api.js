@@ -109,7 +109,8 @@ const importExcelPessoas = async (formData) => {
   const response = await fetch(`${apiUrl}/pessoas/import`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${user?.token}`,
+      Authorization: `Bearer ${user?.token}`, // OK deixar o token
+      // NÃO definir 'Content-Type' aqui!
     },
     body: formData,
   });
@@ -121,6 +122,7 @@ const importExcelPessoas = async (formData) => {
 
   return await response.json();
 };
+
 
 
   return {
