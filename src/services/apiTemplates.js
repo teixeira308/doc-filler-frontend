@@ -155,8 +155,8 @@ const ApiTemplates = () => {
 
     }
 
-    const generateBatchDocuments = async (templateId, payload) => {
-    const response = await fetch(`${apiUrl}/fill-docx-template/${templateId}/batch`, {
+    const generateBatchDocuments = async (payload) => {
+    const response = await fetch(`${apiUrl}/fill-docx-template/batch`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
