@@ -155,7 +155,7 @@ const ApiTemplates = () => {
 
     }
 
-    const generateBatchDocuments = async (payload) => {\
+    const generateBatchDocuments = async (payload) => {
         console.log(payload)
     const response = await fetch(`${apiUrl}/fill-docx-template/batch`, {
         method: "POST",
