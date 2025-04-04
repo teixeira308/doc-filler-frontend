@@ -105,11 +105,30 @@ const updatePessoa = async (id, pessoaData) => {
   return await response.json();
 };
 
+const importExcelPessoas = async (formData) => {
+  const response = await fetch(`${apiUrl}/pessoas/import`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${user?.token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Erro ao importar arquivo.");
+  }
+
+  return await response.json();
+};
+
+
   return {
     getPessoas,
     createPessoa,
     deletePessoa,
-    updatePessoa
+    updatePessoa,
+    importExcelPessoas
   };
 };
 
