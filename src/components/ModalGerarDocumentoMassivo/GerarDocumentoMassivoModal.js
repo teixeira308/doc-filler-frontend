@@ -77,7 +77,10 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
 
       
       //console.log(fileContent)
-      generateZipFile(fileContent,"Arquivos-gerados");
+      const now = new Date();
+      const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+    
+      generateZipFile(fileContent,"Arquivos-gerados-"+formattedDate);
 
     } catch (err) {
       console.error("Erro ao gerar documentos:", err);
