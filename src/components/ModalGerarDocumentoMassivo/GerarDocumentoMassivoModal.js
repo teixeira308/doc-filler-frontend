@@ -16,6 +16,11 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalPessoas, setTotalPessoas] = useState(0);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+
   useEffect(() => {
     if (!selectAll) {
       const fetchPessoas = async () => {
@@ -47,22 +52,48 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setSuccess(false);
+    setError(null);
+
     try {
       let dataToSend;
+
       if (selectAll) {
-        dataToSend = { selectAll: true };
+        dataToSend = { templateId: template.id };
       } else {
-        dataToSend = { pessoas: selectedPessoas.map(p => p.id) };
-        if (dataToSend.pessoas.length === 0) {
+        if (selectedPessoas.length === 0) {
           alert("Selecione pelo menos uma pessoa!");
+          setIsLoading(false);
           return;
         }
+        dataToSend = {
+          templateId: template.id,
+          selectedIds: selectedPessoas.map(p => p.id)
+        };
       }
-      await updateTemplate(template.id, dataToSend);
-    } catch (error) {
-      console.error("Erro ao gerar documentos:", error);
+
+      const result = await generateBatch(dataToSend);
+
+      if (result.success) {
+        setSuccess(true);
+        setTimeout(() => {
+          onClose();
+          setSelectedPessoas([]);
+        }, 2000);
+      } else {
+        setError("Ocorreu um problema ao gerar os documentos.");
+      }
+
+    } catch (err) {
+      console.error("Erro ao gerar documentos:", err);
+      setError("Erro ao gerar documentos. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+
 
   const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
   const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
@@ -78,20 +109,9 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         </C.ModalHeader>
 
         <C.ModalForm onSubmit={handleSubmit}>
-          <p><strong>Template:</strong> {template.descricao}</p>
+          <C.Label><strong>Template:</strong> {template.descricao}</C.Label>
 
           <C.RadioGroup>
-            <C.RadioOption>
-              <input
-                type="radio"
-                id="manual"
-                name="geracao"
-                value="manual"
-                checked={!selectAll}
-                onChange={() => setSelectAll(false)}
-              />
-              <label htmlFor="manual">Selecionar manualmente as pessoas</label>
-            </C.RadioOption>
             <C.RadioOption>
               <input
                 type="radio"
@@ -102,6 +122,17 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
                 onChange={() => setSelectAll(true)}
               />
               <label htmlFor="todos">Gerar documentos para todas as pessoas</label>
+            </C.RadioOption>
+            <C.RadioOption>
+              <input
+                type="radio"
+                id="manual"
+                name="geracao"
+                value="manual"
+                checked={!selectAll}
+                onChange={() => setSelectAll(false)}
+              />
+              <label htmlFor="manual">Selecionar manualmente as pessoas</label>
             </C.RadioOption>
           </C.RadioGroup>
 
@@ -145,7 +176,13 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
             </C.DualColumnWrapper>
           )}
 
-          <C.Button type="submit">Gerar Documentos</C.Button>
+          <C.Button type="submit" disabled={isLoading}>
+            {isLoading ? "Gerando..." : "Gerar Documentos"}
+          </C.Button>
+
+          {success && <p style={{ color: "green", marginTop: "10px" }}>Documentos gerados com sucesso!</p>}
+          {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+
         </C.ModalForm>
       </C.ModalContainer>
     </C.ModalOverlay>
