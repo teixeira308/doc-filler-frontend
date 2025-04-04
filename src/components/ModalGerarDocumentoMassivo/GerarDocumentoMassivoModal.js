@@ -73,17 +73,11 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         };
       }
 
-      const result = await generateBatchDocuments(dataToSend);
+      const fileContent = await generateBatchDocuments(dataToSend);
 
-      if (result.success) {
-        setSuccess(true);
-        setTimeout(() => {
-          onClose();
-          setSelectedPessoas([]);
-        }, 2000);
-      } else {
-        setError("Ocorreu um problema ao gerar os documentos.");
-      }
+      
+      //console.log(fileContent)
+      generateAndDownloadDocx(fileContent,"Arquivos-gerados");
 
     } catch (err) {
       console.error("Erro ao gerar documentos:", err);
@@ -93,6 +87,28 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     }
   };
 
+  const generateAndDownloadDocx = (data, fileName) => {
+    try {
+      // Converta os dados em um Blob
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+      //console.log(blob);
+      // Crie um URL para o Blob
+      const url = URL.createObjectURL(blob);
+  
+      // Crie um link ancorado para fazer o download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      // Libere o URL criado
+      URL.revokeObjectURL(url);
+      //console.log("Document created and downloaded successfully");
+    } catch (error) {
+      console.error("Error generating or downloading document:", error);
+    }
+  };
 
 
   const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
