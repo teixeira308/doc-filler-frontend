@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApiPessoas from "../../services/api";
 
@@ -9,6 +9,24 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
+  const handleClose = () => {
+    setSuccess(false);
+    setError("");
+    setFile(null);
+    onClose();
+  };
+
+  
+
+  useEffect(() => {
+    if (isOpen) {
+      setSuccess(false);
+      setError("");
+      setFile(null);
+    }
+  }, [isOpen]);
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -49,7 +67,7 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
       <C.ModalContainer>
         <C.ModalHeader>
           <h2>Importar Excel</h2>
-          <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
+          <C.CloseButton onClick={handleClose}>&times;</C.CloseButton>
         </C.ModalHeader>
 
         <C.ModalForm onSubmit={handleSubmit}>
