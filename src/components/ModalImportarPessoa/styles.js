@@ -79,6 +79,7 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
+  margin: 20px;
 `;
 
 // Estilos para o botão de submit
