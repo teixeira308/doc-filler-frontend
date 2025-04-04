@@ -65,6 +65,10 @@ const Pessoas = () => {
     setIsModalOpen(true);
   };
 
+  const handleImportarPessoaButtonClick = () => {
+    setIsImportarPessoaModalOpen(true);
+  };
+
   const handleNewPessoaCreated = async () => {
     const data = await getPessoas();
     setPessoas(data.data);
@@ -155,7 +159,7 @@ const Pessoas = () => {
         onChange={handleSearchChange}
       />
       <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Pessoa</C.Button>
-      <C.Button onClick={handleCreateButtonClick}><BsUpload /> Importar Excel(.xlsx)</C.Button>
+      <C.Button onClick={handleImportarPessoaButtonClick}><BsUpload /> Importar Excel(.xlsx)</C.Button>
       <C.PaginationContainer>
         <C.PageButton
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
