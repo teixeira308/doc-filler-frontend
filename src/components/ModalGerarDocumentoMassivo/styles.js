@@ -193,3 +193,62 @@ export const RadioOption = styled.label`
     transform: scale(1.1);
   }
 `;
+
+export const DualColumnWrapper = styled.div`
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+export const Column = styled.div`
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  max-height: 400px;
+  overflow-y: auto;
+`;
+
+export const PersonListTitle = styled.h4`
+  margin-bottom: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const PersonItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 5px;
+
+    &:hover {
+      color: darkred;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+`;

@@ -8,7 +8,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate } = useApi();
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
-  const [selectedPessoas, setSelectedPessoas] = useState(new Set());
+  const [selectedPessoas, setSelectedPessoas] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
   const [page, setPage] = useState(1);
@@ -32,12 +32,17 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     }
   }, [page, selectAll]);
 
-  const togglePessoaSelection = (id) => {
+  const togglePessoaSelection = (pessoa) => {
     setSelectedPessoas((prev) => {
-      const newSet = new Set(prev);
-      newSet.has(id) ? newSet.delete(id) : newSet.add(id);
-      return newSet;
+      const exists = prev.some(p => p.id === pessoa.id);
+      if (exists) return prev.filter(p => p.id !== pessoa.id);
+      if (prev.length >= 100) return prev;
+      return [...prev, pessoa];
     });
+  };
+
+  const removePessoa = (id) => {
+    setSelectedPessoas((prev) => prev.filter(p => p.id !== id));
   };
 
   const handleSubmit = async (e) => {
@@ -47,7 +52,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
       if (selectAll) {
         dataToSend = { selectAll: true };
       } else {
-        dataToSend = { pessoas: [...selectedPessoas] };
+        dataToSend = { pessoas: selectedPessoas.map(p => p.id) };
         if (dataToSend.pessoas.length === 0) {
           alert("Selecione pelo menos uma pessoa!");
           return;
@@ -101,28 +106,43 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
           </C.RadioGroup>
 
           {!selectAll && (
-            <>
-              <C.ListContainer>
+            <C.DualColumnWrapper>
+              <C.Column>
+                <C.PersonListTitle>Lista de Pessoas</C.PersonListTitle>
                 {pessoas.map((pessoa) => (
-                  <C.ListItem key={pessoa.id}>
+                  <C.PersonItem key={pessoa.id}>
                     <label>
                       <input
                         type="checkbox"
-                        checked={selectedPessoas.has(pessoa.id)}
-                        onChange={() => togglePessoaSelection(pessoa.id)}
+                        checked={selectedPessoas.some(p => p.id === pessoa.id)}
+                        onChange={() => togglePessoaSelection(pessoa)}
+                        disabled={
+                          selectedPessoas.length >= 100 &&
+                          !selectedPessoas.some(p => p.id === pessoa.id)
+                        }
                       />
                       {pessoa.nome}
                     </label>
-                  </C.ListItem>
+                  </C.PersonItem>
                 ))}
-              </C.ListContainer>
+                <C.Pagination>
+                  <C.Button disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.Button>
+                  <span>Página {page} de {totalPages}</span>
+                  <C.Button disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.Button>
+                </C.Pagination>
+              </C.Column>
 
-              <C.Pagination>
-                <C.Button disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.Button>
-                <span>Página {page} de {totalPages}</span>
-                <C.Button disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.Button>
-              </C.Pagination>
-            </>
+              <C.Column>
+                <C.PersonListTitle>Selecionados</C.PersonListTitle>
+                <C.Counter>{selectedPessoas.length} / 100</C.Counter>
+                {selectedPessoas.map((pessoa) => (
+                  <C.PersonItem key={pessoa.id}>
+                    {pessoa.nome}
+                    <button onClick={() => removePessoa(pessoa.id)}>❌</button>
+                  </C.PersonItem>
+                ))}
+              </C.Column>
+            </C.DualColumnWrapper>
           )}
 
           <C.Button type="submit">Gerar Documentos</C.Button>
