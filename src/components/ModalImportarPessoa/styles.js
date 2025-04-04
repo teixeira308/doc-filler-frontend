@@ -79,11 +79,11 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
-  margin: 20px;
 `;
 
 // Estilos para o botão de submit
 export const Button = styled.button`
+  margin-top: 10px; /* Espaçamento entre o input acima */
   padding: 10px 15px;
   background-color: #007bff;
   color: #fff;
@@ -96,6 +96,7 @@ export const Button = styled.button`
     background-color: #0056b3;
   }
 `;
+
 
 export const ListContainer = styled.div`
   max-height: 200px;
