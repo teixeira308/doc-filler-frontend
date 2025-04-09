@@ -168,7 +168,7 @@ const generateAndDownloadDocx = (data, fileName) => {
         <thead>
           <tr>
             <C.TableHeader>Descrição</C.TableHeader>
-            <C.TableHeader>nome</C.TableHeader>
+            <C.TableHeader>Nome ao gerar</C.TableHeader>
             <C.TableHeader>Criado em</C.TableHeader>
             <C.TableHeader>Ações</C.TableHeader>
           </tr>
