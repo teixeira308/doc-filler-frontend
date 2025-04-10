@@ -108,6 +108,12 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
         <C.ModalForm onSubmit={handleSubmit}>
+        <C.SectionToggle onClick={() => toggleSection("pessoais")}>
+            {expandedSections.treinamentos ? "▼" : "▶"} Dados pessoais
+          </C.SectionToggle>
+
+          {expandedSections.pessoais && (
+            <>
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="nome">Nome</C.Label>
@@ -299,6 +305,8 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
             </C.FormColumn>
 
             </C.FormRow>
+
+            </>)}
           {/* Treinamentos */}
           <C.SectionToggle onClick={() => toggleSection("treinamentos")}>
             {expandedSections.treinamentos ? "▼" : "▶"} Treinamentos
