@@ -109,7 +109,7 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
         </C.ModalHeader>
         <C.ModalForm onSubmit={handleSubmit}>
         <C.SectionToggle onClick={() => toggleSection("pessoais")}>
-            {expandedSections.treinamentos ? "▼" : "▶"} Dados pessoais
+            {expandedSections.pessoais ? "▼" : "▶"} Dados pessoais
           </C.SectionToggle>
 
           {expandedSections.pessoais && (

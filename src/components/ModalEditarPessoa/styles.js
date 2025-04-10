@@ -98,3 +98,21 @@ export const Button = styled.button`
     background-color: #0056b3;
   }
 `;
+
+
+export const SectionToggle = styled.button`
+width: 100%;
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+`;

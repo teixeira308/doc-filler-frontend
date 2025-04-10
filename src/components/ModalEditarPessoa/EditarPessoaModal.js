@@ -77,6 +77,19 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
     }
   };
 
+    const [expandedSections, setExpandedSections] = useState({
+      treinamentos: false,
+      documentos: false,
+    });
+  
+    const toggleSection = (section) => {
+      setExpandedSections((prev) => ({
+        ...prev,
+        [section]: !prev[section],
+      }));
+    };
+  
+
   if (!isOpen) return null;
 
   return (
@@ -87,6 +100,13 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
         <C.ModalForm onSubmit={handleSubmit}>
+           <C.SectionToggle onClick={() => toggleSection("pessoais")}>
+                      {expandedSections.treinamentos ? "▼" : "▶"} Dados pessoais
+                    </C.SectionToggle>
+          
+                    {expandedSections.pessoais && (
+                      <>
+                     
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="nome">Nome</C.Label>
@@ -263,6 +283,14 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
               />
             </C.FormColumn>
           </C.FormRow>
+
+          </>)}
+           <C.SectionToggle onClick={() => toggleSection("treinamentos")}>
+                      {expandedSections.treinamentos ? "▼" : "▶"} Treinamentos
+                    </C.SectionToggle>
+          
+                    {expandedSections.pessoais && (
+                      <>
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="data_treinamento_formacao_nr10">Treinamento NR10 (Formação)</C.Label>
@@ -355,6 +383,15 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
             </C.FormColumn>
           </C.FormRow>
 
+          </>)}
+
+           {/* Documentos */}
+                    <C.SectionToggle onClick={() => toggleSection("documentos")}>
+                      {expandedSections.documentos ? "▼" : "▶"} Documentos e Responsáveis
+                    </C.SectionToggle>
+          
+                    {expandedSections.documentos && (
+                      <>
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="ehs_responsavel">Responsável EHS</C.Label>
@@ -367,7 +404,7 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
               />
             </C.FormColumn>
           </C.FormRow>
-
+          </>)}
           <C.Button type="submit">Salvar</C.Button>
         </C.ModalForm>
       </C.ModalContainer>
