@@ -69,3 +69,32 @@ export const CancelButton = styled(Button)`
     background-color: #95a5a6;
   }
 `;
+
+export const Section = styled.div`
+  margin-bottom: 1rem;
+`;
+
+export const SectionTitle = styled.button`
+  width: 100%;
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+`;
+
+export const SectionContent = styled.div`
+  padding: 10px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+`;
