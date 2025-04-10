@@ -61,7 +61,7 @@ const EditPessoaModal = ({ isOpen, onClose, template, onEdit }) => {
         <C.ModalForm onSubmit={handleSubmit}>
           <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="nome">Descrição</C.Label>
+              <C.Label htmlFor="nome">Nome ao gerar</C.Label>
               <C.Input
                 type="text"
                 name="descricao"
