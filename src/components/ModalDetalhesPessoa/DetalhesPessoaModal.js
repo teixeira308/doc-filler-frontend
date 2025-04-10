@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import * as C from "./styles";
 
 const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
-  if (!isOpen) return null;
+
 
   const [openSection, setOpenSection] = useState(null);
 
   const toggleSection = (sectionName) => {
     setOpenSection((prev) => (prev === sectionName ? null : sectionName));
   };
-
+  if (!isOpen) return null;
+  
   return (
     <C.ModalOverlay>
       <C.ModalContainer>
