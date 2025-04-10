@@ -75,7 +75,17 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
     resetFormData(); // Adicione isso para limpar o formulário
   };
 
-  
+  const [expandedSections, setExpandedSections] = useState({
+    treinamentos: false,
+    documentos: false,
+  });
+
+  const toggleSection = (section) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -287,101 +297,121 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
                 
               />
             </C.FormColumn>
-         
-            <C.FormColumn>
-              <C.Label htmlFor="data_treinamento_formacao_nr10">Treinamento Formação NR10</C.Label>
-              <C.Input
-                type="text"
-                name="data_treinamento_formacao_nr10"
-                value={formData.data_treinamento_formacao_nr10}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-            <C.FormColumn>
-              <C.Label htmlFor="data_treinamento_reciclagem_nr10">Reciclagem NR10</C.Label>
-              <C.Input
-                type="text"
-                name="data_treinamento_reciclagem_nr10"
-                value={formData.data_treinamento_reciclagem_nr10}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
 
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="data_treinamento_formacao_sep">Treinamento Formação SEP</C.Label>
-              <C.Input
-                type="text"
-                name="data_treinamento_formacao_sep"
-                value={formData.data_treinamento_formacao_sep}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-            <C.FormColumn>
-              <C.Label htmlFor="data_treinamento_reciclagem_sep">Reciclagem SEP</C.Label>
-              <C.Input
-                type="text"
-                name="data_treinamento_reciclagem_sep"
-                value={formData.data_treinamento_reciclagem_sep}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
+            </C.FormRow>
+          {/* Treinamentos */}
+          <C.SectionToggle onClick={() => toggleSection("treinamentos")}>
+            {expandedSections.treinamentos ? "▼" : "▶"} Treinamentos
+          </C.SectionToggle>
 
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="data_validade_documento">Validade Documento</C.Label>
-              <C.Input
-                type="text"
-                name="data_validade_documento"
-                value={formData.data_validade_documento}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-            <C.FormColumn>
-              <C.Label htmlFor="coordenador_responsavel">Coordenador Responsável</C.Label>
-              <C.Input
-                type="text"
-                name="coordenador_responsavel"
-                value={formData.coordenador_responsavel}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
+          {expandedSections.treinamentos && (
+            <>
+              <C.FormRow>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_treinamento_formacao_nr10">Treinamento Formação NR10</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_treinamento_formacao_nr10"
+                    value={formData.data_treinamento_formacao_nr10}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_treinamento_reciclagem_nr10">Reciclagem NR10</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_treinamento_reciclagem_nr10"
+                    value={formData.data_treinamento_reciclagem_nr10}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+              </C.FormRow>
 
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="data_aso">Data ASO</C.Label>
-              <C.Input
-                type="text"
-                name="data_aso"
-                value={formData.data_aso}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-            <C.FormColumn>
-              <C.Label htmlFor="data_treinamento_nr35">Treinamento NR35</C.Label>
-              <C.Input
-                type="text"
-                name="data_treinamento_nr35"
-                value={formData.data_treinamento_nr35}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
+              <C.FormRow>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_treinamento_formacao_sep">Treinamento Formação SEP</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_treinamento_formacao_sep"
+                    value={formData.data_treinamento_formacao_sep}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_treinamento_reciclagem_sep">Reciclagem SEP</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_treinamento_reciclagem_sep"
+                    value={formData.data_treinamento_reciclagem_sep}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+              </C.FormRow>
 
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="ehs_responsavel">EHS Responsável</C.Label>
-              <C.Input
-                type="text"
-                name="ehs_responsavel"
-                value={formData.ehs_responsavel}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
+              <C.FormRow>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_treinamento_nr35">Treinamento NR35</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_treinamento_nr35"
+                    value={formData.data_treinamento_nr35}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+              </C.FormRow>
+            </>
+          )}
+
+          {/* Documentos */}
+          <C.SectionToggle onClick={() => toggleSection("documentos")}>
+            {expandedSections.documentos ? "▼" : "▶"} Documentos e Responsáveis
+          </C.SectionToggle>
+
+          {expandedSections.documentos && (
+            <>
+              <C.FormRow>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_validade_documento">Validade Documento</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_validade_documento"
+                    value={formData.data_validade_documento}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+                <C.FormColumn>
+                  <C.Label htmlFor="coordenador_responsavel">Coordenador Responsável</C.Label>
+                  <C.Input
+                    type="text"
+                    name="coordenador_responsavel"
+                    value={formData.coordenador_responsavel}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+              </C.FormRow>
+
+              <C.FormRow>
+                <C.FormColumn>
+                  <C.Label htmlFor="data_aso">Data ASO</C.Label>
+                  <C.Input
+                    type="text"
+                    name="data_aso"
+                    value={formData.data_aso}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+                <C.FormColumn>
+                  <C.Label htmlFor="ehs_responsavel">EHS Responsável</C.Label>
+                  <C.Input
+                    type="text"
+                    name="ehs_responsavel"
+                    value={formData.ehs_responsavel}
+                    onChange={handleChange}
+                  />
+                </C.FormColumn>
+              </C.FormRow>
+            </>
+          )}
           <C.Button type="submit">Salvar</C.Button>
           
         </C.ModalForm>
