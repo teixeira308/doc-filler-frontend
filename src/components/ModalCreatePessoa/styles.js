@@ -21,6 +21,9 @@ export const ModalContainer = styled.div`
   border-radius: 5px;
   max-width: 800px;
   width: 100%;
+  max-height: 80vh; /* altura máxima */
+  overflow-y: auto;  /* scroll vertical se necessário */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 export const ModalHeader = styled.div`
