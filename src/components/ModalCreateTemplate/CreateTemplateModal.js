@@ -67,8 +67,10 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
                 required
               />
             </C.FormColumn>
+            </C.FormRow>
+            <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="descricao">Descrição</C.Label>
+              <C.Label htmlFor="descricao">Nome ao gerar</C.Label>
               <C.Input
                 type="text"
                 name="descricao"
@@ -81,7 +83,7 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
           </C.FormRow>
           <C.FormRow>
             <C.FormColumn>
-              <C.Label htmlFor="nome">Nome do arquivo ao gerar</C.Label>
+              <C.Label htmlFor="nome">Nome do arquivo</C.Label>
               <C.Input
                 type="text"
                 name="nome"
