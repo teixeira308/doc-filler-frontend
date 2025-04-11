@@ -9,7 +9,7 @@ const useApiCategoriaPessoas = () => {
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
   const getCategoriasPessoa = async () => {
-    const response = await fetch(`${apiUrl}/categoria-pessoa`, {
+    const response = await fetch(`${apiUrl}/categorias-pessoa`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const useApiCategoriaPessoas = () => {
   };
 
   const createCategoriaPessoa = async (data) => {
-    const response = await fetch(`${apiUrl}/categoria-pessoa`, {
+    const response = await fetch(`${apiUrl}/categorias-pessoa`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const useApiCategoriaPessoas = () => {
   };
 
   const updateCategoriaPessoa = async (id, data) => {
-    const response = await fetch(`${apiUrl}/categoria-pessoa/${id}`, {
+    const response = await fetch(`${apiUrl}/categorias-pessoa/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const useApiCategoriaPessoas = () => {
   };
 
   const deleteCategoriaPessoa = async (id) => {
-    const response = await fetch(`${apiUrl}/categoria-pessoa/${id}`, {
+    const response = await fetch(`${apiUrl}/categorias-pessoa/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${user?.token}`,
