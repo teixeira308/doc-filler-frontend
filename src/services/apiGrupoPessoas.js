@@ -9,7 +9,7 @@ const useApigrupoPessoas = () => {
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
   const getGruposPessoa = async () => {
-    const response = await fetch(`${apiUrl}/grupos-pessoa`, {
+    const response = await fetch(`${apiUrl}/grupo`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const useApigrupoPessoas = () => {
   };
 
   const createGrupoPessoa = async (data) => {
-    const response = await fetch(`${apiUrl}/grupos-pessoa`, {
+    const response = await fetch(`${apiUrl}/grupo`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const useApigrupoPessoas = () => {
   };
 
   const updateGrupoPessoa = async (id, data) => {
-    const response = await fetch(`${apiUrl}/grupos-pessoa/${id}`, {
+    const response = await fetch(`${apiUrl}/grupo/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const useApigrupoPessoas = () => {
   };
 
   const deleteGrupoPessoa = async (id) => {
-    const response = await fetch(`${apiUrl}/grupos-pessoa/${id}`, {
+    const response = await fetch(`${apiUrl}/grupo/${id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${user?.token}`,
