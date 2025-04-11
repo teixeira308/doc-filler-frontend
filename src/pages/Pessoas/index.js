@@ -189,6 +189,7 @@ const Pessoas = () => {
         <thead>
           <tr>
             <C.TableHeader>Nome</C.TableHeader>
+            <C.TableHeader>Grupo</C.TableHeader>
             <C.TableHeader>CPF</C.TableHeader>
             <C.TableHeader>Criado em</C.TableHeader>
             <C.TableHeader>Ações</C.TableHeader>
@@ -197,6 +198,7 @@ const Pessoas = () => {
         <tbody>
           {filteredPessoas.map((pessoa) => (
             <C.TableRow key={pessoa.id}>
+              <C.TableData>{pessoa.nome}</C.TableData>
               <C.TableData>{pessoa.nome}</C.TableData>
               <C.TableData>{pessoa.cpf}</C.TableData>
               <C.TableData>

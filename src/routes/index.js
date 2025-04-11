@@ -9,6 +9,7 @@ import Templates from "../pages/Templates";
 import Demonstracao from "../pages/Demonstracao";
 import Suporte from "../pages/Suporte";
 import Tutorial from "../pages/Tutorial";
+import CategoriaPessoa from "../pages/CategoriaPessoa";
 
 
 const Private = ({ Item }) => {
@@ -33,6 +34,7 @@ const RoutesApp = () => {
           <Route exact path="/demonstracao" element={<Private Item={Demonstracao} />} />
           <Route exact path="/suporte" element={<Private Item={Suporte} />} />
           <Route exact path="/tutorial" element={<Private Item={Tutorial} />} />
+          <Route exact path="/categoria" element={<Private Item={CategoriaPessoa} />} />
           <Route path="/" element={<Signin />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route path="*" element={<Signin />} />
