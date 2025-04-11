@@ -20,6 +20,7 @@ const CategoriaPessoa = () => {
     try {
       const data = await getCategoriasPessoa();
       setCategoriaPessoas(data);
+      console.log(data)
     } catch (error) {
       console.error("Erro ao carregar categorias:", error);
     }
