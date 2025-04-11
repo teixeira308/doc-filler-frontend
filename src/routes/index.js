@@ -34,7 +34,7 @@ const RoutesApp = () => {
           <Route exact path="/demonstracao" element={<Private Item={Demonstracao} />} />
           <Route exact path="/suporte" element={<Private Item={Suporte} />} />
           <Route exact path="/tutorial" element={<Private Item={Tutorial} />} />
-          <Route exact path="/categoria" element={<Private Item={Grupo} />} />
+          <Route exact path="/grupo" element={<Private Item={Grupo} />} />
           <Route path="/" element={<Signin />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route path="*" element={<Signin />} />
