@@ -42,7 +42,7 @@ const EditGrupoModal = ({ isOpen, onClose, grupo, onEdit }) => {
     e.preventDefault();
     try {
       const filteredData = filterFormData(formData);
-      await updateGrupoPessoa(pessoa.id, filteredData);
+      await updateGrupoPessoa(grupo.id, filteredData);
       onEdit();
     } catch (error) {
       console.error("Erro ao editar grupo: ", error);
