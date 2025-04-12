@@ -7,12 +7,13 @@ import {
   BsPlusCircle
 } from "react-icons/bs";
 import useApigrupoPessoas from "../../services/apiGrupoPessoas";
+import CreateGrupoPessoaModal from "../../components/ModalCreateGrupo/CreateGrupoModal";
 
 const Grupo = () => {
   const { getGruposPessoa } = useApigrupoPessoas();
 
   const [grupoPessoas, setgrupoPessoas] = useState([]);
-
+  const [isCreateGrupoPessoaModalOpen, setIsCreateGrupoPessoaModalOpen] = useState(false)
 
   const fetchgrupos = async () => {
     try {
@@ -22,6 +23,11 @@ const Grupo = () => {
       console.error("Erro ao carregar grupos:", error);
     }
   };
+
+  const handleNewGrupoCreated = async () => {
+    fetchgrupos();
+  };
+ 
 
   useEffect(() => {
     fetchgrupos();
@@ -37,7 +43,7 @@ const Grupo = () => {
       </C.Title>
       <C.ButtonGroup>
         <C.NewButton>
-          <BsPlusCircle /> Novo Grupo
+          <BsPlusCircle onClick={()=> setIsCreateGrupoPessoaModalOpen(true)} /> Novo Grupo
         </C.NewButton>
       </C.ButtonGroup>
       <C.Table>
@@ -66,13 +72,13 @@ const Grupo = () => {
         </tbody>
       </C.Table>
 
-  {/* Modais
+ 
      
       <CreateGrupoPessoaModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onCreate={handleNewgrupoCreated}
-      />
+        isOpen={isCreateGrupoPessoaModalOpen}
+        onClose={() => setIsCreateGrupoPessoaModalOpen(false)}
+        onCreate={handleNewGrupoCreated}
+      /> {/* Modais
      
       <EditgrupoPessoaModal
         isOpen={isEditModalOpen}

@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import * as C from "./styles";
-import useApi from "../../services/api";
+import apiGrupoPessoas from "../../services/apiGrupoPessoas";
 
-const CreateGrupoPessoaModal = ({ isOpen, onClose, onCreate }) => {
-  const { createPessoa } = useApi();
+const CreateGrupoModal = ({ isOpen, onClose, onCreate }) => {
+  const { createGrupoPessoa } = apiGrupoPessoas();
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
@@ -33,16 +33,16 @@ const CreateGrupoPessoaModal = ({ isOpen, onClose, onCreate }) => {
     resetFormData(); // Adicione isso para limpar o formulário
   };
 
- 
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createPessoa(formData);
+      await createGrupoPessoa(formData);
       onCreate();
       handleClose();
     } catch (error) {
-      console.error("Erro ao criar pessoa:", error);
+      console.error("Erro ao criar grupo:", error);
     }
   };
 
@@ -90,4 +90,4 @@ const CreateGrupoPessoaModal = ({ isOpen, onClose, onCreate }) => {
   );
 };
 
-export default CreateGrupoPessoaModal;
+export default CreateGrupoModal;
