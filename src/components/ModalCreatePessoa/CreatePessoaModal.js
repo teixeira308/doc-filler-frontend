@@ -140,10 +140,10 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
               />
             </C.FormColumn>
             <C.FormColumn>
-              <C.Label htmlFor="grupoPessoa">Grupo</C.Label>
+              <C.Label htmlFor="grupoId">Grupo</C.Label>
               <C.Select
-                name="grupoPessoaId"
-                id="grupoPessoaId"
+                name="grupoId"
+                id="grupoId"
                 value={formData.grupoId || ""}
                 onChange={handleChange}
               >
