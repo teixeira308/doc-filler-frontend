@@ -10,7 +10,7 @@ const DeleteGrupoModal = ({ isOpen, onClose, onDelete, grupo }) => {
 
   const handleDelete = async () => {
     try {
-      await deleteGrupoPessoa(grupo);
+      await deleteGrupoPessoa(grupo.id);
       onDelete();
       onClose();
     } catch (error) {
