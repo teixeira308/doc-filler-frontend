@@ -33,6 +33,8 @@ const Grupo = () => {
 
   const handlegrupoUpdated = async () => {
     fetchgrupos();
+    setIsEditarGrupoModal(false)
+    setSelectedGrupo(null)
   }
 
   const openEditGrupoModal = async (grupo) => {
