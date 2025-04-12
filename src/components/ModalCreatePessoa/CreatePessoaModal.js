@@ -14,7 +14,7 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
     const fetchGrupos = async () => {
       try {
         const data = await getGruposPessoa();
-        setGrupos(data.data);
+        setGrupos(data);
       } catch (error) {
         console.error("Erro ao carregar grupos: ", error);
       }
