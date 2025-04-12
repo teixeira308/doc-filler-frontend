@@ -199,7 +199,7 @@ const Pessoas = () => {
           {filteredPessoas.map((pessoa) => (
             <C.TableRow key={pessoa.id}>
               <C.TableData>{pessoa.nome}</C.TableData>
-              <C.TableData>{pessoa.nome}</C.TableData>
+              <C.TableData>{pessoa.grupo}</C.TableData>
               <C.TableData>{pessoa.cpf}</C.TableData>
               <C.TableData>
                 {new Date(pessoa.createdAt).toLocaleDateString()}

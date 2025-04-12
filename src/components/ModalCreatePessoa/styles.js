@@ -106,3 +106,11 @@ width: 100%;
     background: #e0e0e0;
   }
 `;
+
+export const Select = styled.select`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+`;
+
