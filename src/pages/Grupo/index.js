@@ -9,13 +9,15 @@ import {
 import useApigrupoPessoas from "../../services/apiGrupoPessoas";
 import CreateGrupoPessoaModal from "../../components/ModalCreateGrupo/CreateGrupoModal";
 import EditarGrupoModal from "../../components/ModalEditarGrupo/EditarGrupoModal";
+import DeleteGrupoModal from "../../components/ModalDeleteGrupo/DeleteGrupoModal";
 
 const Grupo = () => {
   const { getGruposPessoa } = useApigrupoPessoas();
 
   const [grupoPessoas, setgrupoPessoas] = useState([]);
   const [isCreateGrupoPessoaModalOpen, setIsCreateGrupoPessoaModalOpen] = useState(false)
-  const [isEditarGrupoModal, setIsEditarGrupoModal] = useState(false)
+  const [isEditarGrupoModalOpen, setIsEditarGrupoModalOpen] = useState(false)
+  const [isDeleteGrupoModalOpen, setIsDeleteGrupoModalOpen] = useState(false)
   const [selectedGrupo, setSelectedGrupo] = useState(null);
 
   const fetchgrupos = async () => {
@@ -33,13 +35,24 @@ const Grupo = () => {
 
   const handlegrupoUpdated = async () => {
     fetchgrupos();
-    setIsEditarGrupoModal(false)
+    setIsEditarGrupoModalOpen(false)
+    setSelectedGrupo(null)
+  }
+  
+  const handlegrupoDeleted = async() =>{
+    fetchgrupos();
+    setIsDeleteGrupoModalOpen(false)
     setSelectedGrupo(null)
   }
 
   const openEditGrupoModal = async (grupo) => {
     setSelectedGrupo(grupo)
-    setIsEditarGrupoModal(true)
+    setIsEditarGrupoModalOpen(true)
+  }
+
+  const openDeleteGrupoModal = async (grupo) =>{
+    setSelectedGrupo(grupo);
+    setIsDeleteGrupoModalOpen(true)
   }
 
   useEffect(() => {
@@ -76,7 +89,7 @@ const Grupo = () => {
                 <C.ActionButton onClick={() => openEditGrupoModal(grupo)}>
                   <BsPencil /> Editar
                 </C.ActionButton>
-                <C.DeleteButton >
+                <C.DeleteButton onClick={() => openDeleteGrupoModal(grupo)}>
                   <BsTrash3 /> Excluir
                 </C.DeleteButton>
               </C.TableData>
@@ -95,19 +108,19 @@ const Grupo = () => {
 
 
       <EditarGrupoModal
-        isOpen={isEditarGrupoModal}
-        onClose={() => setIsEditarGrupoModal(false)}
+        isOpen={isEditarGrupoModalOpen}
+        onClose={() => setIsEditarGrupoModalOpen(false)}
         grupo={selectedGrupo}
         onEdit={handlegrupoUpdated}
       />
-      {/* Modais
-      <DeletegrupoPessoaModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onDelete={handleDelete}
-        grupo={selectedgrupo}
+      
+      <DeleteGrupoModal
+        isOpen={isDeleteGrupoModalOpen}
+        onClose={() => setIsDeleteGrupoModalOpen(false)}
+        onDelete={handlegrupoDeleted}
+        grupo={selectedGrupo}
       />
-       */}
+       
     </C.Container>
   );
 };
