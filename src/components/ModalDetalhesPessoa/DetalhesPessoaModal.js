@@ -22,7 +22,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("pessoais")}>
-              Dados Pessoais
+            {openSection.pessoais ? "▼" : "▶"} Dados Pessoais
             </C.SectionTitle>
             {openSection === "pessoais" && (
               <C.SectionContent>
@@ -40,7 +40,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("contato")}>
-              Contato
+            {openSection.contato ? "▼" : "▶"} Contato
             </C.SectionTitle>
             {openSection === "contato" && (
               <C.SectionContent>
@@ -54,7 +54,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("documentos")}>
-              Documentos e Contratação
+            {openSection.documentos ? "▼" : "▶"}  Documentos e Contratação
             </C.SectionTitle>
             {openSection === "documentos" && (
               <C.SectionContent>
@@ -69,7 +69,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("treinamentos")}>
-              Treinamentos
+            {openSection.treinamentos ? "▼" : "▶"} Treinamentos
             </C.SectionTitle>
             {openSection === "treinamentos" && (
               <C.SectionContent>
@@ -84,7 +84,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("responsaveis")}>
-              Responsáveis
+            {openSection.responsaveis ? "▼" : "▶"}  Responsáveis
             </C.SectionTitle>
             {openSection === "responsaveis" && (
               <C.SectionContent>
