@@ -58,7 +58,7 @@ const EditGrupoModal = ({ isOpen, onClose, grupo, onEdit }) => {
           <h2>Editar Grupo</h2>
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>    
-        <C.ModalForm>                 
+        <C.ModalForm onSubmit={handleSubmit}>                 
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="nome">Nome</C.Label>
