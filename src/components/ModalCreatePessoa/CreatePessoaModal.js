@@ -47,7 +47,8 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
     coordenador_responsavel: "",
     data_aso: "",
     data_treinamento_nr35: "",
-    ehs_responsavel: ""
+    ehs_responsavel: "",
+    grupoId: ""
   });
 
   const resetFormData = () => {
@@ -55,6 +56,7 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
       nome: "",
       cpf: "",
       rg: "",
+      grupoId: "",
       dataNascimento: "",
       numeroCarteiraTrabalho: "",
       email: "",
@@ -142,7 +144,7 @@ const CreatePessoaModal = ({ isOpen, onClose, onCreate }) => {
               <C.Select
                 name="grupoPessoaId"
                 id="grupoPessoaId"
-                value={formData.grupoPessoaId || ""}
+                value={formData.grupoId || ""}
                 onChange={handleChange}
               >
                 <option value="">Selecione um grupo</option>
