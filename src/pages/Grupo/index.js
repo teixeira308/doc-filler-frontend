@@ -78,7 +78,8 @@ const Grupo = () => {
         isOpen={isCreateGrupoPessoaModalOpen}
         onClose={() => setIsCreateGrupoPessoaModalOpen(false)}
         onCreate={handleNewGrupoCreated}
-      /> {/* Modais
+      />
+       {/* Modais
      
       <EditgrupoPessoaModal
         isOpen={isEditModalOpen}

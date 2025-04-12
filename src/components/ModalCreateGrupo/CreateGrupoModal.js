@@ -70,11 +70,11 @@ const CreateGrupoModal = ({ isOpen, onClose, onCreate }) => {
               />
             </C.FormColumn>
             <C.FormColumn>
-              <C.Label htmlFor="cpf">Descrição</C.Label>
+              <C.Label htmlFor="descricao">Descrição</C.Label>
               <C.Input
                 type="text"
-                name="cpf"
-                id="cpf"
+                name="descricao"
+                id="descricao"
                 value={formData.descricao}
                 onChange={handleChange}
                 
