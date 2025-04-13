@@ -16,16 +16,15 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalContainer = styled.div`
-  background: #fff;
+  background-color: white;
   padding: 20px;
-  border-radius: 8px;
-  max-width: 500px;
+  border-radius: 5px;
+  max-width: 80%;
   width: 100%;
   max-height: 80vh; /* altura máxima */
   overflow-y: auto;  /* scroll vertical se necessário */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
-
 
 export const ModalHeader = styled.div`
   display: flex;

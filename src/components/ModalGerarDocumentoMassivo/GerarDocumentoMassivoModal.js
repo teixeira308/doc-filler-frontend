@@ -2,27 +2,60 @@ import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApi from "../../services/apiTemplates";
 import useApiPessoas from "../../services/api";
+import useApiGrupo from "../../services/apiGrupoPessoas";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
+
 
 const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
   const { updateTemplate, generateBatchDocuments } = useApi();
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
   const [selectedPessoas, setSelectedPessoas] = useState([]);
-  const [selectAll, setSelectAll] = useState(true);
+  const [selectedGrupos, setSelectedGrupos] = useState([]);
+
 
   const [page, setPage] = useState(1);
   const pageSize = 100;
   const [totalPages, setTotalPages] = useState(1);
   const [totalPessoas, setTotalPessoas] = useState(0);
 
+
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [modoSelecao, setModoSelecao] = useState("todos");
+  const { getGruposPessoa } = useApiGrupo();
+  const [grupos, setGrupos] = useState([]);
+
+  useEffect(() => {
+    if (modoSelecao === "grupo") {
+      const fetchGrupos = async () => {
+        try {
+          const data = await getGruposPessoa(page, pageSize);
+          setGrupos(data.data);
+          setTotalPages(data.totalPages);
+          setTotalPessoas(data.totalCount);
+        } catch (error) {
+          console.error("Erro ao carregar grupos: ", error);
+        }
+      };
+      fetchGrupos();
+    }
+  }, [page, modoSelecao]); // Atualiza quando `currentPage` muda
+
+
+  const toggleGrupoSelection = (grupo) => {
+    setSelectedGrupos((prev) => {
+      const exists = prev.some(g => g.id === grupo.id);
+      if (exists) return prev.filter(g => g.id !== grupo.id);
+      if (prev.length >= 10) return prev; // Limita a 10 grupos
+      return [...prev, grupo];
+    });
+  };
 
 
   useEffect(() => {
-    if (!selectAll) {
+    if (modoSelecao === "pessoa") {
       const fetchPessoas = async () => {
         try {
           const data = await getPessoas(page, pageSize);
@@ -35,7 +68,7 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
       };
       fetchPessoas();
     }
-  }, [page, selectAll]);
+  }, [page, modoSelecao]);
 
   const togglePessoaSelection = (pessoa) => {
     setSelectedPessoas((prev) => {
@@ -59,9 +92,9 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
     try {
       let dataToSend;
 
-      if (selectAll) {
+      if (modoSelecao === "todos") {
         dataToSend = { templateId: template.id };
-      } else {
+      } else if (modoSelecao === "pessoa") {
         if (selectedPessoas.length === 0) {
           alert("Selecione pelo menos uma pessoa!");
           setIsLoading(false);
@@ -69,18 +102,29 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
         }
         dataToSend = {
           templateId: template.id,
-          selectedIds: selectedPessoas.map(p => p.id)
+          pessoaIds: selectedPessoas.map(p => p.id),
+        };
+      } else if (modoSelecao === "grupo") {
+        if (selectedGrupos.length === 0) {
+          alert("Selecione pelo menos um grupo!");
+          setIsLoading(false);
+          return;
+        }
+        dataToSend = {
+          templateId: template.id,
+          grupoIds: selectedGrupos.map(g => g.id),
         };
       }
 
+      console.log(dataToSend)
       const fileContent = await generateBatchDocuments(dataToSend);
 
-      
+
       //console.log(fileContent)
       const now = new Date();
       const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
-    
-      generateZipFile(fileContent,"Arquivos-gerados-"+formattedDate);
+
+      generateZipFile(fileContent, "Arquivos-gerados-" + formattedDate);
 
     } catch (err) {
       console.error("Erro ao gerar documentos:", err);
@@ -92,24 +136,30 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
 
   const generateZipFile = (data, fileName) => {
     const blob = new Blob([data], { type: "application/zip" });
-  
+
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.setAttribute("download", `${fileName}.zip`);
-  
+
     document.body.appendChild(link);
     link.click();
     link.remove();
-  
+
     // Libera a memória depois
     window.URL.revokeObjectURL(url);
   };
-  
 
 
-  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
-  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
+
+  const nextPage = (e) => {
+    e.stopPropagation();
+    setPage((prev) => Math.min(prev + 1, totalPages))
+  };
+  const prevPage = (e) => {
+    e.stopPropagation();
+    setPage((prev) => Math.max(prev - 1, 1))
+  };
 
   if (!isOpen) return null;
 
@@ -131,25 +181,78 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
                 id="todos"
                 name="geracao"
                 value="todos"
-                checked={selectAll}
-                onChange={() => setSelectAll(true)}
+                checked={modoSelecao === "todos"}
+                onChange={() => setModoSelecao("todos")}
               />
-              <label htmlFor="todos">Gerar documentos para todas as pessoas</label>
+              <label htmlFor="todos">Gerar documentos para <strong>TODAS</strong> as pessoas</label>
             </C.RadioOption>
             <C.RadioOption>
               <input
                 type="radio"
-                id="manual"
+                id="pessoa"
                 name="geracao"
-                value="manual"
-                checked={!selectAll}
-                onChange={() => setSelectAll(false)}
+                value="pessoa"
+                checked={modoSelecao === "pessoa"}
+                onChange={() => setModoSelecao("pessoa")}
               />
-              <label htmlFor="manual">Selecionar manualmente as pessoas</label>
+              <label htmlFor="pessoa">Selecionar manualmente as pessoas</label>
+            </C.RadioOption>
+            <C.RadioOption>
+              <input
+                type="radio"
+                id="grupo"
+                name="geracao"
+                value="grupo"
+                checked={modoSelecao === "grupo"}
+                onChange={() => setModoSelecao("grupo")}
+              />
+              <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
             </C.RadioOption>
           </C.RadioGroup>
 
-          {!selectAll && (
+          {modoSelecao === "grupo" && (
+            <C.DualColumnWrapper>
+              <C.Column>
+                <C.PersonListTitle>Lista de Grupos</C.PersonListTitle>
+                {grupos.map((grupo) => (
+                  <C.PersonItem key={grupo.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={selectedGrupos.some(g => g.id === grupo.id)}
+                        onChange={() => toggleGrupoSelection(grupo)}
+                        disabled={
+                          selectedGrupos.length >= 10 &&
+                          !selectedGrupos.some(g => g.id === grupo.id)
+                        }
+                      />
+                      {grupo.nome}
+                    </label>
+                  </C.PersonItem>
+                ))}
+
+                <C.Pagination>
+                  <C.ButtonPagination type="button" disabled={page === 1} onClick={(e) => prevPage(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
+                  <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={page === totalPages} onClick={(e) => nextPage(e)}><BsFillCaretRightFill /></C.ButtonPagination>
+                </C.Pagination>
+              </C.Column>
+
+              <C.Column>
+                <C.PersonListTitle>Grupos Selecionados</C.PersonListTitle>
+                <C.Counter>{selectedGrupos.length} / 10</C.Counter>
+                {selectedGrupos.map((grupo) => (
+                  <C.PersonItem key={grupo.id}>
+                    {grupo.nome}
+                    <button onClick={() => toggleGrupoSelection(grupo)}>❌</button>
+                  </C.PersonItem>
+                ))}
+              </C.Column>
+            </C.DualColumnWrapper>
+          )}
+
+
+          {modoSelecao === "pessoa" && (
             <C.DualColumnWrapper>
               <C.Column>
                 <C.PersonListTitle>Lista de Pessoas</C.PersonListTitle>
@@ -170,9 +273,9 @@ const GerarDocumentoMassivoModal = ({ isOpen, onClose, template }) => {
                   </C.PersonItem>
                 ))}
                 <C.Pagination>
-                  <C.Button disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.Button>
-                  <span>Página {page} de {totalPages}</span>
-                  <C.Button disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.Button>
+                  <C.ButtonPagination type="button" disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.ButtonPagination>
+                  <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.ButtonPagination>
                 </C.Pagination>
               </C.Column>
 

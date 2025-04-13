@@ -110,18 +110,21 @@ const importExcelPessoas = async (formData) => {
     method: "POST",
     headers: {
       Authorization: `Bearer ${user?.token}`, // OK deixar o token
-      // NÃO definir 'Content-Type' aqui!
+      // NÃO definir 'Content-Type' aqui! O fetch lida com isso automaticamente.
     },
-    body: formData,
+    body: formData,  // Corpo da requisição contém o FormData com o arquivo e o grupoId
   });
 
   if (!response.ok) {
+    // Se a resposta não for bem-sucedida, lança erro
     const error = await response.json();
     throw new Error(error.message || "Erro ao importar arquivo.");
   }
 
+  // Se a requisição for bem-sucedida, retorna o JSON da resposta
   return await response.json();
 };
+
 
 
 

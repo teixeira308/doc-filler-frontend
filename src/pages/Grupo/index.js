@@ -4,7 +4,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import {
   BsPencil,
   BsTrash3,
-  BsPlusCircle
+  BsPlusCircle,
+  BsFillCaretLeftFill, 
+  BsFillCaretRightFill
 } from "react-icons/bs";
 import useApigrupoPessoas from "../../services/apiGrupoPessoas";
 import CreateGrupoPessoaModal from "../../components/ModalCreateGrupo/CreateGrupoModal";
@@ -13,21 +15,28 @@ import DeleteGrupoModal from "../../components/ModalDeleteGrupo/DeleteGrupoModal
 
 const Grupo = () => {
   const { getGruposPessoa } = useApigrupoPessoas();
-
+  const [filteredGrupos, setFilteredGrupos] = useState([]);
   const [grupoPessoas, setgrupoPessoas] = useState([]);
   const [isCreateGrupoPessoaModalOpen, setIsCreateGrupoPessoaModalOpen] = useState(false)
   const [isEditarGrupoModalOpen, setIsEditarGrupoModalOpen] = useState(false)
   const [isDeleteGrupoModalOpen, setIsDeleteGrupoModalOpen] = useState(false)
   const [selectedGrupo, setSelectedGrupo] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
+    //paginacao
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+   
+  
 
-  const fetchgrupos = async () => {
-    try {
-      const data = await getGruposPessoa();
-      setgrupoPessoas(data);
-    } catch (error) {
-      console.error("Erro ao carregar grupos:", error);
-    }
-  };
+    const fetchgrupos = async () => {
+      try {
+        const data = await getGruposPessoa(currentPage);
+        setgrupoPessoas(data.data);
+        setTotalPages(data.totalPages);
+      } catch (error) {
+        console.error("Erro ao carregar grupos:", error);
+      }
+    };
 
   const handleNewGrupoCreated = async () => {
     fetchgrupos();
@@ -56,9 +65,22 @@ const Grupo = () => {
   }
 
   useEffect(() => {
+    
     fetchgrupos();
-  }, []);
+  }, [currentPage]);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  useEffect(() => {
+    // Filtra a lista de pessoas com base na consulta de busca
+    setFilteredGrupos(
+      grupoPessoas.filter((grupo) =>
+        grupo.nome.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [searchQuery, grupoPessoas]);
 
   return (
     <C.Container>
@@ -67,11 +89,34 @@ const Grupo = () => {
         Grupo
 
       </C.Title>
+       <C.SearchInput
+              type="text"
+              placeholder="Pesquisar por nome"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
       <C.ButtonGroup>
         <C.NewButton onClick={() => setIsCreateGrupoPessoaModalOpen(true)}>
           <BsPlusCircle /> Novo Grupo
         </C.NewButton>
       </C.ButtonGroup>
+        <C.PaginationContainer>
+              <C.PageButton
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                <BsFillCaretLeftFill />
+              </C.PageButton>
+      
+              <span>Página {currentPage} de {totalPages}</span>
+      
+              <C.PageButton
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                <BsFillCaretRightFill />
+              </C.PageButton>
+            </C.PaginationContainer>
       <C.Table>
         <thead>
           <tr>
@@ -81,7 +126,7 @@ const Grupo = () => {
           </tr>
         </thead>
         <tbody>
-          {grupoPessoas.map((grupo) => (
+          {filteredGrupos.map((grupo) => (
             <C.TableRow key={grupo.id}>
               <C.TableData>{grupo.nome}</C.TableData>
               <C.TableData>{grupo.descricao}</C.TableData>

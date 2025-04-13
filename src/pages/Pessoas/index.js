@@ -27,7 +27,7 @@ const Pessoas = () => {
   //paginacao
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const pageSize = 10; // Número de itens por página
+ 
 
 
   //Use effect

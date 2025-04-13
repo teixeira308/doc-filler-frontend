@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as C from "./styles";
 import useApiPessoas from "../../services/api";
+import useApiGrupo from "../../services/apiGrupoPessoas";
 
 const ImportarPessoaModal = ({ isOpen, onClose }) => {
   const { importExcelPessoas } = useApiPessoas();
@@ -8,6 +9,30 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const { getGruposPessoa } = useApiGrupo();
+  const [grupos, setGrupos] = useState([]);
+
+  useEffect(() => {
+    const fetchGrupos = async () => {
+      try {
+        const data = await getGruposPessoa();
+        setGrupos(data.data);
+      } catch (error) {
+        console.error("Erro ao carregar grupos: ", error);
+      }
+    };
+    fetchGrupos();
+  }, []); // Atualiza quando `currentPage` muda
+
+  const [grupoSelecionado, setGrupoSelecionado] = useState({
+    grupoId: ""
+  });
+
+  const resetFormData = () => {
+    setGrupoSelecionado({
+      grupoId: "",
+    });
+  };
 
   const handleClose = () => {
     setSuccess(false);
@@ -16,7 +41,13 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
     onClose();
   };
 
-  
+  const handleChange = (e) => {
+    setGrupoSelecionado({
+      ...grupoSelecionado,
+      [e.target.name]: e.target.value,
+    });
+  };
+
 
   useEffect(() => {
     if (isOpen) {
@@ -26,26 +57,32 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     setSuccess(false);
     setError("");
-
+  
     if (!file) {
       setError("Selecione um arquivo Excel (.xlsx)");
       return;
     }
-
+  
     const formData = new FormData();
-    formData.append("file", file); // Certifique-se que este nome bate com o do multer
-
+    formData.append("file", file); // Certifique-se de que o nome 'file' bate com o nome no backend (multer)
+    
+    // Verifique se o grupoId foi selecionado
+    if (grupoSelecionado.grupoId) {
+      formData.append("grupoId", grupoSelecionado.grupoId); // Passando o grupoId correto
+    }
+  
     try {
       setIsLoading(true);
-      await importExcelPessoas(formData);
+      const response = await importExcelPessoas(formData);  // Certifique-se de que o 'importExcelPessoas' está enviando corretamente
       setSuccess(true);
       setFile(null);
+      resetFormData();
     } catch (err) {
       console.error("Erro ao importar:", err);
       setError(err.message || "Erro ao importar o arquivo.");
@@ -53,6 +90,7 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
       setIsLoading(false);
     }
   };
+  
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -66,13 +104,35 @@ const ImportarPessoaModal = ({ isOpen, onClose }) => {
     <C.ModalOverlay>
       <C.ModalContainer>
         <C.ModalHeader>
-          <h2>Importar Excel</h2>
+          <h2>Importar Pessoas Excel</h2>
           <C.CloseButton onClick={handleClose}>&times;</C.CloseButton>
         </C.ModalHeader>
 
         <C.ModalForm onSubmit={handleSubmit}>
-          <C.Label>Selecione um arquivo .xlsx:</C.Label>
-          <C.Input type="file" accept=".xlsx" onChange={handleFileChange} />
+          <C.FormRow>
+            <C.FormColumn>
+              <C.Label>Selecione um arquivo .xlsx:</C.Label>
+              <C.Input type="file" accept=".xlsx" onChange={handleFileChange} />
+            </C.FormColumn>
+          </C.FormRow>
+          <C.FormRow>
+            <C.FormColumn>
+              <C.Label htmlFor="grupoId">Selecione um Grupo para registrar as pessoas importadas </C.Label>
+              <C.Select
+                name="grupoId"
+                id="grupoId"
+                value={grupoSelecionado.grupoId || ""}
+                onChange={handleChange}
+              >
+                <option value="">Selecione um grupo</option>
+                {grupos.map((grupo) => (
+                  <option key={grupo.id} value={grupo.id}>
+                    {grupo.nome}
+                  </option>
+                ))}
+              </C.Select>
+            </C.FormColumn>
+          </C.FormRow>
 
           <C.Button type="submit" disabled={isLoading}>
             {isLoading ? "Importando..." : "Importar"}

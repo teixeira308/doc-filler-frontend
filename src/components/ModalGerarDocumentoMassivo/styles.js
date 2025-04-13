@@ -19,7 +19,7 @@ export const ModalContainer = styled.div`
   background: #fff;
   padding: 20px;
   border-radius: 8px;
-  max-width: 600px;
+  max-width: 800px;
   width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
@@ -97,6 +97,42 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonPagination = styled.button`
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  padding: 2px 6px; /* Mais compacto */
+  font-size: 12px;   /* Fonte menor */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+export const Pagination = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px; /* Espaço menor entre os elementos */
+  margin-top: 16px;
+`;
+
+
+
+
+export const PageIndicator = styled.span`
+  font-size: 12px; /* Menor ainda */
+  display: flex;
+  align-items: center;
+`;
+
+
 export const ListContainer = styled.div`
   max-height: 200px;
   overflow-y: auto;
@@ -136,13 +172,9 @@ export const PageButton = styled.button`
   }
 `;
 
-export const Pagination = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-`;
+
+
+
 
 export const SelectAllContainer = styled.div`
   display: flex;

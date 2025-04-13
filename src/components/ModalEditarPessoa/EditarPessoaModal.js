@@ -13,7 +13,7 @@ const EditPessoaModal = ({ isOpen, onClose, pessoa, onEdit }) => {
     const fetchGrupos = async () => {
       try {
         const data = await getGruposPessoa();
-        setGrupos(data);
+        setGrupos(data.data);
       } catch (error) {
         console.error("Erro ao carregar grupos: ", error);
       }

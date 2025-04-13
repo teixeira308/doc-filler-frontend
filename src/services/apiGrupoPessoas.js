@@ -8,8 +8,8 @@ const useApigrupoPessoas = () => {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_DOCFILLER_API;
 
-  const getGruposPessoa = async () => {
-    const response = await fetch(`${apiUrl}/grupo`, {
+  const getGruposPessoa = async (page = 1, pageSize = 10) => {
+    const response = await fetch(`${apiUrl}/grupo?page=${page}&pageSize=${pageSize}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
