@@ -32,6 +32,20 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonImport = styled.button`
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  background-color:#007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #45a049;
+  }
+`;
+
 export const Table = styled.table`
   width: 70%;
   border-collapse: collapse;

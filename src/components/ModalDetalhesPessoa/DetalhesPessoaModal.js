@@ -10,7 +10,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
     setOpenSection((prev) => (prev === sectionName ? null : sectionName));
   };
   if (!isOpen) return null;
-  
+
   return (
     <C.ModalOverlay>
       <C.ModalContainer>
@@ -19,14 +19,17 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
         <C.ModalBody>
-
-          <C.Section>
+          <div><strong>Nome:</strong> {pessoa.nome}</div><br />
+          <div style={{ display: 'flex', gap: '5rem' }}>
+            <div><strong>Função:</strong> {pessoa.funcao}</div>
+            <div><strong>Grupo:</strong> {pessoa.grupo_nome}</div>
+          </div><br />  <C.Section>
             <C.SectionTitle onClick={() => toggleSection("pessoais")}>
-            {openSection.pessoais ? "▼" : "▶"} Dados Pessoais
+              Dados Pessoais
             </C.SectionTitle>
             {openSection === "pessoais" && (
               <C.SectionContent>
-                <div><strong>Nome:</strong> {pessoa.nome}</div><br />
+
                 <div><strong>CPF:</strong> {pessoa.cpf}</div><br />
                 <div><strong>RG:</strong> {pessoa.rg}</div><br />
                 <div><strong>Data de Nascimento:</strong> {pessoa.datanascimento}</div><br />
@@ -40,7 +43,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("contato")}>
-            {openSection.contato ? "▼" : "▶"} Contato
+              Contato
             </C.SectionTitle>
             {openSection === "contato" && (
               <C.SectionContent>
@@ -54,13 +57,13 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("documentos")}>
-            {openSection.documentos ? "▼" : "▶"}  Documentos e Contratação
+              Documentos e Contratação
             </C.SectionTitle>
             {openSection === "documentos" && (
               <C.SectionContent>
                 <div><strong>Número da Carteira de Trabalho:</strong> {pessoa.numerocarteiratrabalho}</div><br />
                 <div><strong>Data de Admissão:</strong> {pessoa.dataadmissao}</div><br />
-                <div><strong>Função:</strong> {pessoa.funcao}</div><br />
+
                 <div><strong>Validade Documento:</strong> {pessoa.data_validade_documento}</div><br />
                 <div><strong>Data ASO:</strong> {pessoa.data_aso}</div><br />
               </C.SectionContent>
@@ -69,7 +72,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("treinamentos")}>
-            {openSection.treinamentos ? "▼" : "▶"} Treinamentos
+              Treinamentos
             </C.SectionTitle>
             {openSection === "treinamentos" && (
               <C.SectionContent>
@@ -84,7 +87,7 @@ const DetalhesPessoaModal = ({ isOpen, onClose, pessoa }) => {
 
           <C.Section>
             <C.SectionTitle onClick={() => toggleSection("responsaveis")}>
-            {openSection.responsaveis ? "▼" : "▶"}  Responsáveis
+              Responsáveis
             </C.SectionTitle>
             {openSection === "responsaveis" && (
               <C.SectionContent>

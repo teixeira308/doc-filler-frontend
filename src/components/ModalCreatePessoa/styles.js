@@ -19,7 +19,7 @@ export const ModalContainer = styled.div`
   background-color: white;
   padding: 20px;
   border-radius: 5px;
-  max-width: 800px;
+  max-width: 80%;
   width: 100%;
   max-height: 80vh; /* altura máxima */
   overflow-y: auto;  /* scroll vertical se necessário */
@@ -91,7 +91,7 @@ export const Button = styled.button`
 `;
 
 export const SectionToggle = styled.button`
-width: 100%;
+  width: 100%;
   background: #f0f0f0;
   color: #333;
   border: none;
@@ -108,9 +108,38 @@ width: 100%;
 `;
 
 export const Select = styled.select`
+  width: 100%;
   padding: 10px;
+  font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+  border-radius: 5px;
 `;
 
+export const Section = styled.div`
+  margin-bottom: 1rem;
+`;
+
+export const SectionTitle = styled.button`
+  width: 100%;
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+`;
+
+export const SectionContent = styled.div`
+  padding: 10px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
+`;

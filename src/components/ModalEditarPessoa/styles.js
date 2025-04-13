@@ -16,13 +16,12 @@ export const ModalOverlay = styled.div`
 
 // Estilos para o container do modal
 export const ModalContainer = styled.div`
-  background: #fff;
+  background-color: white;
   padding: 20px;
-  border-radius: 8px;
-  max-width: 600px;
+  border-radius: 5px;
+  max-width: 80%;
   width: 100%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-height: 80vh; /* altura máxima */
+  max-height: 80vh; /* altura máxima */
   overflow-y: auto;  /* scroll vertical se necessário */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
@@ -74,6 +73,7 @@ export const FormColumn = styled.div`
 export const Label = styled.label`
   font-weight: bold;
   margin-bottom: 5px;
+  font-size: 1rem;
 `;
 
 // Estilos para os inputs
@@ -115,4 +115,40 @@ width: 100%;
   &:hover {
     background: #e0e0e0;
   }
+`;
+export const Select = styled.select`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+`;
+
+
+export const Section = styled.div`
+  margin-bottom: 1rem;
+`;
+
+export const SectionTitle = styled.button`
+  width: 100%;
+  background: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background: #e0e0e0;
+  }
+`;
+
+export const SectionContent = styled.div`
+  padding: 10px;
+  background: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: 5px;
 `;

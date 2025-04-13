@@ -163,9 +163,9 @@ const Pessoas = () => {
           <BsPlusCircle /> Pessoa
         </C.Button>
 
-        <C.Button onClick={handleImportarPessoaButtonClick}>
+        <C.ButtonImport onClick={handleImportarPessoaButtonClick}>
           <BsUpload /> Importar Excel(.xlsx)
-        </C.Button>
+        </C.ButtonImport>
       </C.ButtonGroup>
       <C.PaginationContainer>
         <C.PageButton
@@ -199,7 +199,7 @@ const Pessoas = () => {
           {filteredPessoas.map((pessoa) => (
             <C.TableRow key={pessoa.id}>
               <C.TableData>{pessoa.nome}</C.TableData>
-              <C.TableData>{pessoa.grupo}</C.TableData>
+              <C.TableData>{pessoa.grupo_nome}</C.TableData>
               <C.TableData>{pessoa.cpf}</C.TableData>
               <C.TableData>
                 {new Date(pessoa.createdAt).toLocaleDateString()}
