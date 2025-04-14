@@ -23,6 +23,7 @@ const Navbar = () => {
         <C.Link onClick={() => { navigate("/home"); setMenuOpen(false); }}>Inicio</C.Link>
         <C.Link onClick={() => { navigate("/pessoas"); setMenuOpen(false); }}>Pessoas</C.Link>
         <C.Link onClick={() => { navigate("/grupo"); setMenuOpen(false); }}>Grupo</C.Link>
+        <C.Link onClick={() => { navigate("/epi"); setMenuOpen(false); }}>EPI</C.Link>
         <C.Link onClick={() => { navigate("/templates"); setMenuOpen(false); }}>Templates</C.Link>
         <C.Link onClick={() => { navigate("/demonstracao"); setMenuOpen(false); }}>Demonstração</C.Link>
         <C.Link onClick={() => { navigate("/suporte"); setMenuOpen(false); }}>Suporte</C.Link>
