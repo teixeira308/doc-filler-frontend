@@ -96,27 +96,11 @@ const Grupo = () => {
               onChange={handleSearchChange}
             />
       <C.ButtonGroup>
-        <C.NewButton onClick={() => setIsCreateGrupoPessoaModalOpen(true)}>
+        <C.Button onClick={() => setIsCreateGrupoPessoaModalOpen(true)}>
           <BsPlusCircle /> Novo Grupo
-        </C.NewButton>
+        </C.Button>
       </C.ButtonGroup>
-        <C.PaginationContainer>
-              <C.PageButton
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <BsFillCaretLeftFill />
-              </C.PageButton>
-      
-              <span>Página {currentPage} de {totalPages}</span>
-      
-              <C.PageButton
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-              >
-                <BsFillCaretRightFill />
-              </C.PageButton>
-            </C.PaginationContainer>
+       
       <C.Table>
         <thead>
           <tr>
@@ -142,7 +126,23 @@ const Grupo = () => {
           ))}
         </tbody>
       </C.Table>
-
+      <C.PaginationContainer>
+              <C.PageButton
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                <BsFillCaretLeftFill />
+              </C.PageButton>
+      
+              <span>Página {currentPage} de {totalPages}</span>
+      
+              <C.PageButton
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                <BsFillCaretRightFill />
+              </C.PageButton>
+            </C.PaginationContainer>
 
 
       <CreateGrupoPessoaModal

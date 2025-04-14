@@ -77,9 +77,9 @@ const Epi = () => {
       />
 
       <C.ButtonGroup>
-        <C.NewButton onClick={() => setIsCreateModalOpen(true)}>
+        <C.Button onClick={() => setIsCreateModalOpen(true)}>
           <BsPlusCircle /> Novo EPI
-        </C.NewButton>
+        </C.Button>
       </C.ButtonGroup>
 
       <C.PaginationContainer>

@@ -2,13 +2,17 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
-  height: 100vh;
-  gap: 20px;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #f4f4f4;
 `;
 
+export const Title = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 24px;
+  color: #333;
+`;
 
-
-export const Title = styled.h2``;
+ 

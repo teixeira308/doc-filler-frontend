@@ -8,7 +8,7 @@ export const Container = styled.div`
   height: 100vh;
   padding: 20px;
   background-color: #f4f4f4;
-  margin-top: 100px;
+  margin-top: 200px;
 `;
 
 export const Title = styled.h2`

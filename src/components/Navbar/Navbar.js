@@ -2,40 +2,71 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles";
+import {
+  FaHome, FaUserFriends, FaUsers, FaHardHat,
+  FaFileAlt, FaVideo, FaHeadset, FaBook, FaSignOutAlt, FaBars
+} from "react-icons/fa";
 import logo from "../../assets/logo.png";
 
 const Navbar = () => {
   const { signout } = useAuth();
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const toggleMenu = () => {
-    setMenuOpen(prevState => !prevState);
+  const handleNavigate = (path) => {
+    navigate(path);
+  };
+
+  const handleLogout = () => {
+    signout();
+    navigate("/");
   };
 
   return (
-    <C.Navbar>
-      <C.Logo>
+    <C.Sidebar collapsed={isCollapsed}>
+      <C.LogoSection onClick={() => setIsCollapsed(!isCollapsed)}>
         <C.LogoImage src={logo} alt="Logo" />
-        Doc Filler
-      </C.Logo>
-      <C.NavLinks className={menuOpen ? 'open' : ''}>
-        <C.Link onClick={() => { navigate("/home"); setMenuOpen(false); }}>Inicio</C.Link>
-        <C.Link onClick={() => { navigate("/pessoas"); setMenuOpen(false); }}>Pessoas</C.Link>
-        <C.Link onClick={() => { navigate("/grupo"); setMenuOpen(false); }}>Grupo</C.Link>
-        <C.Link onClick={() => { navigate("/epi"); setMenuOpen(false); }}>EPI</C.Link>
-        <C.Link onClick={() => { navigate("/templates"); setMenuOpen(false); }}>Templates</C.Link>
-        <C.Link onClick={() => { navigate("/demonstracao"); setMenuOpen(false); }}>Demonstração</C.Link>
-        <C.Link onClick={() => { navigate("/suporte"); setMenuOpen(false); }}>Suporte</C.Link>
-        <C.Link onClick={() => { navigate("/tutorial"); setMenuOpen(false); }}>Tutorial</C.Link>    
-        <C.Link onClick={() => [signout(), navigate("/")]}>Sair</C.Link>
-      </C.NavLinks>
-      <C.Hamburger onClick={toggleMenu}>
-        <C.Bar />
-        <C.Bar />
-        <C.Bar />
-      </C.Hamburger>
-    </C.Navbar>
+        {!isCollapsed && <span>Doc Filler</span>}
+        <FaBars />
+      </C.LogoSection>
+
+      <C.NavLink onClick={() => handleNavigate("/home")}>
+        <FaHome />
+        {!isCollapsed && <span>Início</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/pessoas")}>
+        <FaUserFriends />
+        {!isCollapsed && <span>Pessoas</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/grupo")}>
+        <FaUsers />
+        {!isCollapsed && <span>Grupo</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/epi")}>
+        <FaHardHat />
+        {!isCollapsed && <span>EPI</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/templates")}>
+        <FaFileAlt />
+        {!isCollapsed && <span>Templates</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/demonstracao")}>
+        <FaVideo />
+        {!isCollapsed && <span>Demonstração</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/suporte")}>
+        <FaHeadset />
+        {!isCollapsed && <span>Suporte</span>}
+      </C.NavLink>
+      <C.NavLink onClick={() => handleNavigate("/tutorial")}>
+        <FaBook />
+        {!isCollapsed && <span>Tutorial</span>}
+      </C.NavLink>
+      <C.NavLink onClick={handleLogout}>
+        <FaSignOutAlt />
+        {!isCollapsed && <span>Sair</span>}
+      </C.NavLink>
+    </C.Sidebar>
   );
 };
 

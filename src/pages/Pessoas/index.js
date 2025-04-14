@@ -167,23 +167,7 @@ const Pessoas = () => {
           <BsUpload /> Importar Excel(.xlsx)
         </C.ButtonImport>
       </C.ButtonGroup>
-      <C.PaginationContainer>
-        <C.PageButton
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          <BsFillCaretLeftFill />
-        </C.PageButton>
-
-        <span>Página {currentPage} de {totalPages}</span>
-
-        <C.PageButton
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          <BsFillCaretRightFill />
-        </C.PageButton>
-      </C.PaginationContainer>
+      
 
       <C.Table>
         <thead>
@@ -214,6 +198,24 @@ const Pessoas = () => {
           ))}
         </tbody>
       </C.Table>
+
+      <C.PaginationContainer>
+        <C.PageButton
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          <BsFillCaretLeftFill />
+        </C.PageButton>
+
+        <span>Página {currentPage} de {totalPages}</span>
+
+        <C.PageButton
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+        >
+          <BsFillCaretRightFill />
+        </C.PageButton>
+      </C.PaginationContainer>
       <CreatePessoaModal
         isOpen={isModalOpen}
         onClose={handleModalClose}
