@@ -21,6 +21,19 @@ export const ButtonGroup = styled.div`
   margin-bottom: 20px;
 `;
 
+export const ButtonTableGroup = styled.div`
+display: flex;
+flex-direction: column;
+gap: 6px;
+
+@media (min-width: 769px) {
+  flex-direction: row;
+  gap: 10px;
+ 
+}
+`;
+
+
 export const Button = styled.button`
   padding: 10px 20px;
   font-size: 16px;
@@ -32,10 +45,21 @@ export const Button = styled.button`
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.2s ease;
 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
   &:hover {
     background-color: #45a049;
   }
 `;
+
+
 
 export const ButtonImport = styled(Button)`
   background-color: #007bff;
@@ -44,6 +68,13 @@ export const ButtonImport = styled(Button)`
     background-color: #0056b3;
   }
 `;
+
+export const Label = styled.span`
+  @media (max-width: 768px) {
+    display: none;
+  }
+`;
+
 
 export const SearchInput = styled.input`
   width: 70%;
@@ -146,5 +177,14 @@ export const PageButton = styled.button`
 
   &:hover:not(:disabled) {
     background-color: #e0e0e0;
+  }
+`;
+
+export const TableWrapper = styled.div`
+  overflow-x: auto;
+  width: 100%;
+
+  table {
+    min-width: 600px; // ou o que for necessário
   }
 `;

@@ -69,6 +69,8 @@ const CreateGrupoModal = ({ isOpen, onClose, onCreate }) => {
                 required
               />
             </C.FormColumn>
+            </C.FormRow>
+            <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="descricao">Descrição</C.Label>
               <C.Input

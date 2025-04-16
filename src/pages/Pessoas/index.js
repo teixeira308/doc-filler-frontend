@@ -188,12 +188,12 @@ const Pessoas = () => {
               <C.TableData>
                 {new Date(pessoa.createdAt).toLocaleDateString()}
               </C.TableData>
-              <C.TableData>
-                <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil /> Editar</C.ActionButton>
-                <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsZoomIn /> Detalhes</C.DetailsButton>
-                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3 /> Excluir</C.DeleteButton>
-                <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> Gerar documento</C.ActionButton>
-              </C.TableData>
+              <C.ButtonTableGroup>
+                <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil /> <C.Label>Editar</C.Label></C.ActionButton>
+                <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsZoomIn /> <C.Label>Detalhes</C.Label></C.DetailsButton>
+                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3 /> <C.Label>Excluir</C.Label></C.DeleteButton>
+                <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> <C.Label>Gerar documento</C.Label></C.ActionButton>
+              </C.ButtonTableGroup>
             </C.TableRow>
           ))}
         </tbody>
