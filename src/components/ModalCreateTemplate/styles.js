@@ -86,3 +86,11 @@ export const Button = styled.button`
     background-color: #45a049;
   }
 `;
+
+export const Select = styled.select`
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+`;

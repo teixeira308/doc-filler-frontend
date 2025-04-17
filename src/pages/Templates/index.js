@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as C from "./styles";
 import Navbar from "../../components/Navbar/Navbar";
 import useApi from "../../services/apiTemplates";
@@ -10,6 +11,7 @@ import { BsPencil,BsTrash3, BsCloudDownload, BsCardChecklist,BsPlusCircle } from
 
 
 const Templates = ()  => {
+    const navigate = useNavigate();
   const [templates, setTemplates] = useState([]);
   const [filteredTemplates, setFilteredTemplates] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
@@ -169,6 +171,7 @@ const generateAndDownloadDocx = (data, fileName) => {
           <tr>
             <C.TableHeader>Nome ao gerar</C.TableHeader>
             <C.TableHeader>Nome do arquivo</C.TableHeader>
+            <C.TableHeader>Tipo</C.TableHeader>
             <C.TableHeader>Criado em</C.TableHeader>
             <C.TableHeader>Ações</C.TableHeader>
           </tr>
@@ -178,6 +181,7 @@ const generateAndDownloadDocx = (data, fileName) => {
             <C.TableRow key={template.id}>
               <C.TableData>{template.descricao}</C.TableData>
               <C.TableData>{template.nome}</C.TableData>
+              <C.TableData>{template.tipoTemplate}</C.TableData>
               <C.TableData>
                 {new Date(template.createdAt).toLocaleDateString()}
               </C.TableData>
@@ -186,7 +190,7 @@ const generateAndDownloadDocx = (data, fileName) => {
                {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
                 <C.DeleteButton onClick={() => openDeleteModal(template.id)}><BsTrash3 /> Excluir</C.DeleteButton>
                 <C.DetailsButton onClick={() => handleDownloadTemplate(template)}><BsCloudDownload /> Baixar Template</C.DetailsButton>
-                <C.ActionButton onClick={() => openGerarDocumentoMassivoModal(template)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
+                <C.ActionButton onClick={() => navigate(`/template/gerar/${template.id}`)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
               </C.TableData>
             </C.TableRow>
           ))}

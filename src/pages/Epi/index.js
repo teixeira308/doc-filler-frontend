@@ -8,11 +8,13 @@ import {
   BsPlusCircle,
   BsFillCaretLeftFill,
   BsFillCaretRightFill,
+  BsUpload
 } from "react-icons/bs";
 import useApiEpi from "../../services/apiEpi";
 import CreateEpiModal from "../../components/ModalCreateEpi/CreateEpiModal";
 import EditarEpiModal from "../../components/ModalEditarEpi/EditarEpiModal";
 import DeleteEpiModal from "../../components/ModalDeleteEpi/DeleteEpiModal";
+import ImportarEPIModal from "../../components/ModalImportarEPI/ImportarEPIModal";
 
 const Epi = () => {
   const { getEpis } = useApiEpi();
@@ -25,6 +27,7 @@ const Epi = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isImportarEPIModalOpen, setIsImportarEPIModalOpen] = useState(false);
 
   const fetchEpis = async () => {
     try {
@@ -58,10 +61,18 @@ const Epi = () => {
     setSelectedEpi(null);
   };
 
+    const handleImportarPessoaModalClose = async () => {
+      setIsImportarEPIModalOpen(false);
+      fetchEpis();
+    };
+
   const handleEpiDeleted = () => {
     fetchEpis();
     setIsDeleteModalOpen(false);
     setSelectedEpi(null);
+  };
+  const handleImportarEPIButtonClick = () => {
+    setIsImportarEPIModalOpen(true);
   };
 
   return (
@@ -80,6 +91,9 @@ const Epi = () => {
         <C.Button onClick={() => setIsCreateModalOpen(true)}>
           <BsPlusCircle /> Novo EPI
         </C.Button>
+        <C.ButtonImport onClick={handleImportarEPIButtonClick}>
+          <BsUpload /> Importar Excel(.xlsx)
+        </C.ButtonImport>
       </C.ButtonGroup>
 
       <C.PaginationContainer>
@@ -145,6 +159,10 @@ const Epi = () => {
         epi={selectedEpi}
         onDelete={handleEpiDeleted}
       />
+      <ImportarEPIModal
+              isOpen={isImportarEPIModalOpen}
+              onClose={handleImportarPessoaModalClose}
+            />
     </C.Container>
   );
 };

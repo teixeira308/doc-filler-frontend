@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as C from "./styles";
 import Navbar from "../../components/Navbar/Navbar";
 import useApi from "../../services/api";
@@ -11,6 +12,7 @@ import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle, BsFillCare
 import ImportarPessoaModal from "../../components/ModalImportarPessoa/ImportarPessoaModal";
 
 const Pessoas = () => {
+  const navigate = useNavigate();
   const [pessoas, setPessoas] = useState([]);
   const [filteredPessoas, setFilteredPessoas] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
@@ -27,7 +29,7 @@ const Pessoas = () => {
   //paginacao
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
- 
+
 
 
   //Use effect
@@ -62,7 +64,10 @@ const Pessoas = () => {
   };
 
   const handleCreateButtonClick = () => {
-    setIsModalOpen(true);
+    navigate('/pessoas/novo')
+    handleModalClose()
+    handleNewPessoaCreated()
+
   };
 
   const handleImportarPessoaButtonClick = () => {
@@ -163,11 +168,13 @@ const Pessoas = () => {
           <BsPlusCircle /> Pessoa
         </C.Button>
 
+
+
         <C.ButtonImport onClick={handleImportarPessoaButtonClick}>
           <BsUpload /> Importar Excel(.xlsx)
         </C.ButtonImport>
       </C.ButtonGroup>
-      
+
 
       <C.Table>
         <thead>
@@ -188,12 +195,14 @@ const Pessoas = () => {
               <C.TableData>
                 {new Date(pessoa.createdAt).toLocaleDateString()}
               </C.TableData>
-              <C.ButtonTableGroup>
-                <C.ActionButton onClick={() => openEditModal(pessoa)}><BsPencil /> <C.Label>Editar</C.Label></C.ActionButton>
-                <C.DetailsButton onClick={() => handleViewDetails(pessoa)}><BsZoomIn /> <C.Label>Detalhes</C.Label></C.DetailsButton>
-                <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3 /> <C.Label>Excluir</C.Label></C.DeleteButton>
-                <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> <C.Label>Gerar documento</C.Label></C.ActionButton>
-              </C.ButtonTableGroup>
+              <C.TableData>
+                <C.ButtonTableGroup>
+                  <C.ActionButton onClick={() => navigate(`/pessoas/editar/${pessoa.id}`)}><BsPencil /> <C.Label>Editar</C.Label></C.ActionButton>
+                  <C.DetailsButton onClick={() => navigate(`/pessoas/detalhes/${pessoa.id}`)}><BsZoomIn /> <C.Label>Detalhes</C.Label></C.DetailsButton>
+                  <C.DeleteButton onClick={() => openDeleteModal(pessoa.id)}><BsTrash3 /> <C.Label>Excluir</C.Label></C.DeleteButton>
+                  <C.ActionButton onClick={() => openGenerateFileModal(pessoa)}><BsCardChecklist /> <C.Label>Gerar documento</C.Label></C.ActionButton>
+                </C.ButtonTableGroup>
+              </C.TableData>
             </C.TableRow>
           ))}
         </tbody>

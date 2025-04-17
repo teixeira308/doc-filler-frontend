@@ -6,21 +6,23 @@ import useApi from "../../services/apiTemplates";
 const EditPessoaModal = ({ isOpen, onClose, template, onEdit }) => {
   const { updateTemplate } = useApi();
   const [formData, setFormData] = useState({
-    descricao: ""
+    descricao: "",
+    tipoTemplate: ""
   });
 
   const filterFormData = (data) => {
     // Campos permitidos
     const allowedFields = [
-      'descricao'
+      'descricao',
+      'tipoTemplate'
     ];
-    
+
     // Filtra os dados mantendo apenas os campos permitidos
     return Object.fromEntries(
       Object.entries(data).filter(([key]) => allowedFields.includes(key))
     );
   };
-  
+
 
   useEffect(() => {
     if (template) {
@@ -35,7 +37,7 @@ const EditPessoaModal = ({ isOpen, onClose, template, onEdit }) => {
     });
   };
 
- 
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,7 +72,23 @@ const EditPessoaModal = ({ isOpen, onClose, template, onEdit }) => {
                 onChange={handleChange}
                 required
               />
-            </C.FormColumn>  
+            </C.FormColumn>
+          </C.FormRow>
+          <C.FormRow>
+            <C.FormColumn>
+              <C.Label htmlFor="tipoTemplate">Tipo</C.Label>
+              <C.Select
+                name="tipoTemplate"
+                id="tipoTemplate"
+                value={formData.tipoTemplate}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecione uma opção</option>
+                <option value="Pessoas">Pessoas</option>
+                <option value="EPIs">EPIs</option>
+              </C.Select>
+            </C.FormColumn>
           </C.FormRow>
           <C.Button type="submit">Salvar</C.Button>
         </C.ModalForm>

@@ -11,7 +11,7 @@ const ApiTemplates = () => {
 
     const getTemplates = async () => {
 
-        const response = await fetch(`${apiUrl}/templates/${user?.userId}`, {
+        const response = await fetch(`${apiUrl}/templates/user/${user?.userId}`, {
             method: "GET",
             headers: {
                 Authorization: `Bearer ${user?.token}`,
@@ -31,7 +31,7 @@ const ApiTemplates = () => {
 
     const createTemplate = async (templateData) => {
         try {
-            
+
             const response = await fetch(`${apiUrl}/templates`, {
                 method: "POST",
                 headers: {
@@ -61,7 +61,7 @@ const ApiTemplates = () => {
         }
     }
 
-    const deleteTemplate = async (templateData) =>{
+    const deleteTemplate = async (templateData) => {
 
         const response = await fetch(`${apiUrl}/templates/${templateData}`, {
             method: "DELETE",
@@ -76,38 +76,59 @@ const ApiTemplates = () => {
         }
 
         if (!response.ok) {
-            throw new Error("Erro ao deletar template"+templateData);
+            throw new Error("Erro ao deletar template" + templateData);
         }
 
         return response.json(); // Opcional, pode ser ignorado se a resposta não contiver dados.
-    
+
+    }
+    const getTemplate = async (id) => {
+
+        const response = await fetch(`${apiUrl}/templates/${id}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${user?.token}`,
+            },
+        });
+
+        if (response.status === 403) {
+            // Redireciona para a tela de login
+            navigate('/login');
+        }
+
+        if (!response.ok) {
+            throw new Error("Erro ao consultar template: " + id);
+        }
+
+        return response.json(); // Opcional, pode ser ignorado se a resposta não contiver dados.
+
     }
 
-    const updateTemplate  = async (id,templateData) => {
+    const updateTemplate = async (id, templateData) => {
         console.log(templateData)
         const response = await fetch(`${apiUrl}/templates/${id}`, {
             method: "PUT",
             headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${user?.token}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
             },
             body: JSON.stringify(templateData),
-          });
+        });
 
-          if (response.status === 403) {
+        if (response.status === 403) {
             // Redireciona para a tela de login
             navigate('/login');
         }
-        
-          if (!response.ok) {
+
+        if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Erro ao atualizar template");
-          }
-        
-          return await response.json();
+        }
+
+        return await response.json();
     }
 
-    const downloadTemplate = async (templateNome) =>{
+    const downloadTemplate = async (templateNome) => {
         const response = await fetch(`${apiUrl}/templates/${user?.userId}/download?arquivo=${templateNome}`, {
             method: "GET",
             headers: {
@@ -130,7 +151,7 @@ const ApiTemplates = () => {
 
     }
 
-    const downloadFilledFile = async (templateId,pessoaId) =>{
+    const downloadFilledFile = async (templateId, pessoaId) => {
         const response = await fetch(`${apiUrl}//fill-docx-template/${templateId}/pessoa/${pessoaId}`, {
             ///fill-docx-template/:idtemplate/pessoa/:idpessoa
             method: "GET",
@@ -144,7 +165,7 @@ const ApiTemplates = () => {
             // Redireciona para a tela de login
             navigate('/login');
         }
-        
+
         if (!response.ok) {
             throw new Error("Erro ao fazer download do arquivo completado");
         }
@@ -156,36 +177,87 @@ const ApiTemplates = () => {
     }
 
     const generateBatchDocuments = async (payload) => {
-    const response = await fetch(`${apiUrl}/fill-docx-template/batch`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify(payload),
-    });
+        const response = await fetch(`${apiUrl}/fill-docx-template/batch`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
+            },
+            body: JSON.stringify(payload),
+        });
 
-    if (response.status === 403) {
-        navigate('/login');
+        if (response.status === 403) {
+            navigate('/login');
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erro ao gerar documentos em lote");
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return arrayBuffer;
+    };
+
+    const downloadFilledFileEPI = async (templateId, pessoaId) => {
+        const response = await fetch(`${apiUrl}//fill-docx-template/${templateId}/pessoa/${pessoaId}`, {
+            ///fill-docx-template/:idtemplate/pessoa/:idpessoa
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${user?.token}`,
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+
+        if (response.status === 403) {
+            // Redireciona para a tela de login
+            navigate('/login');
+        }
+
+        if (!response.ok) {
+            throw new Error("Erro ao fazer download do arquivo completado");
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return arrayBuffer;
+
+
     }
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Erro ao gerar documentos em lote");
-    }
+    const generateBatchDocumentsEPI = async (payload) => {
+        const response = await fetch(`${apiUrl}/fill-docx-template/batch/epi`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${user?.token}`,
+            },
+            body: JSON.stringify(payload),
+        });
 
-    const arrayBuffer = await response.arrayBuffer();
-    return arrayBuffer;
-};
+        if (response.status === 403) {
+            navigate('/login');
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erro ao gerar documentos em lote");
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return arrayBuffer;
+    };
 
     return {
         getTemplates,
+        getTemplate,
         createTemplate,
         deleteTemplate,
         updateTemplate,
         downloadTemplate,
         downloadFilledFile,
-        generateBatchDocuments
+        generateBatchDocuments,
+        generateBatchDocumentsEPI
+        
     };
 };
 

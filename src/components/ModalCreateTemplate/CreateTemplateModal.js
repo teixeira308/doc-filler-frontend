@@ -7,6 +7,7 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
   const [formData, setFormData] = useState({
     file: null,
     descricao: "",
+    tipoTemplate: "",
     nome: ""
   });
 
@@ -22,6 +23,7 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
     setFormData({
       file: null,
       descricao: "",
+      tipoTemplate: "",
       nome: ""
     });
   };
@@ -38,6 +40,7 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
       formDataToSend.append("file", formData.file);
       formDataToSend.append("descricao", formData.descricao);
       formDataToSend.append("nome", formData.nome);
+      formDataToSend.append("tipoTemplate", formData.tipoTemplate);
       await createTemplate(formDataToSend);
       onCreate();
       handleClose();
@@ -67,8 +70,8 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
                 required
               />
             </C.FormColumn>
-            </C.FormRow>
-            <C.FormRow>
+          </C.FormRow>
+          <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="descricao">Nome ao gerar</C.Label>
               <C.Input
@@ -92,6 +95,22 @@ const CreateTemplateModal = ({ isOpen, onClose, onCreate }) => {
                 onChange={handleChange}
                 required
               />
+            </C.FormColumn>
+          </C.FormRow>
+          <C.FormRow>
+            <C.FormColumn>
+              <C.Label htmlFor="tipoTemplate">Tipo</C.Label>
+              <C.Select
+                name="tipoTemplate"
+                id="tipoTemplate"
+                value={formData.tipoTemplate}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecione uma opção</option>
+                <option value="Pessoas">Pessoas</option>
+                <option value="EPIs">EPIs</option>
+              </C.Select>
             </C.FormColumn>
           </C.FormRow>
           <C.Button type="submit">Salvar</C.Button>

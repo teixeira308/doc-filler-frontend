@@ -89,11 +89,33 @@ const useEpiApi = () => {
     return await response.json(); // Caso haja resposta com mensagem
   };
 
+
+const importExcelEPI = async (formData) => {
+  const response = await fetch(`${apiUrl}/epi/import`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${user?.token}`, // OK deixar o token
+      // NÃO definir 'Content-Type' aqui! O fetch lida com isso automaticamente.
+    },
+    body: formData,  // Corpo da requisição contém o FormData com o arquivo e o grupoId
+  });
+
+  if (!response.ok) {
+    // Se a resposta não for bem-sucedida, lança erro
+    const error = await response.json();
+    throw new Error(error.message || "Erro ao importar arquivo.");
+  }
+
+  // Se a requisição for bem-sucedida, retorna o JSON da resposta
+  return await response.json();
+};
+
   return {
     getEpis,
     createEpi,
     updateEpi,
-    deleteEpi
+    deleteEpi,
+    importExcelEPI
   };
 };
 

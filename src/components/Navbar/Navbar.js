@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import * as C from "./styles";
@@ -11,31 +11,46 @@ import logo from "../../assets/logo.png";
 const Navbar = () => {
   const { signout } = useAuth();
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1348);
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1348);
+
+  // Atualiza se for mobile ou desktop ao redimensionar
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 1348;
+      setIsMobile(mobile);
+      setIsCollapsed(mobile); // atualiza colapso se mudou tipo de tela
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleNavigate = (path) => {
     navigate(path);
-    setIsCollapsed(true); // Fecha sidebar no mobile
+    if (isMobile) setIsCollapsed(true);
   };
 
   const handleLogout = () => {
     signout();
     navigate("/");
+    if (isMobile) setIsCollapsed(true);
   };
 
   return (
     <>
-      <C.ToggleButton onClick={() => setIsCollapsed(false)}>
-        <FaBars />
-      </C.ToggleButton>
+      {isMobile && (
+        <C.ToggleButton onClick={() => setIsCollapsed(false)}>
+          <FaBars />
+        </C.ToggleButton>
+      )}
 
-      <C.Overlay collapsed={isCollapsed} onClick={() => setIsCollapsed(true)} />
+      <C.Overlay collapsed={isCollapsed} onClick={() => isMobile && setIsCollapsed(true)} />
 
       <C.Sidebar collapsed={isCollapsed}>
-        <C.LogoSection onClick={() => setIsCollapsed(!isCollapsed)}>
+        <C.LogoSection onClick={() => isMobile && setIsCollapsed(!isCollapsed)}>
           <C.LogoImage src={logo} alt="Logo" />
           {!isCollapsed && <span>Doc Filler</span>}
-          <FaBars />
         </C.LogoSection>
 
         <C.NavLink onClick={() => handleNavigate("/home")}>

@@ -11,6 +11,10 @@ import Suporte from "../pages/Suporte";
 import Tutorial from "../pages/Tutorial";
 import Grupo from "../pages/Grupo";
 import Epi from "../pages/Epi"
+import CriarPessoaPage from '../pages/CriarPessoa';
+import EditarPessoaPage from '../pages/EditarPessoa';
+import DetalhePessoaPage from '../pages/DetalhePessoa';
+import GerarDocumentoMassivo from '../pages/GerarDocumentoMassivo';
 
 
 const Private = ({ Item }) => {
@@ -37,6 +41,10 @@ const RoutesApp = () => {
           <Route exact path="/tutorial" element={<Private Item={Tutorial} />} />
           <Route exact path="/grupo" element={<Private Item={Grupo} />} />
           <Route exact path="/epi" element={<Private Item={Epi} />} />
+          <Route path="/pessoas/novo" element={<CriarPessoaPage />} />
+          <Route path="/pessoas/editar/:idPessoa" element={<EditarPessoaPage />} />
+          <Route path="/pessoas/detalhes/:idPessoa" element={<DetalhePessoaPage />} />
+          <Route path="/template/gerar/:idTemplate" element={<GerarDocumentoMassivo />} />
           <Route path="/" element={<Signin />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route path="*" element={<Signin />} />
