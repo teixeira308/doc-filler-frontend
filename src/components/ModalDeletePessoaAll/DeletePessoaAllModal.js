@@ -12,7 +12,9 @@ const DeletePessoaModalAll = ({ isOpen, onClose }) => {
   const handleDelete = async () => {
     try {
       await deleteAllPessoa();
+      setConfirmationText('')
       onClose();
+
     } catch (error) {
       console.error("Erro ao deletar todas as pessoas:", error);
     }
