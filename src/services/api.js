@@ -146,6 +146,25 @@ const getPessoa = async (id) => {
     return response.json(); // Opcional, pode ser ignorado se a resposta não contiver dados.
   };
 
+  const deleteAllPessoa = async () => {
+    const response = await fetch(`${apiUrl}/pessoas/all`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${user?.token}`,
+      },
+    });
+
+    if (response.status === 403) {
+      // Redireciona para a tela de login
+      navigate('/login');
+  }
+
+    if (!response.ok) {
+      throw new Error("Erro ao deletar pessoa");
+    }
+
+    return response.json(); // Opcional, pode ser ignorado se a resposta não contiver dados.
+  };
 
   return {
     getPessoas,
@@ -153,7 +172,8 @@ const getPessoa = async (id) => {
     createPessoa,
     deletePessoa,
     updatePessoa,
-    importExcelPessoas
+    importExcelPessoas,
+    deleteAllPessoa
   };
 };
 

@@ -10,6 +10,7 @@ import DetalhesPessoaModal from "../../components/ModalDetalhesPessoa/DetalhesPe
 import GerarDocumentoPessoaModal from "../../components/ModalGerarDocumentoPessoa/GerarDocumentoPessoaModal";
 import { BsPencil, BsTrash3, BsZoomIn, BsCardChecklist, BsPlusCircle, BsFillCaretLeftFill, BsFillCaretRightFill, BsUpload } from "react-icons/bs";
 import ImportarPessoaModal from "../../components/ModalImportarPessoa/ImportarPessoaModal";
+import DeletePessoaModalAll from "../../components/ModalDeletePessoaAll/DeletePessoaAllModal";
 
 const Pessoas = () => {
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const Pessoas = () => {
   const [isImportarPessoaModalOpen, setIsImportarPessoaModalOpen] = useState(false);
   const [isGenerateFileModalOpen, setIsGenerateFileModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteAllModalOpen, setIsDeleteAllModalOpen] = useState(false);
   const [isViewDetailsModalOpen, setIsViewDetailsModalOpen] = useState(false);
   const [selectedPessoaId, setSelectedPessoaId] = useState(null);
   const [selectedPessoa, setSelectedPessoa] = useState(null);
@@ -73,6 +75,15 @@ const Pessoas = () => {
   const handleImportarPessoaButtonClick = () => {
     setIsImportarPessoaModalOpen(true);
   };
+
+  const handleDeleteAllButtonClick = () =>{
+    setIsDeleteAllModalOpen(true);
+  }
+  const handleDeleteAllModalClose = async () =>{
+    setIsDeleteAllModalOpen(false);
+    const data = await getPessoas();
+    setPessoas(data.data);
+  }
 
   const handleNewPessoaCreated = async () => {
     const data = await getPessoas();
@@ -173,6 +184,10 @@ const Pessoas = () => {
         <C.ButtonImport onClick={handleImportarPessoaButtonClick}>
           <BsUpload /> Importar Excel(.xlsx)
         </C.ButtonImport>
+
+        <C.ButtonDelete onClick={handleDeleteAllButtonClick}>
+          Deletar tudo
+        </C.ButtonDelete>
       </C.ButtonGroup>
 
 
@@ -254,6 +269,10 @@ const Pessoas = () => {
       <ImportarPessoaModal
         isOpen={isImportarPessoaModalOpen}
         onClose={handleImportarPessoaModalClose}
+      />
+      <DeletePessoaModalAll
+        isOpen={isDeleteAllModalOpen}
+        onClose={handleDeleteAllModalClose}
       />
     </C.Container>
   );

@@ -59,7 +59,30 @@ export const Button = styled.button`
   }
 `;
 
+export const ButtonDelete = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
 
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: #45a049;
+  }
+`;
 
 export const ButtonImport = styled(Button)`
   background-color: #007bff;
