@@ -147,7 +147,7 @@ const getPessoa = async (id) => {
   };
 
   const deleteAllPessoa = async () => {
-    const response = await fetch(`${apiUrl}/pessoas/all`, {
+    const response = await fetch(`${apiUrl}/pessoas/delete-all`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${user?.token}`,
@@ -160,7 +160,7 @@ const getPessoa = async (id) => {
   }
 
     if (!response.ok) {
-      throw new Error("Erro ao deletar pessoa");
+      throw new Error("Erro ao deletar todas as pessoas ");
     }
 
     return response.json(); // Opcional, pode ser ignorado se a resposta não contiver dados.
