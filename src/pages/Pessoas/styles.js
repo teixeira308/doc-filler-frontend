@@ -219,7 +219,13 @@ export const SearchContainer = styled.div`
 `;
 
 export const SearchSelect = styled.select`
-  padding: 8px;
+  height: 40px; // mesma altura do input
+  padding: 0 8px;
   border-radius: 4px;
   border: 1px solid #ccc;
+  font-size: 16px;
+  line-height: 1.5;
+  display: inline-flex;
+  align-items: center;
+  background-color: white;
 `;
