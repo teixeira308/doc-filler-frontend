@@ -101,7 +101,7 @@ export const Label = styled.span`
 
 export const SearchInput = styled.input`
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   padding: 10px 14px;
   margin-bottom: 20px;
   font-size: 16px;
