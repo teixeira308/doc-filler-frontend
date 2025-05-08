@@ -2,16 +2,16 @@
 
 import React, { useState } from "react";
 import * as C from "./styles";
-import useApi from "../../services/api";
+import  useApi  from "../../services/api"; 
 
-const DeletePessoaModalAll = ({ isOpen, onClose, onDelete }) => {
+
+const DeletePessoaModalAll = ({ isOpen, onClose }) => {
   const { deleteAllPessoa } = useApi();
   const [confirmationText, setConfirmationText] = useState("");
 
   const handleDelete = async () => {
     try {
       await deleteAllPessoa();
-      onDelete();
       onClose();
     } catch (error) {
       console.error("Erro ao deletar todas as pessoas:", error);

@@ -273,6 +273,7 @@ const Pessoas = () => {
       <DeletePessoaModalAll
         isOpen={isDeleteAllModalOpen}
         onClose={handleDeleteAllModalClose}
+       
       />
     </C.Container>
   );
