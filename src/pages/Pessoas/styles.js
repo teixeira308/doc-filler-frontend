@@ -101,7 +101,7 @@ export const Label = styled.span`
 
 export const SearchInput = styled.input`
   width: 100%;
-  max-width: 800px;
+  max-width: 1800px;
   padding: 10px 14px;
   margin-bottom: 20px;
   font-size: 16px;
@@ -216,6 +216,7 @@ export const SearchContainer = styled.div`
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  width: 50%;
 `;
 
 export const SearchSelect = styled.select`

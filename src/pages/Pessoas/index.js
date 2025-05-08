@@ -172,6 +172,7 @@ const Pessoas = () => {
       <Navbar />
       <C.Title>Pessoas</C.Title>
       <C.SearchContainer>
+       
   <C.SearchSelect
     value={searchField}
     onChange={(e) => setSearchField(e.target.value)}
