@@ -32,6 +32,8 @@ const Pessoas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  //search by field
+  const [searchField, setSearchField] = useState("nome");
 
 
   //Use effect
@@ -51,13 +53,14 @@ const Pessoas = () => {
 
 
   useEffect(() => {
-    // Filtra a lista de pessoas com base na consulta de busca
     setFilteredPessoas(
       pessoas.filter((pessoa) =>
-        pessoa.nome.toLowerCase().includes(searchQuery.toLowerCase())
+        String(pessoa[searchField] || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
       )
     );
-  }, [searchQuery, pessoas]);
+  }, [searchQuery, searchField, pessoas]);
 
   //Handle actions
 
@@ -168,12 +171,24 @@ const Pessoas = () => {
     <C.Container>
       <Navbar />
       <C.Title>Pessoas</C.Title>
-      <C.SearchInput
-        type="text"
-        placeholder="Pesquisar por nome"
-        value={searchQuery}
-        onChange={handleSearchChange}
-      />
+      <C.SearchContainer>
+  <C.SearchSelect
+    value={searchField}
+    onChange={(e) => setSearchField(e.target.value)}
+  >
+    <option value="nome">Nome</option>
+    <option value="cpf">CPF</option>
+    <option value="grupo_nome">Grupo</option>
+  </C.SearchSelect>
+
+  <C.SearchInput
+    type="text"
+    placeholder={`Pesquisar por ${searchField}`}
+    value={searchQuery}
+    onChange={handleSearchChange}
+  />
+</C.SearchContainer>
+
       <C.ButtonGroup> {/* Novo container flex */}
         <C.Button onClick={handleCreateButtonClick}>
           <BsPlusCircle /> Pessoa

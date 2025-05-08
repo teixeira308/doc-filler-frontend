@@ -211,3 +211,15 @@ export const TableWrapper = styled.div`
     min-width: 600px; // ou o que for necessário
   }
 `;
+
+export const SearchContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+`;
+
+export const SearchSelect = styled.select`
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+`;
