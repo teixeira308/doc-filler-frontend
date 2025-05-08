@@ -80,7 +80,7 @@ export const ButtonDelete = styled.button`
   }
 
   &:hover {
-    background-color: #45a049;
+    background-color:rgb(227, 56, 56);
   }
 `;
 
