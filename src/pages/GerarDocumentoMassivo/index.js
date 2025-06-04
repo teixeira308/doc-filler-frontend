@@ -39,7 +39,7 @@ const GerarDocumentoMassivoModal = () => {
       try {
         const data = await getTemplate(idTemplate);
         setTemplate(data);
-  
+
         if (data.tipoTemplate === "EPIs") {
           const epiData = await getEpis();
           setEpis(epiData.data);
@@ -48,12 +48,12 @@ const GerarDocumentoMassivoModal = () => {
         console.error("Erro ao carregar template ou EPIs: ", error);
       }
     };
-  
+
     fetchTemplateAndEPIs();
   }, [idTemplate]);
 
 
- 
+
   useEffect(() => {
     if (modoSelecao === "grupo") {
       const fetchGrupos = async () => {
@@ -87,12 +87,21 @@ const GerarDocumentoMassivoModal = () => {
 
   const toggleEPISelection = (epi) => {
     setSelectedEPIs((prev) => {
-      const exists = prev.some(g => g.id === epi.id);
-      if (exists) return prev.filter(g => g.id !== epi.id);
-      if (prev.length >= 10) return prev; // Limita a 10 grupos
-      return [...prev, epi];
+      const exists = prev.some(e => e.id === epi.id);
+      if (exists) return prev.filter(e => e.id !== epi.id);
+      if (prev.length >= 10) return prev;
+      return [...prev, { ...epi, quantidade: 1 }];
     });
   };
+
+  const handleQuantidadeChange = (id, value) => {
+    setSelectedEPIs((prev) =>
+      prev.map((epi) =>
+        epi.id === id ? { ...epi, quantidade: Number(value) } : epi
+      )
+    );
+  };
+
 
   useEffect(() => {
     if (modoSelecao === "pessoa") {
@@ -123,63 +132,65 @@ const GerarDocumentoMassivoModal = () => {
     setSelectedPessoas((prev) => prev.filter(p => p.id !== id));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setSuccess(false);
-    setError(null);
-  
-    try {
-      let dataToSend = { templateId: template.id };
-  
-      if (modoSelecao === "pessoa") {
-        if (selectedPessoas.length === 0) {
-          alert("Selecione pelo menos uma pessoa!");
-          setIsLoading(false);
-          return;
-        }
-        dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
-      } else if (modoSelecao === "grupo") {
-        if (selectedGrupos.length === 0) {
-          alert("Selecione pelo menos um grupo!");
-          setIsLoading(false);
-          return;
-        }
-        dataToSend.grupoIds = selectedGrupos.map(g => g.id);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setSuccess(false);
+  setError(null);
+
+  try {
+    let dataToSend = { templateId: template.id };
+
+    if (modoSelecao === "pessoa") {
+      if (selectedPessoas.length === 0) {
+        alert("Selecione pelo menos uma pessoa!");
+        setIsLoading(false);
+        return;
       }
-  
-      // Se o template for do tipo EPIs, adiciona os ids dos EPIs
-      if (template.tipoTemplate === "EPIs") {
-        if (selectedEPIs.length === 0) {
-          alert("Selecione pelo menos um EPI!");
-          setIsLoading(false);
-          return;
-        }
-        dataToSend.epiIds = selectedEPIs.map(e => e.id);
+      dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
+    } else if (modoSelecao === "grupo") {
+      if (selectedGrupos.length === 0) {
+        alert("Selecione pelo menos um grupo!");
+        setIsLoading(false);
+        return;
       }
-  
-      console.log(dataToSend);
-  
-      let fileContent;
-      if (template.tipoTemplate === "EPIs") {
-        fileContent = await generateBatchDocumentsEPI(dataToSend);
-      } else {
-        fileContent = await generateBatchDocuments(dataToSend);
-      }
-  
-      const now = new Date();
-      const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
-  
-      generateZipFile(fileContent, "Arquivos-gerados-" + formattedDate);
-  
-    } catch (err) {
-      console.error("Erro ao gerar documentos:", err);
-      setError("Erro ao gerar documentos. Tente novamente.");
-    } finally {
-      setIsLoading(false);
+      dataToSend.grupoIds = selectedGrupos.map(g => g.id);
     }
-  };
-  
+
+    if (template.tipoTemplate === "EPIs") {
+      if (selectedEPIs.length === 0) {
+        alert("Selecione pelo menos um EPI!");
+        setIsLoading(false);
+        return;
+      }
+      dataToSend.epis = selectedEPIs.map(e => ({
+        id: e.id,
+        quantidade: e.quantidade ?? 1,
+      }));
+    }
+
+    console.log(dataToSend);
+
+    let fileContent;
+    if (template.tipoTemplate === "EPIs") {
+      fileContent = await generateBatchDocumentsEPI(dataToSend);
+    } else {
+      fileContent = await generateBatchDocuments(dataToSend);
+    }
+
+    const now = new Date();
+    const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+
+    generateZipFile(fileContent, "Arquivos-gerados-" + formattedDate);
+
+  } catch (err) {
+    console.error("Erro ao gerar documentos:", err);
+    setError("Erro ao gerar documentos. Tente novamente.");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const generateZipFile = (data, fileName) => {
     const blob = new Blob([data], { type: "application/zip" });
@@ -225,8 +236,8 @@ const GerarDocumentoMassivoModal = () => {
 
       <C.FormContainer onSubmit={handleSubmit}>
         <C.Label><strong>Template:</strong> {template.descricao}</C.Label>
-      <br/>
-      <C.Label>Selecione as pessoas: </C.Label>
+        <br />
+        <C.Label>Selecione as pessoas: </C.Label>
         <C.RadioGroup>
           <C.RadioOption>
             <input
@@ -304,7 +315,7 @@ const GerarDocumentoMassivoModal = () => {
           </C.DualColumnWrapper>
         )}
 
-       
+
 
         {modoSelecao === "pessoa" && (
           <C.DualColumnWrapper>
@@ -312,7 +323,8 @@ const GerarDocumentoMassivoModal = () => {
               <C.PersonListTitle>Lista de Pessoas</C.PersonListTitle>
               {pessoas.map((pessoa) => (
                 <C.PersonItem key={pessoa.id}>
-                  <label>
+                  <C.ListItemCheckbox>
+
                     <input
                       type="checkbox"
                       checked={selectedPessoas.some(p => p.id === pessoa.id)}
@@ -323,7 +335,8 @@ const GerarDocumentoMassivoModal = () => {
                       }
                     />
                     {pessoa.nome}
-                  </label>
+
+                  </C.ListItemCheckbox>
                 </C.PersonItem>
               ))}
               <C.Pagination>
@@ -346,48 +359,70 @@ const GerarDocumentoMassivoModal = () => {
           </C.DualColumnWrapper>
         )}
 
-{template.tipoTemplate === "EPIs" && (
-  <>
-  <br/>
-   <C.Label>Selecione os EPIs: </C.Label>
-          <C.DualColumnWrapper>
-            <C.Column>
-              <C.PersonListTitle>Lista de EPI</C.PersonListTitle>
-              {epis.map((epi) => (
-                <C.PersonItem key={epi.id}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedEPIs.some(g => g.id === epi.id)}
-                      onChange={() => toggleEPISelection(epi)}
-                      disabled={
-                        selectedGrupos.length >= 10 &&
-                        !selectedGrupos.some(g => g.id === epi.id)
-                      }
-                    />
-                    {epi.nome}
-                  </label>
-                </C.PersonItem>
-              ))}
+        {template.tipoTemplate === "EPIs" && (
+          <>
+            <br />
+            <C.Label>Selecione os EPIs: </C.Label>
+            <C.DualColumnWrapper>
+              <C.Column>
+                <C.PersonListTitle>Lista de EPI</C.PersonListTitle>
+                {epis.map((epi) => (
+                  <C.PersonItem key={epi.id}>
+                    <C.ListItemCheckbox>
+                      <input
+                        type="checkbox"
+                        checked={selectedEPIs.some(g => g.id === epi.id)}
+                        onChange={() => toggleEPISelection(epi)}
+                        disabled={
+                          selectedGrupos.length >= 10 &&
+                          !selectedGrupos.some(g => g.id === epi.id)
+                        }
+                      />
+                      {epi.nome}
 
-              <C.Pagination>
-                <C.ButtonPagination type="button" disabled={page === 1} onClick={(e) => prevPage(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
-                <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
-                <C.ButtonPagination type="button" disabled={page === totalPages} onClick={(e) => nextPage(e)}><BsFillCaretRightFill /></C.ButtonPagination>
-              </C.Pagination>
-            </C.Column>
+                    </C.ListItemCheckbox>
+                    CA:
+                    {epi.ca}
+                  </C.PersonItem>
+                ))}
 
-            <C.Column>
-              <C.PersonListTitle>EPIs Selecionados</C.PersonListTitle>
-              <C.Counter>{selectedEPIs.length} / 10</C.Counter>
-              {selectedEPIs.map((epi) => (
-                <C.PersonItem key={epi.id}>
-                  {epi.nome}
-                  <button onClick={() => toggleEPISelection(epi)}>❌</button>
-                </C.PersonItem>
-              ))}
-            </C.Column>
-          </C.DualColumnWrapper>
+                <C.Pagination>
+                  <C.ButtonPagination type="button" disabled={page === 1} onClick={(e) => prevPage(e)}>
+                    <BsFillCaretLeftFill />
+                  </C.ButtonPagination>
+                  <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={page === totalPages} onClick={(e) => nextPage(e)}>
+                    <BsFillCaretRightFill />
+                  </C.ButtonPagination>
+                </C.Pagination>
+              </C.Column>
+
+
+              <C.Column>
+                <C.PersonListTitle>EPIs Selecionados</C.PersonListTitle>
+                <C.Counter>{selectedEPIs.length} / 10</C.Counter>
+                {selectedEPIs.map((epi) => (
+                  <C.PersonItem key={epi.id}>
+                    <span>{epi.nome}</span>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
+                      <input
+                        id={`qtd-${epi.id}`}
+                        type="number"
+                        min={1}
+                        value={epi.quantidade}
+                        onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
+                        style={{ width: "60px" }}
+                      />
+                    </div>
+
+                    <button onClick={() => toggleEPISelection(epi)}>❌</button>
+                  </C.PersonItem>
+                ))}
+
+              </C.Column>
+            </C.DualColumnWrapper>
           </>
         )}
 

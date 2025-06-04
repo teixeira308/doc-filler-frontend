@@ -160,16 +160,17 @@ export const Checkbox = styled.input.attrs({ type: "checkbox" })`
 export const ListItemCheckbox = styled.label`
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px;
+  gap: 16px; // ou até 20px se quiser mais respiro
+  
   border-bottom: 1px solid #ddd;
   font-size: 14px;
   cursor: pointer;
-
+ font-size: 1rem;
   &:last-child {
     border-bottom: none;
   }
 `;
+
 
 export const Counter = styled.p`
   font-size: 0.9rem;
@@ -222,41 +223,6 @@ export const PersonListTitle = styled.h4`
   font-weight: bold;
   color: #333;
 `;
-
-export const PersonItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
-
-  label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-  }
-
-  button {
-    background: none;
-    border: none;
-    color: red;
-    font-size: 1rem;
-    cursor: pointer;
-    padding: 0 5px;
-
-    &:hover {
-      color: darkred;
-    }
-  }
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
- 
-
-
 
 // Container geral da página
 export const PageContainer = styled.div`
@@ -403,5 +369,44 @@ width: 100%;
 
   &:hover {
     background: #e0e0e0;
+  }
+`;
+
+export const PersonItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* alinhamento ao início */
+  gap: 16px; /* espaço entre nome, input e botão */
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+font-size: 14px;
+  span {
+    flex: 1; /* o nome do EPI ocupa o espaço restante */
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  input {
+    padding: 4px;
+    font-size: 14px;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0 5px;
+
+    &:hover {
+      color: darkred;
+    }
+  }
+
+  &:last-child {
+    border-bottom: none;
   }
 `;
