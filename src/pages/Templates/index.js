@@ -4,14 +4,14 @@ import * as C from "./styles";
 import Navbar from "../../components/Navbar/Navbar";
 import useApi from "../../services/apiTemplates";
 import CreateTemplateModal from "../../components/ModalCreateTemplate/CreateTemplateModal";
-import DeleteTemplateModal from "../../components/ModalDeleteTemplate/DeleteTemplateModal"; 
-import EditarTemplateModal from "../../components/ModalEditarTemplate/EditarTemplateModal"; 
+import DeleteTemplateModal from "../../components/ModalDeleteTemplate/DeleteTemplateModal";
+import EditarTemplateModal from "../../components/ModalEditarTemplate/EditarTemplateModal";
 import GerarDocumentoMassivoModal from "../../components/ModalGerarDocumentoMassivo/GerarDocumentoMassivoModal";
-import { BsPencil,BsTrash3, BsCloudDownload, BsCardChecklist,BsPlusCircle } from "react-icons/bs";
+import { BsPencil, BsTrash3, BsCloudDownload, BsCardChecklist, BsPlusCircle } from "react-icons/bs";
 
 
-const Templates = ()  => {
-    const navigate = useNavigate();
+const Templates = () => {
+  const navigate = useNavigate();
   const [templates, setTemplates] = useState([]);
   const [filteredTemplates, setFilteredTemplates] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
@@ -23,7 +23,7 @@ const Templates = ()  => {
   const [selectedTemplateId, setSelectedTemplateId] = useState(null);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const { getTemplates, deleteTemplate, downloadTemplate } = useApi();
-  
+
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -41,7 +41,7 @@ const Templates = ()  => {
     // Filtra a lista de templates com base na consulta de busca
     setFilteredTemplates(
       templates.filter((template) =>
-        template.descricao.toLowerCase().includes(searchQuery.toLowerCase()) 
+        template.descricao.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
   }, [searchQuery, templates]);
@@ -90,17 +90,17 @@ const Templates = ()  => {
     setIsEditModalOpen(true);
   };
 
-  const openGerarDocumentoMassivoModal = (template) =>{
+  const openGerarDocumentoMassivoModal = (template) => {
     setSelectedTemplate(template);
     setIsGerarDocumentoMassivoModalOpen(true);
   }
-  
+
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
     setSelectedTemplate(null);
   };
 
-  const handleGerarDocumentoMassivoModalClose = () =>{
+  const handleGerarDocumentoMassivoModalClose = () => {
     setIsGerarDocumentoMassivoModalOpen(false);
     setSelectedTemplate(null)
   }
@@ -123,47 +123,47 @@ const Templates = ()  => {
 
   const handleDownloadTemplate = async (template) => {
     try {
-        const response = await downloadTemplate(template.nome);
-        const fileContent = response;
-        //console.log(fileContent)
-        generateAndDownloadDocx(fileContent,template.nome);
+      const response = await downloadTemplate(template.nome);
+      const fileContent = response;
+      //console.log(fileContent)
+      generateAndDownloadDocx(fileContent, template.nome);
     } catch (error) {
-        console.error("Erro ao gerar arquivo completado:", error);
+      console.error("Erro ao gerar arquivo completado:", error);
     }
-};
+  };
 
-const generateAndDownloadDocx = (data, fileName) => {
-  try {
-    // Converta os dados em um Blob
-    const blob = new Blob([data], {
-      type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
-    //console.log(blob);
-    // Crie um URL para o Blob
-    const url = URL.createObjectURL(blob);
+  const generateAndDownloadDocx = (data, fileName) => {
+    try {
+      // Converta os dados em um Blob
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+      //console.log(blob);
+      // Crie um URL para o Blob
+      const url = URL.createObjectURL(blob);
 
-    // Crie um link ancorado para fazer o download
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.click();
-    // Libere o URL criado
-    URL.revokeObjectURL(url);
-    //console.log("Document created and downloaded successfully");
-  } catch (error) {
-    console.error("Error generating or downloading document:", error);
-  }
-};
+      // Crie um link ancorado para fazer o download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      // Libere o URL criado
+      URL.revokeObjectURL(url);
+      //console.log("Document created and downloaded successfully");
+    } catch (error) {
+      console.error("Error generating or downloading document:", error);
+    }
+  };
 
   return (
     <C.Container>
       <Navbar />
       <C.Title>Templates</C.Title>
-      <C.SearchInput 
-        type="text" 
-        placeholder="Pesquisar por descrição" 
-        value={searchQuery} 
-        onChange={handleSearchChange} 
+      <C.SearchInput
+        type="text"
+        placeholder="Pesquisar por descrição"
+        value={searchQuery}
+        onChange={handleSearchChange}
       />
       <C.Button onClick={handleCreateButtonClick}><BsPlusCircle /> Template</C.Button>
       <C.Table>
@@ -186,11 +186,13 @@ const generateAndDownloadDocx = (data, fileName) => {
                 {new Date(template.createdAt).toLocaleDateString()}
               </C.TableData>
               <C.TableData>
-                <C.ActionButton onClick={() => openEditModal(template)}><BsPencil /> Editar</C.ActionButton>
-               {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
-                <C.DeleteButton onClick={() => openDeleteModal(template.id)}><BsTrash3 /> Excluir</C.DeleteButton>
-                <C.DetailsButton onClick={() => handleDownloadTemplate(template)}><BsCloudDownload /> Baixar Template</C.DetailsButton>
-                <C.ActionButton onClick={() => navigate(`/template/gerar/${template.id}`)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
+                <C.ActionsWrapper>
+                  <C.ActionButton onClick={() => openEditModal(template)}><BsPencil /> Editar</C.ActionButton>
+                  {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
+                  <C.DeleteButton onClick={() => openDeleteModal(template.id)}><BsTrash3 /> Excluir</C.DeleteButton>
+                  <C.DetailsButton onClick={() => handleDownloadTemplate(template)}><BsCloudDownload /> Baixar Template</C.DetailsButton>
+                  <C.ActionButton onClick={() => navigate(`/template/gerar/${template.id}`)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
+                </C.ActionsWrapper>
               </C.TableData>
             </C.TableRow>
           ))}
@@ -201,23 +203,23 @@ const generateAndDownloadDocx = (data, fileName) => {
         onClose={handleModalClose}
         onCreate={handleNewTemplateCreated}
       />
-     <DeleteTemplateModal
+      <DeleteTemplateModal
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteModalClose}
         onDelete={handleDelete}
       />
-       <EditarTemplateModal
+      <EditarTemplateModal
         isOpen={isEditModalOpen}
         onClose={handleEditModalClose}
         template={selectedTemplate}
         onEdit={handleTemplateUpdated}
       />
-       <GerarDocumentoMassivoModal
+      <GerarDocumentoMassivoModal
         isOpen={isGerarDocumentoMassivoModalOpen}
         onClose={handleGerarDocumentoMassivoModalClose}
         template={selectedTemplate}
       />
-     {/*  <DetalhesTemplateModal
+      {/*  <DetalhesTemplateModal
         isOpen={isViewDetailsModalOpen}
         onClose={handleViewDetailsModalClose}
         pessoa={selectedTemplate}

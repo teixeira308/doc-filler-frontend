@@ -148,3 +148,10 @@ export const PageButton = styled.button`
     background-color: #e0e0e0;
   }
 `;
+
+export const ActionsWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;  // permite quebra de linha
+  gap: 8px 12px;    // 8px vertical, 12px horizontal (ajuste conforme desejar)
+  align-items: center;
+`;
