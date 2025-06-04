@@ -21,10 +21,15 @@ const GerarDocumentoMassivoModal = () => {
   const [selectedEPIs, setSelectedEPIs] = useState([]);
   const [template, setTemplate] = useState([]);
   const { idTemplate } = useParams();
-  const [page, setPage] = useState(1);
+  const [pagePessoas, setPagePessoas] = useState(1);
+  const [pageGrupos, setPageGrupos] = useState(1);
+  const [pageEpi, setPageEpi] = useState(1);
   const pageSize = 100;
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPagesEpi, setTotalPagesEpi] = useState(1);
+  const [totalPagesPessoas, setTotalPagesPessoas] = useState(1);
+  const [totalPagesGrupos, setTotalPagesGrupos] = useState(1);
   const [totalPessoas, setTotalPessoas] = useState(0);
+  const [totalGrupos, setTotalGrupos] = useState(0);
 
 
   const [isLoading, setIsLoading] = useState(false);
@@ -41,16 +46,16 @@ const GerarDocumentoMassivoModal = () => {
         setTemplate(data);
 
         if (data.tipoTemplate === "EPIs") {
-          const epiData = await getEpis();
+          const epiData = await getEpis(pageEpi,pageSize);
           setEpis(epiData.data);
+          setTotalPagesEpi(epiData.totalPages)
         }
       } catch (error) {
         console.error("Erro ao carregar template ou EPIs: ", error);
       }
     };
-
     fetchTemplateAndEPIs();
-  }, [idTemplate]);
+  }, [idTemplate,pageEpi]);
 
 
 
@@ -58,18 +63,34 @@ const GerarDocumentoMassivoModal = () => {
     if (modoSelecao === "grupo") {
       const fetchGrupos = async () => {
         try {
-          const data = await getGruposPessoa(page, pageSize);
+          const data = await getGruposPessoa(pageGrupos, pageSize);
           setGrupos(data.data);
-          setTotalPages(data.totalPages);
-          setTotalPessoas(data.totalCount);
+          setTotalPagesGrupos(data.totalPages);
+          setTotalGrupos(data.totalCount);
         } catch (error) {
           console.error("Erro ao carregar grupos: ", error);
         }
       };
       fetchGrupos();
     }
-  }, [page, modoSelecao]); // Atualiza quando `currentPage` muda
+  }, [pageGrupos, modoSelecao]); // Atualiza quando `currentPage` muda
 
+  
+  useEffect(() => {
+    if (modoSelecao === "pessoa") {
+      const fetchPessoas = async () => {
+        try {
+          const data = await getPessoas(pagePessoas, pageSize);
+          setPessoas(data.data);
+          setTotalPagesPessoas(data.totalPages);
+          setTotalPessoas(data.totalCount);
+        } catch (error) {
+          console.error("Erro ao carregar pessoas:", error);
+        }
+      };
+      fetchPessoas();
+    }
+  }, [pagePessoas, modoSelecao]);
 
   const handleBack = () => {
     navigate(-1); // Volta para a página anterior
@@ -103,21 +124,6 @@ const GerarDocumentoMassivoModal = () => {
   };
 
 
-  useEffect(() => {
-    if (modoSelecao === "pessoa") {
-      const fetchPessoas = async () => {
-        try {
-          const data = await getPessoas(page, pageSize);
-          setPessoas(data.data);
-          setTotalPages(data.totalPages);
-          setTotalPessoas(data.totalCount);
-        } catch (error) {
-          console.error("Erro ao carregar pessoas:", error);
-        }
-      };
-      fetchPessoas();
-    }
-  }, [page, modoSelecao]);
 
   const togglePessoaSelection = (pessoa) => {
     setSelectedPessoas((prev) => {
@@ -132,64 +138,64 @@ const GerarDocumentoMassivoModal = () => {
     setSelectedPessoas((prev) => prev.filter(p => p.id !== id));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setSuccess(false);
-  setError(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setSuccess(false);
+    setError(null);
 
-  try {
-    let dataToSend = { templateId: template.id };
+    try {
+      let dataToSend = { templateId: template.id };
 
-    if (modoSelecao === "pessoa") {
-      if (selectedPessoas.length === 0) {
-        alert("Selecione pelo menos uma pessoa!");
-        setIsLoading(false);
-        return;
+      if (modoSelecao === "pessoa") {
+        if (selectedPessoas.length === 0) {
+          alert("Selecione pelo menos uma pessoa!");
+          setIsLoading(false);
+          return;
+        }
+        dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
+      } else if (modoSelecao === "grupo") {
+        if (selectedGrupos.length === 0) {
+          alert("Selecione pelo menos um grupo!");
+          setIsLoading(false);
+          return;
+        }
+        dataToSend.grupoIds = selectedGrupos.map(g => g.id);
       }
-      dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
-    } else if (modoSelecao === "grupo") {
-      if (selectedGrupos.length === 0) {
-        alert("Selecione pelo menos um grupo!");
-        setIsLoading(false);
-        return;
+
+      if (template.tipoTemplate === "EPIs") {
+        if (selectedEPIs.length === 0) {
+          alert("Selecione pelo menos um EPI!");
+          setIsLoading(false);
+          return;
+        }
+        dataToSend.epis = selectedEPIs.map(e => ({
+          id: e.id,
+          quantidade: e.quantidade ?? 1,
+        }));
       }
-      dataToSend.grupoIds = selectedGrupos.map(g => g.id);
-    }
 
-    if (template.tipoTemplate === "EPIs") {
-      if (selectedEPIs.length === 0) {
-        alert("Selecione pelo menos um EPI!");
-        setIsLoading(false);
-        return;
+      //console.log(dataToSend);
+
+      let fileContent;
+      if (template.tipoTemplate === "EPIs") {
+        fileContent = await generateBatchDocumentsEPI(dataToSend);
+      } else {
+        fileContent = await generateBatchDocuments(dataToSend);
       }
-      dataToSend.epis = selectedEPIs.map(e => ({
-        id: e.id,
-        quantidade: e.quantidade ?? 1,
-      }));
+
+      const now = new Date();
+      const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
+
+      generateZipFile(fileContent, "Arquivos-gerados-" + formattedDate);
+
+    } catch (err) {
+      console.error("Erro ao gerar documentos:", err);
+      setError("Erro ao gerar documentos. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log(dataToSend);
-
-    let fileContent;
-    if (template.tipoTemplate === "EPIs") {
-      fileContent = await generateBatchDocumentsEPI(dataToSend);
-    } else {
-      fileContent = await generateBatchDocuments(dataToSend);
-    }
-
-    const now = new Date();
-    const formattedDate = `${now.getDate().toString().padStart(2, '0')}${(now.getMonth() + 1).toString().padStart(2, '0')}${now.getFullYear()}_${now.getHours().toString().padStart(2, '0')}${now.getMinutes().toString().padStart(2, '0')}`;
-
-    generateZipFile(fileContent, "Arquivos-gerados-" + formattedDate);
-
-  } catch (err) {
-    console.error("Erro ao gerar documentos:", err);
-    setError("Erro ao gerar documentos. Tente novamente.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
 
   const generateZipFile = (data, fileName) => {
@@ -210,13 +216,31 @@ const handleSubmit = async (e) => {
 
 
 
-  const nextPage = (e) => {
+  const nextPagePessoas = (e) => {
     e.stopPropagation();
-    setPage((prev) => Math.min(prev + 1, totalPages))
+    setPagePessoas((prev) => Math.min(prev + 1, totalPagesPessoas))
   };
-  const prevPage = (e) => {
+  const prevPagePessoas = (e) => {
     e.stopPropagation();
-    setPage((prev) => Math.max(prev - 1, 1))
+    setPagePessoas((prev) => Math.max(prev - 1, 1))
+  };
+
+  const nextPageEpi = (e) => {
+    e.stopPropagation();
+    setPageEpi((prev) => Math.min(prev + 1, totalPagesEpi))
+  };
+  const prevPageEpi = (e) => {
+    e.stopPropagation();
+    setPageEpi((prev) => Math.max(prev - 1, 1))
+  };
+
+  const nextPageGrupos = (e) => {
+    e.stopPropagation();
+    setPageGrupos((prev) => Math.min(prev + 1, totalPagesGrupos))
+  };
+  const prevPageGrupos = (e) => {
+    e.stopPropagation();
+    setPageGrupos((prev) => Math.max(prev - 1, 1))
   };
 
 
@@ -280,7 +304,7 @@ const handleSubmit = async (e) => {
               <C.PersonListTitle>Lista de Grupos</C.PersonListTitle>
               {grupos.map((grupo) => (
                 <C.PersonItem key={grupo.id}>
-                  <label>
+                  <C.ListItemCheckbox>
                     <input
                       type="checkbox"
                       checked={selectedGrupos.some(g => g.id === grupo.id)}
@@ -291,14 +315,14 @@ const handleSubmit = async (e) => {
                       }
                     />
                     {grupo.nome}
-                  </label>
+                  </C.ListItemCheckbox>
                 </C.PersonItem>
               ))}
 
               <C.Pagination>
-                <C.ButtonPagination type="button" disabled={page === 1} onClick={(e) => prevPage(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
-                <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
-                <C.ButtonPagination type="button" disabled={page === totalPages} onClick={(e) => nextPage(e)}><BsFillCaretRightFill /></C.ButtonPagination>
+                <C.ButtonPagination type="button" disabled={pageGrupos === 1} onClick={(e) => prevPageGrupos(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
+                <C.PageIndicator>{pageGrupos} de {totalPagesGrupos}</C.PageIndicator>
+                <C.ButtonPagination type="button" disabled={pageGrupos === totalPagesGrupos} onClick={(e) => nextPageGrupos(e)}><BsFillCaretRightFill /></C.ButtonPagination>
               </C.Pagination>
             </C.Column>
 
@@ -340,9 +364,9 @@ const handleSubmit = async (e) => {
                 </C.PersonItem>
               ))}
               <C.Pagination>
-                <C.ButtonPagination type="button" disabled={page === 1} onClick={prevPage}><BsFillCaretLeftFill /></C.ButtonPagination>
-                <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
-                <C.ButtonPagination type="button" disabled={page === totalPages} onClick={nextPage}><BsFillCaretRightFill /></C.ButtonPagination>
+                <C.ButtonPagination type="button" disabled={pagePessoas === 1} onClick={prevPagePessoas}><BsFillCaretLeftFill /></C.ButtonPagination>
+                <C.PageIndicator>{pagePessoas} de {totalPagesPessoas}</C.PageIndicator>
+                <C.ButtonPagination type="button" disabled={pagePessoas === totalPagesPessoas} onClick={nextPagePessoas}><BsFillCaretRightFill /></C.ButtonPagination>
               </C.Pagination>
             </C.Column>
 
@@ -387,11 +411,11 @@ const handleSubmit = async (e) => {
                 ))}
 
                 <C.Pagination>
-                  <C.ButtonPagination type="button" disabled={page === 1} onClick={(e) => prevPage(e)}>
+                  <C.ButtonPagination type="button" disabled={pageEpi === 1} onClick={(e) => prevPageEpi(e)}>
                     <BsFillCaretLeftFill />
                   </C.ButtonPagination>
-                  <C.PageIndicator>{page} de {totalPages}</C.PageIndicator>
-                  <C.ButtonPagination type="button" disabled={page === totalPages} onClick={(e) => nextPage(e)}>
+                  <C.PageIndicator>{pageEpi} de {totalPagesEpi}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={pageEpi === totalPagesEpi} onClick={(e) => nextPageEpi(e)}>
                     <BsFillCaretRightFill />
                   </C.ButtonPagination>
                 </C.Pagination>

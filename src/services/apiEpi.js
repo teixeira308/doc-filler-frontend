@@ -14,8 +14,8 @@ const useEpiApi = () => {
     }
   };
 
-  const getEpis = async () => {
-    const response = await fetch(`${apiUrl}/epi`, {
+  const getEpis = async (page = 1, pageSize = 10)  => {
+    const response = await fetch(`${apiUrl}/epi?page=${page}&pageSize=${pageSize}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
