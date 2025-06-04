@@ -9,12 +9,14 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
+    ca: ""
   });
 
   const resetFormData = () => {
     setFormData({
       nome: "",
       descricao: "",
+      ca: ""
     });
   };
 
@@ -72,6 +74,18 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
                 name="descricao"
                 id="descricao"
                 value={formData.descricao}
+                onChange={handleChange}
+              />
+            </C.FormColumn>
+          </C.FormRow>
+           <C.FormRow>
+            <C.FormColumn>
+              <C.Label htmlFor="descricao">CA</C.Label>
+              <C.Input
+                type="text"
+                name="ca"
+                id="ca"
+                value={formData.ca}
                 onChange={handleChange}
               />
             </C.FormColumn>

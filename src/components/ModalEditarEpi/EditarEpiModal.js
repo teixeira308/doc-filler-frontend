@@ -9,10 +9,11 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
+    ca: ""
   });
 
   const filterFormData = (data) => {
-    const allowedFields = ["nome", "descricao"];
+    const allowedFields = ["nome", "descricao","ca"];
     return Object.fromEntries(
       Object.entries(data).filter(([key]) => allowedFields.includes(key))
     );
@@ -23,6 +24,7 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
       setFormData({
         nome: epi.nome || "",
         descricao: epi.descricao || "",
+        ca: epi.ca || "",
       });
     }
   }, [epi]);
@@ -68,6 +70,8 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
                 required
               />
             </C.FormColumn>
+             </C.FormRow>
+              <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="descricao">Descrição</C.Label>
               <C.Input
@@ -75,6 +79,18 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
                 name="descricao"
                 id="descricao"
                 value={formData.descricao}
+                onChange={handleChange}
+              />
+            </C.FormColumn>
+          </C.FormRow>
+           <C.FormRow>
+            <C.FormColumn>
+              <C.Label htmlFor="descricao">CA</C.Label>
+              <C.Input
+                type="text"
+                name="ca"
+                id="ca"
+                value={formData.ca}
                 onChange={handleChange}
               />
             </C.FormColumn>

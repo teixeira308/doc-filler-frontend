@@ -119,6 +119,7 @@ const Epi = () => {
           <tr>
             <C.TableHeader>Nome</C.TableHeader>
             <C.TableHeader>Descrição</C.TableHeader>
+            <C.TableHeader>CA</C.TableHeader>
             <C.TableHeader>Ações</C.TableHeader>
           </tr>
         </thead>
@@ -127,6 +128,7 @@ const Epi = () => {
             <C.TableRow key={epi.id}>
               <C.TableData>{epi.nome}</C.TableData>
               <C.TableData>{epi.descricao}</C.TableData>
+              <C.TableData>{epi.ca}</C.TableData>
               <C.TableData>
                 <C.ActionButton onClick={() => { setSelectedEpi(epi); setIsEditModalOpen(true); }}>
                   <BsPencil /> Editar
