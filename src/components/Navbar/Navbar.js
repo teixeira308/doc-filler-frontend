@@ -11,13 +11,13 @@ import logo from "../../assets/logo.png";
 const Navbar = () => {
   const { signout } = useAuth();
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1348);
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1348);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1700);
+  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1700);
 
   // Atualiza se for mobile ou desktop ao redimensionar
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 1348;
+      const mobile = window.innerWidth < 1700;
       setIsMobile(mobile);
       setIsCollapsed(mobile); // atualiza colapso se mudou tipo de tela
     };
