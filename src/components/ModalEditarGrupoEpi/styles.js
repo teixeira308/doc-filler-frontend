@@ -1,31 +1,33 @@
-// src/components/Modal/CreatePessoaModalStyles.js
-
 import styled from "styled-components";
 
+// Estilos para o overlay do modal
 export const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 `;
 
+// Estilos para o container do modal
 export const ModalContainer = styled.div`
-  background-color: white;
+  background: #fff;
   padding: 20px;
-  border-radius: 5px;
-  max-width: 800px;
+  border-radius: 8px;
+  max-width: 600px;
   width: 100%;
-  max-height: 80vh; /* altura máxima */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-height: 80vh; /* altura máxima */
   overflow-y: auto;  /* scroll vertical se necessário */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
+// Estilos para o cabeçalho do modal
 export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -33,62 +35,70 @@ export const ModalHeader = styled.div`
   margin-bottom: 20px;
 `;
 
+// Estilos para o botão de fechar
 export const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   cursor: pointer;
-  &:hover {
-    color: #ff0000;
-  }
+  color: #333;
 `;
 
+// Estilos para o formulário do modal
 export const ModalForm = styled.form`
   display: flex;
   flex-direction: column;
 `;
 
+// Estilos para cada linha do formulário
 export const FormRow = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 15px;
+
+  & > div {
+    flex: 1;
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
 `;
 
+// Estilos para as colunas do formulário
 export const FormColumn = styled.div`
-  flex: 1;
-  &:not(:last-child) {
-    margin-right: 20px;
-  }
+  display: flex;
+  flex-direction: column;
 `;
 
+// Estilos para os rótulos dos inputs
 export const Label = styled.label`
-  margin-bottom: 5px;
   font-weight: bold;
-  font-size: 14px;
-  display: block;
+  margin-bottom: 5px;
 `;
 
+// Estilos para os inputs
 export const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
+  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 4px;
+  font-size: 1rem;
 `;
 
+// Estilos para o botão de submit
 export const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4CAF50;
-  color: white;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  align-self: flex-end;
+  font-size: 1rem;
+
   &:hover {
-    background-color: #45a049;
+    background-color: #0056b3;
   }
 `;
+
 
 export const SectionToggle = styled.button`
 width: 100%;
@@ -105,12 +115,4 @@ width: 100%;
   &:hover {
     background: #e0e0e0;
   }
-`;
-
-export const Select = styled.select`
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 `;

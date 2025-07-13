@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import * as C from "./styles";
 import {
   FaHome, FaUserFriends, FaUsers, FaHardHat,
-  FaFileAlt, FaVideo, FaHeadset, FaBook, FaSignOutAlt, FaBars
+  FaFileAlt, FaVideo, FaHeadset, FaBook, FaSignOutAlt, FaBars, FaLayerGroup
 } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 
@@ -68,6 +68,10 @@ const Navbar = () => {
         <C.NavLink onClick={() => handleNavigate("/epi")}>
           <FaHardHat />
           {!isCollapsed && <span>EPI</span>}
+        </C.NavLink>
+        <C.NavLink onClick={() => handleNavigate("/grupo-epi")}>
+          <FaLayerGroup />
+          {!isCollapsed && <span>Grupo EPI</span>}
         </C.NavLink>
         <C.NavLink onClick={() => handleNavigate("/templates")}>
           <FaFileAlt />

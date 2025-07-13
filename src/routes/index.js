@@ -10,6 +10,7 @@ import Demonstracao from "../pages/Demonstracao";
 import Suporte from "../pages/Suporte";
 import Tutorial from "../pages/Tutorial";
 import Grupo from "../pages/Grupo";
+import GrupoEpi from "../pages/GrupoEpi";
 import Epi from "../pages/Epi"
 import CriarPessoaPage from '../pages/CriarPessoa';
 import EditarPessoaPage from '../pages/EditarPessoa';
@@ -41,6 +42,7 @@ const RoutesApp = () => {
           <Route exact path="/tutorial" element={<Private Item={Tutorial} />} />
           <Route exact path="/grupo" element={<Private Item={Grupo} />} />
           <Route exact path="/epi" element={<Private Item={Epi} />} />
+          <Route exact path="/grupo-epi" element={<Private Item={GrupoEpi} />} />
           <Route path="/pessoas/novo" element={<CriarPessoaPage />} />
           <Route path="/pessoas/editar/:idPessoa" element={<EditarPessoaPage />} />
           <Route path="/pessoas/detalhes/:idPessoa" element={<DetalhePessoaPage />} />

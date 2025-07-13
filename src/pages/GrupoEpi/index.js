@@ -10,16 +10,16 @@ import {
   BsFillCaretRightFill,
   BsUpload
 } from "react-icons/bs";
-import useApiEpi from "../../services/apiEpi";
-import CreateEpiModal from "../../components/ModalCreateEpi/CreateEpiModal";
-import EditarEpiModal from "../../components/ModalEditarEpi/EditarEpiModal";
-import DeleteEpiModal from "../../components/ModalDeleteEpi/DeleteEpiModal";
-import ImportarEPIModal from "../../components/ModalImportarEPI/ImportarEPIModal";
+import useApiGrupoEpi from "../../services/apiGrupoEpi";
+import CreateGrupoEpiModal from "../../components/ModalCreateGrupoEpi/CreateGrupoEpiModal";
+import EditarGrupoEpiModal from "../../components/ModalEditarGrupoEpi/EditarGrupoEpiModal";
+import DeleteGrupoEpiModal from "../../components/ModalDeleteGrupoEpi/DeleteGrupoEpiModal";
+import ImportarGrupoEPIModal from "../../components/ModalImportarGrupoEPI/ImportarGrupoEPIModal";
 
 const Epi = () => {
-  const { getEpis } = useApiEpi();
-  const [epis, setEpis] = useState([]);
-  const [filteredEpis, setFilteredEpis] = useState([]);
+  const { getGrupoEpis } = useApiGrupoEpi();
+  const [grupoEpis, setGrupogrupoEpis] = useState([]);
+  const [filteredgrupoEpis, setFilteredgrupoEpis] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -29,45 +29,45 @@ const Epi = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isImportarEPIModalOpen, setIsImportarEPIModalOpen] = useState(false);
 
-  const fetchEpis = async () => {
+  const fetchgrupoEpis = async () => {
     try {
-      const data = await getEpis(currentPage);
-      setEpis(data.data);
+      const data = await getGrupoEpis(currentPage);
+      setGrupogrupoEpis(data.data);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Erro ao carregar EPIs:", error);
+      console.error("Erro ao carregar Grupo grupoEpis:", error);
     }
   };
 
   useEffect(() => {
-    fetchEpis();
+    fetchgrupoEpis();
   }, [currentPage]);
 
   useEffect(() => {
-    setFilteredEpis(
-      epis.filter((epi) =>
+    setFilteredgrupoEpis(
+      grupoEpis.filter((epi) =>
         epi.nome.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
-  }, [searchQuery, epis]);
+  }, [searchQuery, grupoEpis]);
 
   const handleNewEpiCreated = () => {
-    fetchEpis();
+    fetchgrupoEpis();
   };
 
   const handleEpiUpdated = () => {
-    fetchEpis();
+    fetchgrupoEpis();
     setIsEditModalOpen(false);
     setSelectedEpi(null);
   };
 
     const handleImportarPessoaModalClose = async () => {
       setIsImportarEPIModalOpen(false);
-      fetchEpis();
+      fetchgrupoEpis();
     };
 
   const handleEpiDeleted = () => {
-    fetchEpis();
+    fetchgrupoEpis();
     setIsDeleteModalOpen(false);
     setSelectedEpi(null);
   };
@@ -78,7 +78,7 @@ const Epi = () => {
   return (
     <C.Container>
       <Navbar />
-      <C.Title>EPIs</C.Title>
+      <C.Title>Grupo EPI</C.Title>
 
       <C.SearchInput
         type="text"
@@ -89,7 +89,7 @@ const Epi = () => {
 
       <C.ButtonGroup>
         <C.Button onClick={() => setIsCreateModalOpen(true)}>
-          <BsPlusCircle /> Novo EPI
+          <BsPlusCircle /> Novo Grupo EPI
         </C.Button>
         <C.ButtonImport onClick={handleImportarEPIButtonClick}>
           <BsUpload /> Importar Excel(.xlsx)
@@ -118,24 +118,20 @@ const Epi = () => {
         <thead>
           <tr>
             <C.TableHeader>Nome</C.TableHeader>
-            <C.TableHeader>Grupo</C.TableHeader>
             <C.TableHeader>Descrição</C.TableHeader>
-            <C.TableHeader>CA</C.TableHeader>
             <C.TableHeader>Ações</C.TableHeader>
           </tr>
         </thead>
         <tbody>
-          {filteredEpis.map((epi) => (
-            <C.TableRow key={epi.id}>
-              <C.TableData>{epi.nome}</C.TableData>
-              <C.TableData>{epi.grupoepi_nome}</C.TableData>
-              <C.TableData>{epi.descricao}</C.TableData>
-              <C.TableData>{epi.ca}</C.TableData>
+          {filteredgrupoEpis.map((grupoepi) => (
+            <C.TableRow key={grupoepi.id}>
+              <C.TableData>{grupoepi.nome}</C.TableData>
+              <C.TableData>{grupoepi.descricao}</C.TableData>
               <C.TableData>
-                <C.ActionButton onClick={() => { setSelectedEpi(epi); setIsEditModalOpen(true); }}>
+                <C.ActionButton onClick={() => { setSelectedEpi(grupoepi); setIsEditModalOpen(true); }}>
                   <BsPencil /> Editar
                 </C.ActionButton>
-                <C.DeleteButton onClick={() => { setSelectedEpi(epi); setIsDeleteModalOpen(true); }}>
+                <C.DeleteButton onClick={() => { setSelectedEpi(grupoepi); setIsDeleteModalOpen(true); }}>
                   <BsTrash3 /> Excluir
                 </C.DeleteButton>
               </C.TableData>
@@ -144,26 +140,26 @@ const Epi = () => {
         </tbody>
       </C.Table>
 
-      <CreateEpiModal
+      <CreateGrupoEpiModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreate={handleNewEpiCreated}
       />
 
-      <EditarEpiModal
+      <EditarGrupoEpiModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         epi={selectedEpi}
         onEdit={handleEpiUpdated}
       />
 
-      <DeleteEpiModal
+      <DeleteGrupoEpiModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         epi={selectedEpi}
         onDelete={handleEpiDeleted}
       />
-      <ImportarEPIModal
+      <ImportarGrupoEPIModal
               isOpen={isImportarEPIModalOpen}
               onClose={handleImportarPessoaModalClose}
             />

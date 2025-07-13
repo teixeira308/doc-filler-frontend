@@ -2,54 +2,27 @@
 
 import React, { useState, useEffect } from "react";
 import * as C from "./styles";
-import useApiEpi from "../../services/apiEpi";
 import useApiGrupoEpi from "../../services/apiGrupoEpi";
 
-const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
-  const { getGrupoEpis } = useApiGrupoEpi();
-  const { updateEpi } = useApiEpi();
+const EditarGrupoEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
+  const { updateGrupoEpi } = useApiGrupoEpi();
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
-    ca: "",
-    grupoepi_nome: "",
-    grupoEpiId: ""
   });
 
   const filterFormData = (data) => {
-    const allowedFields = [
-      "nome", 
-      "descricao", 
-      "ca",
-      "grupoEpiId"
-    ];
+    const allowedFields = ["nome", "descricao"];
     return Object.fromEntries(
       Object.entries(data).filter(([key]) => allowedFields.includes(key))
     );
   };
-
-
-  const [grupos, setGrupos] = useState([]);
-
-  useEffect(() => {
-    const fetchGrupos = async () => {
-      try {
-        const data = await getGrupoEpis();
-        setGrupos(data.data);
-      } catch (error) {
-        console.error("Erro ao carregar grupos: ", error);
-      }
-    };
-    fetchGrupos();
-  }, []); // Atualiza quando `currentPage` muda
 
   useEffect(() => {
     if (epi) {
       setFormData({
         nome: epi.nome || "",
         descricao: epi.descricao || "",
-        ca: epi.ca || "",
-        grupoEpiId: epi.grupoEpiId || "",
       });
     }
   }, [epi]);
@@ -65,11 +38,11 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
     e.preventDefault();
     try {
       const filteredData = filterFormData(formData);
-      await updateEpi(epi.id, filteredData);
+      await updateGrupoEpi(epi.id, filteredData);
       onEdit(); // Atualiza a lista no componente pai
       onClose(); // Fecha o modal
     } catch (error) {
-      console.error("Erro ao editar EPI:", error);
+      console.error("Erro ao editar Grupo EPI:", error);
     }
   };
 
@@ -79,7 +52,7 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
     <C.ModalOverlay>
       <C.ModalContainer>
         <C.ModalHeader>
-          <h2>Editar EPI</h2>
+          <h2>Editar Grupo EPI</h2>
           <C.CloseButton onClick={onClose}>&times;</C.CloseButton>
         </C.ModalHeader>
         <C.ModalForm onSubmit={handleSubmit}>
@@ -95,26 +68,8 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
                 required
               />
             </C.FormColumn>
-          </C.FormRow>
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="grupoEpiId">Grupo</C.Label>
-              <C.Select
-                name="grupoEpiId"
-                id="grupoEpiId"
-                value={formData.grupoEpiId || ""}
-                onChange={handleChange}
-              >
-                <option value="">Selecione um grupo</option>
-                {grupos.map((grupo) => (
-                  <option key={grupo.id} value={grupo.id}>
-                    {grupo.nome}
-                  </option>
-                ))}
-              </C.Select>
-            </C.FormColumn>
-          </C.FormRow>
-          <C.FormRow>
+             </C.FormRow>
+              <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="descricao">Descrição</C.Label>
               <C.Input
@@ -122,18 +77,6 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
                 name="descricao"
                 id="descricao"
                 value={formData.descricao}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="descricao">CA</C.Label>
-              <C.Input
-                type="text"
-                name="ca"
-                id="ca"
-                value={formData.ca}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -146,4 +89,4 @@ const EditarEpiModal = ({ isOpen, onClose, epi, onEdit }) => {
   );
 };
 
-export default EditarEpiModal;
+export default EditarGrupoEpiModal;

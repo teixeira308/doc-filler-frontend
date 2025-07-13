@@ -1,40 +1,20 @@
 // src/components/ModalCreateEpi/CreateEpiModal.js
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import * as C from "./styles";
-import useApiEpi from "../../services/apiEpi";
 import useApiGrupoEpi from "../../services/apiGrupoEpi";
 
-const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
-  const { getGrupoEpis } = useApiGrupoEpi();
-  const { createEpi } = useApiEpi();
+const CreateGrupoEpiModal = ({ isOpen, onClose, onCreate }) => {
+  const { createGrupoEpi } = useApiGrupoEpi();
   const [formData, setFormData] = useState({
     nome: "",
     descricao: "",
-    ca: "",
-    grupoEpiId: ""
   });
-
-  const [grupos, setGrupos] = useState([]);
-
-  useEffect(() => {
-    const fetchGrupos = async () => {
-      try {
-        const data = await getGrupoEpis();
-        setGrupos(data.data);
-      } catch (error) {
-        console.error("Erro ao carregar grupos: ", error);
-      }
-    };
-    fetchGrupos();
-  }, []); // Atualiza quando `currentPage` muda
 
   const resetFormData = () => {
     setFormData({
       nome: "",
       descricao: "",
-      ca: "",
-      grupoEpiId: ""
     });
   };
 
@@ -53,7 +33,7 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createEpi(formData);
+      await createGrupoEpi(formData);
       onCreate(); // Atualiza a lista no componente pai
       handleClose();
     } catch (error) {
@@ -67,28 +47,10 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
     <C.ModalOverlay>
       <C.ModalContainer>
         <C.ModalHeader>
-          <h2>Criar Novo EPI</h2>
+          <h2>Criar Novo Grupo EPI</h2>
           <C.CloseButton onClick={handleClose}>&times;</C.CloseButton>
         </C.ModalHeader>
         <C.ModalForm onSubmit={handleSubmit}>
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="grupoEpiId">Grupo</C.Label>
-              <C.Select
-                name="grupoEpiId"
-                id="grupoEpiId"
-                value={formData.grupoEpiId || ""}
-                onChange={handleChange}
-              >
-                <option value="">Selecione um grupo</option>
-                {grupos.map((grupo) => (
-                  <option key={grupo.id} value={grupo.id}>
-                    {grupo.nome}
-                  </option>
-                ))}
-              </C.Select>
-            </C.FormColumn>
-          </C.FormRow>
           <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="nome">Nome</C.Label>
@@ -101,8 +63,8 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
                 required
               />
             </C.FormColumn>
-          </C.FormRow>
-          <C.FormRow>
+            </C.FormRow>
+            <C.FormRow>
             <C.FormColumn>
               <C.Label htmlFor="descricao">Descrição</C.Label>
               <C.Input
@@ -110,18 +72,6 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
                 name="descricao"
                 id="descricao"
                 value={formData.descricao}
-                onChange={handleChange}
-              />
-            </C.FormColumn>
-          </C.FormRow>
-          <C.FormRow>
-            <C.FormColumn>
-              <C.Label htmlFor="descricao">CA</C.Label>
-              <C.Input
-                type="text"
-                name="ca"
-                id="ca"
-                value={formData.ca}
                 onChange={handleChange}
               />
             </C.FormColumn>
@@ -134,4 +84,4 @@ const CreateEpiModal = ({ isOpen, onClose, onCreate }) => {
   );
 };
 
-export default CreateEpiModal;
+export default CreateGrupoEpiModal;
