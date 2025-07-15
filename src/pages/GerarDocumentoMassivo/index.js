@@ -8,28 +8,35 @@ import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import useEpiApi from "../../services/apiEpi";
+import useApiGrupoEpi from "../../services/apiGrupoEpi";
 
 const GerarDocumentoMassivoModal = () => {
   const { generateBatchDocuments, generateBatchDocumentsEPI, getTemplate } = useApi();
-  const { getEpis } = useEpiApi();
+  const { getGrupoEpis } = useApiGrupoEpi();
+  const { getEpis, getEpisByGroup } = useEpiApi();
   const navigate = useNavigate();
   const { getPessoas } = useApiPessoas();
   const [pessoas, setPessoas] = useState([]);
   const [epis, setEpis] = useState([]);
+  const [grupoEpis, setGrupoEpis] = useState([]);
   const [selectedPessoas, setSelectedPessoas] = useState([]);
   const [selectedGrupos, setSelectedGrupos] = useState([]);
+  const [selectedGruposEpi, setSelectedGruposEpi] = useState([]);
   const [selectedEPIs, setSelectedEPIs] = useState([]);
   const [template, setTemplate] = useState([]);
   const { idTemplate } = useParams();
   const [pagePessoas, setPagePessoas] = useState(1);
   const [pageGrupos, setPageGrupos] = useState(1);
+  const [pageGruposEpi, setPageGruposEpi] = useState(1);
   const [pageEpi, setPageEpi] = useState(1);
   const pageSize = 100;
   const [totalPagesEpi, setTotalPagesEpi] = useState(1);
   const [totalPagesPessoas, setTotalPagesPessoas] = useState(1);
   const [totalPagesGrupos, setTotalPagesGrupos] = useState(1);
+  const [totalPagesGruposEpi, setTotalPagesGruposEpi] = useState(1);
   const [totalPessoas, setTotalPessoas] = useState(0);
   const [totalGrupos, setTotalGrupos] = useState(0);
+  const [totalGruposEpi, setTotalGruposEpi] = useState(0);
 
 
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +45,10 @@ const GerarDocumentoMassivoModal = () => {
   const [modoSelecao, setModoSelecao] = useState("todos");
   const { getGruposPessoa } = useApiGrupo();
   const [grupos, setGrupos] = useState([]);
+  const [gruposEpi, setGruposEpi] = useState([]);
+  const [stepGeracao, setStepGeracao] = useState(1);
+  const [episDosGrupos, setEpisDosGrupos] = useState([]);
+
 
   useEffect(() => {
     const fetchTemplateAndEPIs = async () => {
@@ -46,7 +57,7 @@ const GerarDocumentoMassivoModal = () => {
         setTemplate(data);
 
         if (data.tipoTemplate === "EPIs") {
-          const epiData = await getEpis(pageEpi,pageSize);
+          const epiData = await getEpis(pageEpi, pageSize);
           setEpis(epiData.data);
           setTotalPagesEpi(epiData.totalPages)
         }
@@ -55,8 +66,52 @@ const GerarDocumentoMassivoModal = () => {
       }
     };
     fetchTemplateAndEPIs();
-  }, [idTemplate,pageEpi]);
+  }, [idTemplate, pageEpi]);
 
+
+  useEffect(() => {
+    if (modoSelecao === "grupoepi") {
+      const fetchGruposEpi = async () => {
+        try {
+          const data = await getGrupoEpis(pageGruposEpi, pageSize);
+          console.log(data.data)
+          setGrupoEpis(data.data);
+          setTotalPagesGruposEpi(data.totalPages);
+          setTotalGruposEpi(data.totalCount);
+        } catch (error) {
+          console.error("Erro ao carregar gruposEpi: ", error);
+        }
+      };
+      fetchGruposEpi();
+    }
+  }, [pageGruposEpi, modoSelecao]); // Atualiza quando `currentPage` muda
+
+  useEffect(() => {
+    const fetchEpisDosGrupos = async () => {
+      if (stepGeracao !== 3 || selectedGruposEpi.length === 0) return;
+
+      try {
+        const allEpisPromises = selectedGruposEpi.map(grupo =>
+          getEpisByGroup(grupo.id)
+        );
+
+        const episPorGrupo = await Promise.all(allEpisPromises);
+        // Flatten e remove duplicados (opcional)
+        const todosEpis = episPorGrupo.flat();
+
+        // Remover duplicados pelo ID (opcional)
+        const episUnicos = Array.from(
+          new Map(todosEpis.map(epi => [epi.id, epi])).values()
+        );
+
+        setEpisDosGrupos(episUnicos);
+      } catch (error) {
+        console.error("Erro ao buscar EPIs dos grupos selecionados", error);
+      }
+    };
+
+    fetchEpisDosGrupos();
+  }, [stepGeracao, selectedGruposEpi]);
 
 
   useEffect(() => {
@@ -75,7 +130,7 @@ const GerarDocumentoMassivoModal = () => {
     }
   }, [pageGrupos, modoSelecao]); // Atualiza quando `currentPage` muda
 
-  
+
   useEffect(() => {
     if (modoSelecao === "pessoa") {
       const fetchPessoas = async () => {
@@ -115,6 +170,15 @@ const GerarDocumentoMassivoModal = () => {
     });
   };
 
+  const toggleGrupoEPISelection = (epi) => {
+    setSelectedGruposEpi((prev) => {
+      const exists = prev.some(e => e.id === epi.id);
+      if (exists) return prev.filter(e => e.id !== epi.id);
+      if (prev.length >= 10) return prev;
+      return [...prev, { ...epi, quantidade: 1 }];
+    });
+  };
+
   const handleQuantidadeChange = (id, value) => {
     setSelectedEPIs((prev) =>
       prev.map((epi) =>
@@ -123,7 +187,24 @@ const GerarDocumentoMassivoModal = () => {
     );
   };
 
+  const handleAdvancePage = (e) => {
+    e.preventDefault();
+    setStepGeracao(2)
+  }
 
+  const handleAdvanceFinalPage = (e) => {
+    e.preventDefault();
+    setStepGeracao(3)
+  }
+  const handleBackPage = (e) => {
+    e.preventDefault();
+    setStepGeracao(1)
+  }
+
+  const handleBackPageMiddle = (e) => {
+    e.preventDefault();
+    setStepGeracao(2)
+  }
 
   const togglePessoaSelection = (pessoa) => {
     setSelectedPessoas((prev) => {
@@ -133,6 +214,8 @@ const GerarDocumentoMassivoModal = () => {
       return [...prev, pessoa];
     });
   };
+
+
 
   const removePessoa = (id) => {
     setSelectedPessoas((prev) => prev.filter(p => p.id !== id));
@@ -243,6 +326,14 @@ const GerarDocumentoMassivoModal = () => {
     setPageGrupos((prev) => Math.max(prev - 1, 1))
   };
 
+  const nextPageGruposEpi = (e) => {
+    e.stopPropagation();
+    setPageGruposEpi((prev) => Math.min(prev + 1, totalPagesGrupos))
+  };
+  const prevPageGruposEpi = (e) => {
+    e.stopPropagation();
+    setPageGruposEpi((prev) => Math.max(prev - 1, 1))
+  };
 
 
   return (
@@ -259,204 +350,406 @@ const GerarDocumentoMassivoModal = () => {
       </C.PageHeader>
 
       <C.FormContainer onSubmit={handleSubmit}>
-        <C.Label><strong>Template:</strong> {template.descricao}</C.Label>
-        <br />
-        <C.Label>Selecione as pessoas: </C.Label>
-        <C.RadioGroup>
-          <C.RadioOption>
-            <input
-              type="radio"
-              id="todos"
-              name="geracao"
-              value="todos"
-              checked={modoSelecao === "todos"}
-              onChange={() => setModoSelecao("todos")}
-            />
-            <label htmlFor="todos">Gerar documentos para <strong>TODAS</strong> as pessoas</label>
-          </C.RadioOption>
-          <C.RadioOption>
-            <input
-              type="radio"
-              id="pessoa"
-              name="geracao"
-              value="pessoa"
-              checked={modoSelecao === "pessoa"}
-              onChange={() => setModoSelecao("pessoa")}
-            />
-            <label htmlFor="pessoa">Selecionar manualmente as pessoas</label>
-          </C.RadioOption>
-          <C.RadioOption>
-            <input
-              type="radio"
-              id="grupo"
-              name="geracao"
-              value="grupo"
-              checked={modoSelecao === "grupo"}
-              onChange={() => setModoSelecao("grupo")}
-            />
-            <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
-          </C.RadioOption>
-        </C.RadioGroup>
 
-        {modoSelecao === "grupo" && (
-          <C.DualColumnWrapper>
-            <C.Column>
-              <C.PersonListTitle>Lista de Grupos</C.PersonListTitle>
-              {grupos.map((grupo) => (
-                <C.PersonItem key={grupo.id}>
-                  <C.ListItemCheckbox>
-                    <input
-                      type="checkbox"
-                      checked={selectedGrupos.some(g => g.id === grupo.id)}
-                      onChange={() => toggleGrupoSelection(grupo)}
-                      disabled={
-                        selectedGrupos.length >= 10 &&
-                        !selectedGrupos.some(g => g.id === grupo.id)
-                      }
-                    />
-                    {grupo.nome}
-                  </C.ListItemCheckbox>
-                </C.PersonItem>
-              ))}
-
-              <C.Pagination>
-                <C.ButtonPagination type="button" disabled={pageGrupos === 1} onClick={(e) => prevPageGrupos(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
-                <C.PageIndicator>{pageGrupos} de {totalPagesGrupos}</C.PageIndicator>
-                <C.ButtonPagination type="button" disabled={pageGrupos === totalPagesGrupos} onClick={(e) => nextPageGrupos(e)}><BsFillCaretRightFill /></C.ButtonPagination>
-              </C.Pagination>
-            </C.Column>
-
-            <C.Column>
-              <C.PersonListTitle>Grupos Selecionados</C.PersonListTitle>
-              <C.Counter>{selectedGrupos.length} / 10</C.Counter>
-              {selectedGrupos.map((grupo) => (
-                <C.PersonItem key={grupo.id}>
-                  {grupo.nome}
-                  <button onClick={() => toggleGrupoSelection(grupo)}>❌</button>
-                </C.PersonItem>
-              ))}
-            </C.Column>
-          </C.DualColumnWrapper>
-        )}
-
-
-
-        {modoSelecao === "pessoa" && (
-          <C.DualColumnWrapper>
-            <C.Column>
-              <C.PersonListTitle>Lista de Pessoas</C.PersonListTitle>
-              {pessoas.map((pessoa) => (
-                <C.PersonItem key={pessoa.id}>
-                  <C.ListItemCheckbox>
-
-                    <input
-                      type="checkbox"
-                      checked={selectedPessoas.some(p => p.id === pessoa.id)}
-                      onChange={() => togglePessoaSelection(pessoa)}
-                      disabled={
-                        selectedPessoas.length >= 100 &&
-                        !selectedPessoas.some(p => p.id === pessoa.id)
-                      }
-                    />
-                    {pessoa.nome}
-
-                  </C.ListItemCheckbox>
-                </C.PersonItem>
-              ))}
-              <C.Pagination>
-                <C.ButtonPagination type="button" disabled={pagePessoas === 1} onClick={prevPagePessoas}><BsFillCaretLeftFill /></C.ButtonPagination>
-                <C.PageIndicator>{pagePessoas} de {totalPagesPessoas}</C.PageIndicator>
-                <C.ButtonPagination type="button" disabled={pagePessoas === totalPagesPessoas} onClick={nextPagePessoas}><BsFillCaretRightFill /></C.ButtonPagination>
-              </C.Pagination>
-            </C.Column>
-
-            <C.Column>
-              <C.PersonListTitle>Selecionados</C.PersonListTitle>
-              <C.Counter>{selectedPessoas.length} / 100</C.Counter>
-              {selectedPessoas.map((pessoa) => (
-                <C.PersonItem key={pessoa.id}>
-                  {pessoa.nome}
-                  <button onClick={() => removePessoa(pessoa.id)}>❌</button>
-                </C.PersonItem>
-              ))}
-            </C.Column>
-          </C.DualColumnWrapper>
-        )}
-
-        {template.tipoTemplate === "EPIs" && (
-          <>
-            <br />
-            <C.Label>Selecione os EPIs: </C.Label>
+        <>
+          <C.Label><strong>Template:</strong> {template.descricao}</C.Label>
+          <br />
+          {stepGeracao === 1 && (
+            <>
+              <C.Label>Selecione as pessoas: </C.Label>
+              <C.RadioGroup>
+                <C.RadioOption>
+                  <input
+                    type="radio"
+                    id="todos"
+                    name="geracao"
+                    value="todos"
+                    checked={modoSelecao === "todos"}
+                    onChange={() => setModoSelecao("todos")}
+                  />
+                  <label htmlFor="todos">Gerar documentos para <strong>TODAS</strong> as pessoas</label>
+                </C.RadioOption>
+                <C.RadioOption>
+                  <input
+                    type="radio"
+                    id="pessoa"
+                    name="geracao"
+                    value="pessoa"
+                    checked={modoSelecao === "pessoa"}
+                    onChange={() => setModoSelecao("pessoa")}
+                  />
+                  <label htmlFor="pessoa">Selecionar manualmente as pessoas</label>
+                </C.RadioOption>
+                <C.RadioOption>
+                  <input
+                    type="radio"
+                    id="grupo"
+                    name="geracao"
+                    value="grupo"
+                    checked={modoSelecao === "grupo"}
+                    onChange={() => setModoSelecao("grupo")}
+                  />
+                  <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
+                </C.RadioOption>
+              </C.RadioGroup>
+            </>
+          )}
+          {modoSelecao === "grupo" && (
             <C.DualColumnWrapper>
               <C.Column>
-                <C.PersonListTitle>Lista de EPI</C.PersonListTitle>
-                {epis.map((epi) => (
-                  <C.PersonItem key={epi.id}>
+                <C.PersonListTitle>Grupos de Pessoas</C.PersonListTitle>
+                {grupos.map((grupo) => (
+                  <C.PersonItem key={grupo.id}>
                     <C.ListItemCheckbox>
                       <input
                         type="checkbox"
-                        checked={selectedEPIs.some(g => g.id === epi.id)}
-                        onChange={() => toggleEPISelection(epi)}
+                        checked={selectedGrupos.some(g => g.id === grupo.id)}
+                        onChange={() => toggleGrupoSelection(grupo)}
                         disabled={
                           selectedGrupos.length >= 10 &&
-                          !selectedGrupos.some(g => g.id === epi.id)
+                          !selectedGrupos.some(g => g.id === grupo.id)
                         }
                       />
-                      {epi.nome}
-
+                      {grupo.nome}
                     </C.ListItemCheckbox>
-                    CA:
-                    {epi.ca}
                   </C.PersonItem>
                 ))}
 
                 <C.Pagination>
-                  <C.ButtonPagination type="button" disabled={pageEpi === 1} onClick={(e) => prevPageEpi(e)}>
-                    <BsFillCaretLeftFill />
-                  </C.ButtonPagination>
-                  <C.PageIndicator>{pageEpi} de {totalPagesEpi}</C.PageIndicator>
-                  <C.ButtonPagination type="button" disabled={pageEpi === totalPagesEpi} onClick={(e) => nextPageEpi(e)}>
-                    <BsFillCaretRightFill />
-                  </C.ButtonPagination>
+                  <C.ButtonPagination type="button" disabled={pageGrupos === 1} onClick={(e) => prevPageGrupos(e)}><BsFillCaretLeftFill /></C.ButtonPagination>
+                  <C.PageIndicator>{pageGrupos} de {totalPagesGrupos}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={pageGrupos === totalPagesGrupos} onClick={(e) => nextPageGrupos(e)}><BsFillCaretRightFill /></C.ButtonPagination>
                 </C.Pagination>
               </C.Column>
 
-
               <C.Column>
-                <C.PersonListTitle>EPIs Selecionados</C.PersonListTitle>
-                <C.Counter>{selectedEPIs.length} / 10</C.Counter>
-                {selectedEPIs.map((epi) => (
-                  <C.PersonItem key={epi.id}>
-                    <span>{epi.nome}</span>
-
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
-                      <input
-                        id={`qtd-${epi.id}`}
-                        type="number"
-                        min={1}
-                        value={epi.quantidade}
-                        onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
-                        style={{ width: "60px" }}
-                      />
-                    </div>
-
-                    <button onClick={() => toggleEPISelection(epi)}>❌</button>
+                <C.PersonListTitle>Grupos Selecionados</C.PersonListTitle>
+                <C.Counter>{selectedGrupos.length} / 10</C.Counter>
+                {selectedGrupos.map((grupo) => (
+                  <C.PersonItem key={grupo.id}>
+                    {grupo.nome}
+                    <button onClick={() => toggleGrupoSelection(grupo)}>❌</button>
                   </C.PersonItem>
                 ))}
-
               </C.Column>
             </C.DualColumnWrapper>
-          </>
-        )}
+          )}
 
-        <C.Button type="submit" disabled={isLoading}>
-          {isLoading ? "Gerando..." : "Gerar Documentos"}
-        </C.Button>
 
-        {success && <p style={{ color: "green", marginTop: "10px" }}>Documentos gerados com sucesso!</p>}
-        {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
 
+          {modoSelecao === "pessoa" && stepGeracao === 1 && (
+            <C.DualColumnWrapper>
+              <C.Column>
+                <C.PersonListTitle>Pessoas</C.PersonListTitle>
+                {pessoas.map((pessoa) => (
+                  <C.PersonItem key={pessoa.id}>
+                    <C.ListItemCheckbox>
+
+                      <input
+                        type="checkbox"
+                        checked={selectedPessoas.some(p => p.id === pessoa.id)}
+                        onChange={() => togglePessoaSelection(pessoa)}
+                        disabled={
+                          selectedPessoas.length >= 100 &&
+                          !selectedPessoas.some(p => p.id === pessoa.id)
+                        }
+                      />
+                      {pessoa.nome}
+
+                    </C.ListItemCheckbox>
+                  </C.PersonItem>
+                ))}
+                <C.Pagination>
+                  <C.ButtonPagination type="button" disabled={pagePessoas === 1} onClick={prevPagePessoas}><BsFillCaretLeftFill /></C.ButtonPagination>
+                  <C.PageIndicator>{pagePessoas} de {totalPagesPessoas}</C.PageIndicator>
+                  <C.ButtonPagination type="button" disabled={pagePessoas === totalPagesPessoas} onClick={nextPagePessoas}><BsFillCaretRightFill /></C.ButtonPagination>
+                </C.Pagination>
+              </C.Column>
+
+              <C.Column>
+                <C.PersonListTitle>Selecionados</C.PersonListTitle>
+                <C.Counter>{selectedPessoas.length} / 100</C.Counter>
+                {selectedPessoas.map((pessoa) => (
+                  <C.PersonItem key={pessoa.id}>
+                    {pessoa.nome}
+                    <button onClick={() => removePessoa(pessoa.id)}>❌</button>
+                  </C.PersonItem>
+                ))}
+              </C.Column>
+            </C.DualColumnWrapper>
+          )}
+          {stepGeracao === 2 && (
+            <>
+              {template.tipoTemplate === "EPIs" && (
+                <>
+                  <C.Label>Selecionados</C.Label>
+                  {selectedPessoas.map((pessoa) => (
+                    <C.PersonItem key={pessoa.id}>
+                      {pessoa.nome}
+                    </C.PersonItem>
+                  ))}
+                  <br />
+                  <C.Label>Selecione os EPIs: </C.Label>
+                  <C.RadioGroup>
+
+                    <C.RadioOption>
+                      <input
+                        type="radio"
+                        id="pessoa"
+                        name="geracao"
+                        value="pessoa"
+                        checked={modoSelecao === "epi"}
+                        onChange={() => setModoSelecao("epi")}
+                      />
+                      <label htmlFor="pessoa">Selecionar manualmente os EPIs</label>
+                    </C.RadioOption>
+                    <C.RadioOption>
+                      <input
+                        type="radio"
+                        id="grupo"
+                        name="geracao"
+                        value="grupo"
+                        checked={modoSelecao === "grupoepi"}
+                        onChange={() => setModoSelecao("grupoepi")}
+                      />
+                      <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
+                    </C.RadioOption>
+                  </C.RadioGroup>
+
+
+                  {modoSelecao === "epi" && (
+                    <>
+                      <C.DualColumnWrapper>
+                        <C.Column>
+                          <C.PersonListTitle>EPIs</C.PersonListTitle>
+                          {epis.map((epi) => (
+                            <C.PersonItem key={epi.id}>
+                              <C.ListItemCheckbox>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedEPIs.some(g => g.id === epi.id)}
+                                  onChange={() => toggleEPISelection(epi)}
+                                  disabled={
+                                    selectedGrupos.length >= 10 &&
+                                    !selectedGrupos.some(g => g.id === epi.id)
+                                  }
+                                />
+                                {epi.nome}
+
+                              </C.ListItemCheckbox>
+                              CA:
+                              {epi.ca}
+                            </C.PersonItem>
+                          ))}
+
+                          <C.Pagination>
+                            <C.ButtonPagination type="button" disabled={pageEpi === 1} onClick={(e) => prevPageEpi(e)}>
+                              <BsFillCaretLeftFill />
+                            </C.ButtonPagination>
+                            <C.PageIndicator>{pageEpi} de {totalPagesEpi}</C.PageIndicator>
+                            <C.ButtonPagination type="button" disabled={pageEpi === totalPagesEpi} onClick={(e) => nextPageEpi(e)}>
+                              <BsFillCaretRightFill />
+                            </C.ButtonPagination>
+                          </C.Pagination>
+                        </C.Column>
+
+
+                        <C.Column>
+                          <C.PersonListTitle>EPIs Selecionados</C.PersonListTitle>
+                          <C.Counter>{selectedEPIs.length} / 10</C.Counter>
+                          {selectedEPIs.map((epi) => (
+                            <C.PersonItem key={epi.id}>
+                              <span>{epi.nome}</span>
+
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
+                                <input
+                                  id={`qtd-${epi.id}`}
+                                  type="number"
+                                  min={1}
+                                  value={epi.quantidade}
+                                  onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
+                                  style={{ width: "60px" }}
+                                />
+                              </div>
+
+                              <button onClick={() => toggleEPISelection(epi)}>❌</button>
+                            </C.PersonItem>
+                          ))}
+
+                        </C.Column>
+                      </C.DualColumnWrapper>
+                      <C.Button onClick={handleBackPage}>
+                        Voltar
+                      </C.Button>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                        <C.Button type="submit" disabled={isLoading}>
+                          {isLoading ? "Gerando..." : "Gerar Documentos"}
+                        </C.Button>
+                      </div>
+                    </>
+
+
+                  )}
+                  {modoSelecao === "grupoepi" && (
+                    <>
+                      <C.DualColumnWrapper>
+                        <C.Column>
+                          <C.PersonListTitle>Grupos de EPI</C.PersonListTitle>
+                          {grupoEpis.map((grupoepi) => (
+                            <C.PersonItem key={grupoepi.id}>
+                              <C.ListItemCheckbox>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedGruposEpi.some(g => g.id === grupoepi.id)}
+                                  onChange={() => toggleGrupoEPISelection(grupoepi)}
+                                  disabled={
+                                    selectedGruposEpi.length >= 10 &&
+                                    !selectedGruposEpi.some(g => g.id === grupoepi.id)
+                                  }
+                                />
+                                {grupoepi.nome}
+
+                              </C.ListItemCheckbox>
+
+                            </C.PersonItem>
+                          ))}
+
+                          <C.Pagination>
+                            <C.ButtonPagination type="button" disabled={pageEpi === 1} onClick={(e) => prevPageGruposEpi(e)}>
+                              <BsFillCaretLeftFill />
+                            </C.ButtonPagination>
+                            <C.PageIndicator>{pageGruposEpi} de {totalPagesGruposEpi}</C.PageIndicator>
+                            <C.ButtonPagination type="button" disabled={pageEpi === totalPagesEpi} onClick={(e) => nextPageGruposEpi(e)}>
+                              <BsFillCaretRightFill />
+                            </C.ButtonPagination>
+                          </C.Pagination>
+                        </C.Column>
+
+
+                        <C.Column>
+                          <C.PersonListTitle>Grupos de EPIs Selecionados</C.PersonListTitle>
+                          <C.Counter>{selectedGruposEpi.length} / 10</C.Counter>
+                          {selectedGruposEpi.map((epi) => (
+                            <C.PersonItem key={epi.id}>
+                              <span>{epi.nome}</span>
+                              <button onClick={() => toggleGrupoEPISelection(epi)}>❌</button>
+                            </C.PersonItem>
+                          ))}
+
+                        </C.Column>
+                      </C.DualColumnWrapper>
+                      {template.tipoTemplate === "EPIs" && stepGeracao === 2 && (
+                        <>
+                          <C.Button onClick={handleAdvanceFinalPage}>
+                            Avançar2
+                          </C.Button>
+                          <C.Button onClick={handleBackPage}>
+                            Voltar2
+                          </C.Button>
+                        </>
+
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            </>
+          )}
+
+          {stepGeracao === 3 && (
+            <>
+              <C.DualColumnWrapper>
+                <C.Column>
+                  <C.PersonListTitle>EPIs encontrados nos grupos selecionados</C.PersonListTitle>
+                  {episDosGrupos.length === 0 ? (
+                    <p>Nenhum EPI encontrado para os grupos selecionados.</p>
+                  ) : (
+                    episDosGrupos.map(epi => (
+                      <C.PersonItem key={epi.id}>
+                        <div>
+                           <C.ListItemCheckbox>
+                                <input
+                                  type="checkbox"
+                                  checked={selectedEPIs.some(g => g.id === epi.id)}
+                                  onChange={() => toggleEPISelection(epi)}
+                                  disabled={
+                                    selectedGrupos.length >= 10 &&
+                                    !selectedGrupos.some(g => g.id === epi.id)
+                                  }
+                                />
+                               <strong>{epi.nome}</strong> (CA: {epi.ca})
+
+                              </C.ListItemCheckbox>
+                          
+                        </div>
+                      </C.PersonItem>
+                    ))
+                  )}
+
+                  <C.Pagination>
+                    <C.ButtonPagination type="button" disabled={pageEpi === 1} onClick={(e) => prevPageGruposEpi(e)}>
+                      <BsFillCaretLeftFill />
+                    </C.ButtonPagination>
+                    <C.PageIndicator>{pageGruposEpi} de {totalPagesGruposEpi}</C.PageIndicator>
+                    <C.ButtonPagination type="button" disabled={pageEpi === totalPagesEpi} onClick={(e) => nextPageGruposEpi(e)}>
+                      <BsFillCaretRightFill />
+                    </C.ButtonPagination>
+                  </C.Pagination>
+                </C.Column>
+
+
+                <C.Column>
+                  <C.PersonListTitle>EPIs Selecionados</C.PersonListTitle>
+                  <C.Counter>{selectedEPIs.length} / 10</C.Counter>
+                  {selectedEPIs.map((epi) => (
+                    <C.PersonItem key={epi.id}>
+                      <span>{epi.nome}</span>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
+                                <input
+                                  id={`qtd-${epi.id}`}
+                                  type="number"
+                                  min={1}
+                                  value={epi.quantidade}
+                                  onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
+                                  style={{ width: "60px" }}
+                                />
+                              </div>
+                      <button onClick={() => toggleEPISelection(epi)}>❌</button>
+                    </C.PersonItem>
+                  ))}
+
+                </C.Column>
+              </C.DualColumnWrapper>
+              <C.Button onClick={handleBackPageMiddle}>
+                Voltar3
+              </C.Button>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                <C.Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Gerando..." : "Gerar Documentos"}
+                </C.Button>
+              </div>
+            </>
+          )}
+
+          {template.tipoTemplate === "EPIs" && stepGeracao === 1 && (
+            <C.Button onClick={handleAdvancePage}>
+              Avançar1
+            </C.Button>
+          )}
+
+
+          {template.tipoTemplate != "EPIs" && stepGeracao === 3 && (
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <C.Button type="submit" disabled={isLoading}>
+                {isLoading ? "Gerando..." : "Gerar Documentos"}
+              </C.Button>
+            </div>
+          )}
+          {success && <p style={{ color: "green", marginTop: "10px" }}>Documentos gerados com sucesso!</p>}
+          {error && <p style={{ color: "red", marginTop: "10px" }}>{error}</p>}
+        </>
       </C.FormContainer>
 
     </C.PageContainer>

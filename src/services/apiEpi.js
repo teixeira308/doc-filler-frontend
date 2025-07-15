@@ -32,6 +32,26 @@ const useEpiApi = () => {
     return await response.json();
   };
 
+
+  const getEpisByGroup = async (grupo)  => {
+    const response = await fetch(`${apiUrl}/epi/grupo/${grupo}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.token}`,
+      },
+    });
+
+    handleUnauthorized(response);
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar EPIs do grupo ",grupo);
+    }
+
+    return await response.json();
+  };
+
+
   const createEpi = async (epiData) => {
     const response = await fetch(`${apiUrl}/epi`, {
       method: "POST",
@@ -115,7 +135,8 @@ const importExcelEPI = async (formData) => {
     createEpi,
     updateEpi,
     deleteEpi,
-    importExcelEPI
+    importExcelEPI,
+    getEpisByGroup
   };
 };
 
