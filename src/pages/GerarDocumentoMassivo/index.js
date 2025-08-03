@@ -189,12 +189,24 @@ const GerarDocumentoMassivoModal = () => {
 
   const handleAdvancePage = (e) => {
     e.preventDefault();
-    setStepGeracao(2)
+    if (selectedPessoas.length < 1 && modoSelecao !== "todos") {
+      setError("Selecione ao menos uma pessoa ou grupo.");
+    } else {
+      setError("");
+      setStepGeracao(2)
+    }
+
   }
 
   const handleAdvanceFinalPage = (e) => {
     e.preventDefault();
-    setStepGeracao(3)
+
+    if (selectedGruposEpi.length < 1 && selectedEPIs.length < 1) {
+      setError("Selecione ao menos um grupo de EPI.");
+    } else {
+      setError("");
+      setStepGeracao(3)
+    }
   }
   const handleBackPage = (e) => {
     e.preventDefault();
@@ -232,14 +244,14 @@ const GerarDocumentoMassivoModal = () => {
 
       if (modoSelecao === "pessoa") {
         if (selectedPessoas.length === 0) {
-          alert("Selecione pelo menos uma pessoa!");
+          setError("Selecione pelo menos uma pessoa!");
           setIsLoading(false);
           return;
         }
         dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
       } else if (modoSelecao === "grupo") {
         if (selectedGrupos.length === 0) {
-          alert("Selecione pelo menos um grupo!");
+          setError("Selecione pelo menos um grupo!");
           setIsLoading(false);
           return;
         }
@@ -248,7 +260,7 @@ const GerarDocumentoMassivoModal = () => {
 
       if (template.tipoTemplate === "EPIs") {
         if (selectedEPIs.length === 0) {
-          alert("Selecione pelo menos um EPI!");
+          setError("Selecione pelo menos um EPI!");
           setIsLoading(false);
           return;
         }
@@ -365,7 +377,7 @@ const GerarDocumentoMassivoModal = () => {
                     name="geracao"
                     value="todos"
                     checked={modoSelecao === "todos"}
-                    onChange={() => setModoSelecao("todos")}
+                    onChange={() => { setModoSelecao("todos"); setError("") }}
                   />
                   <label htmlFor="todos">Gerar documentos para <strong>TODAS</strong> as pessoas</label>
                 </C.RadioOption>
@@ -376,7 +388,7 @@ const GerarDocumentoMassivoModal = () => {
                     name="geracao"
                     value="pessoa"
                     checked={modoSelecao === "pessoa"}
-                    onChange={() => setModoSelecao("pessoa")}
+                    onChange={() => { setModoSelecao("pessoa"); setError("") }}
                   />
                   <label htmlFor="pessoa">Selecionar manualmente as pessoas</label>
                 </C.RadioOption>
@@ -387,7 +399,7 @@ const GerarDocumentoMassivoModal = () => {
                     name="geracao"
                     value="grupo"
                     checked={modoSelecao === "grupo"}
-                    onChange={() => setModoSelecao("grupo")}
+                    onChange={() => { setModoSelecao("grupo"); setError("") }}
                   />
                   <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
                 </C.RadioOption>
@@ -467,7 +479,7 @@ const GerarDocumentoMassivoModal = () => {
               </C.Column>
 
               <C.Column>
-                <C.PersonListTitle>Selecionados</C.PersonListTitle>
+                <C.PersonListTitle>Pessoas Selecionadas</C.PersonListTitle>
                 <C.Counter>{selectedPessoas.length} / 100</C.Counter>
                 {selectedPessoas.map((pessoa) => (
                   <C.PersonItem key={pessoa.id}>
@@ -483,6 +495,9 @@ const GerarDocumentoMassivoModal = () => {
               {template.tipoTemplate === "EPIs" && (
                 <>
                   <C.Label>Selecionados</C.Label>
+                  {selectedPessoas.length == 0 && (
+                    <p>Todas pessoas registradas.</p>
+                  )}
                   {selectedPessoas.map((pessoa) => (
                     <C.PersonItem key={pessoa.id}>
                       {pessoa.nome}
@@ -499,7 +514,7 @@ const GerarDocumentoMassivoModal = () => {
                         name="geracao"
                         value="pessoa"
                         checked={modoSelecao === "epi"}
-                        onChange={() => setModoSelecao("epi")}
+                        onChange={() => { setModoSelecao("epi"); setError(""); }}
                       />
                       <label htmlFor="pessoa">Selecionar manualmente os EPIs</label>
                     </C.RadioOption>
@@ -510,7 +525,7 @@ const GerarDocumentoMassivoModal = () => {
                         name="geracao"
                         value="grupo"
                         checked={modoSelecao === "grupoepi"}
-                        onChange={() => setModoSelecao("grupoepi")}
+                        onChange={() => { setModoSelecao("grupoepi"); setError(""); }}
                       />
                       <label htmlFor="grupo">Gerar documentos para um grupo específico</label>
                     </C.RadioOption>
@@ -641,12 +656,15 @@ const GerarDocumentoMassivoModal = () => {
                       </C.DualColumnWrapper>
                       {template.tipoTemplate === "EPIs" && stepGeracao === 2 && (
                         <>
-                          <C.Button onClick={handleAdvanceFinalPage}>
-                            Avançar2
-                          </C.Button>
-                          <C.Button onClick={handleBackPage}>
-                            Voltar2
-                          </C.Button>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+
+                            <C.Button onClick={handleBackPage}>
+                              Voltar
+                            </C.Button>
+                            <C.Button onClick={handleAdvanceFinalPage}>
+                              Avançar
+                            </C.Button>
+                          </div>
                         </>
 
                       )}
@@ -668,20 +686,20 @@ const GerarDocumentoMassivoModal = () => {
                     episDosGrupos.map(epi => (
                       <C.PersonItem key={epi.id}>
                         <div>
-                           <C.ListItemCheckbox>
-                                <input
-                                  type="checkbox"
-                                  checked={selectedEPIs.some(g => g.id === epi.id)}
-                                  onChange={() => toggleEPISelection(epi)}
-                                  disabled={
-                                    selectedGrupos.length >= 10 &&
-                                    !selectedGrupos.some(g => g.id === epi.id)
-                                  }
-                                />
-                               <strong>{epi.nome}</strong> (CA: {epi.ca})
+                          <C.ListItemCheckbox>
+                            <input
+                              type="checkbox"
+                              checked={selectedEPIs.some(g => g.id === epi.id)}
+                              onChange={() => toggleEPISelection(epi)}
+                              disabled={
+                                selectedGrupos.length >= 10 &&
+                                !selectedGrupos.some(g => g.id === epi.id)
+                              }
+                            />
+                            <strong>{epi.nome}</strong> (CA: {epi.ca})
 
-                              </C.ListItemCheckbox>
-                          
+                          </C.ListItemCheckbox>
+
                         </div>
                       </C.PersonItem>
                     ))
@@ -705,17 +723,17 @@ const GerarDocumentoMassivoModal = () => {
                   {selectedEPIs.map((epi) => (
                     <C.PersonItem key={epi.id}>
                       <span>{epi.nome}</span>
-                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
-                                <input
-                                  id={`qtd-${epi.id}`}
-                                  type="number"
-                                  min={1}
-                                  value={epi.quantidade}
-                                  onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
-                                  style={{ width: "60px" }}
-                                />
-                              </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <label htmlFor={`qtd-${epi.id}`}>Qtd:</label>
+                        <input
+                          id={`qtd-${epi.id}`}
+                          type="number"
+                          min={1}
+                          value={epi.quantidade}
+                          onChange={(e) => handleQuantidadeChange(epi.id, e.target.value)}
+                          style={{ width: "60px" }}
+                        />
+                      </div>
                       <button onClick={() => toggleEPISelection(epi)}>❌</button>
                     </C.PersonItem>
                   ))}
@@ -723,7 +741,7 @@ const GerarDocumentoMassivoModal = () => {
                 </C.Column>
               </C.DualColumnWrapper>
               <C.Button onClick={handleBackPageMiddle}>
-                Voltar3
+                Voltar
               </C.Button>
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
                 <C.Button type="submit" disabled={isLoading}>
@@ -734,9 +752,11 @@ const GerarDocumentoMassivoModal = () => {
           )}
 
           {template.tipoTemplate === "EPIs" && stepGeracao === 1 && (
-            <C.Button onClick={handleAdvancePage}>
-              Avançar1
-            </C.Button>
+            <div style={{ display: 'flex', justifyContent: 'right', width: '100%' }}>
+              <C.Button onClick={handleAdvancePage}>
+                Avançar
+              </C.Button>
+            </div>
           )}
 
 
@@ -752,7 +772,7 @@ const GerarDocumentoMassivoModal = () => {
         </>
       </C.FormContainer>
 
-    </C.PageContainer>
+    </C.PageContainer >
   );
 };
 
