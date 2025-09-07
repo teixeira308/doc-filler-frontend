@@ -447,8 +447,6 @@ const GerarDocumentoMassivoModal = () => {
             </C.DualColumnWrapper>
           )}
 
-
-
           {modoSelecao === "pessoa" && stepGeracao === 1 && (
             <C.DualColumnWrapper>
               <C.Column>
@@ -755,6 +753,14 @@ const GerarDocumentoMassivoModal = () => {
             <div style={{ display: 'flex', justifyContent: 'right', width: '100%' }}>
               <C.Button onClick={handleAdvancePage}>
                 Avançar
+              </C.Button>
+            </div>
+          )}
+
+          {template.tipoTemplate === "Pessoas" && stepGeracao === 1 && (
+           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <C.Button type="submit" disabled={isLoading}>
+                {isLoading ? "Gerando..." : "Gerar Documentos"}
               </C.Button>
             </div>
           )}

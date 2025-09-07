@@ -191,7 +191,7 @@ const Templates = () => {
                   {/* <C.ActionButton onClick={() => handleViewDetails(template)}>Detalhes</C.ActionButton>*/}
                   <C.DeleteButton onClick={() => openDeleteModal(template.id)}><BsTrash3 /> Excluir</C.DeleteButton>
                   <C.DetailsButton onClick={() => handleDownloadTemplate(template)}><BsCloudDownload /> Baixar Template</C.DetailsButton>
-                  <C.ActionButton onClick={() => navigate(`/template/gerar/${template.id}`)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>
+                 {/* <C.ActionButton onClick={() => navigate(`/template/gerar/${template.id}`)}><BsCardChecklist /> Gerar documentos em massa</C.ActionButton>>*/}
                 </C.ActionsWrapper>
               </C.TableData>
             </C.TableRow>

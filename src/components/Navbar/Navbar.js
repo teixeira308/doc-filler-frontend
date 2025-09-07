@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import * as C from "./styles";
 import {
   FaHome, FaUserFriends, FaUsers, FaHardHat,
-  FaFileAlt, FaVideo, FaHeadset, FaBook, FaSignOutAlt, FaBars, FaLayerGroup
+  FaFileAlt, FaVideo, FaHeadset, FaBook, FaSignOutAlt, FaBars, FaLayerGroup,FaMousePointer
 } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 
@@ -63,7 +63,7 @@ const Navbar = () => {
         </C.NavLink>
         <C.NavLink onClick={() => handleNavigate("/grupo")}>
           <FaUsers />
-          {!isCollapsed && <span>Grupo</span>}
+          {!isCollapsed && <span>Grupo Pessoas</span>}
         </C.NavLink>
         <C.NavLink onClick={() => handleNavigate("/epi")}>
           <FaHardHat />
@@ -77,6 +77,10 @@ const Navbar = () => {
           <FaFileAlt />
           {!isCollapsed && <span>Templates</span>}
         </C.NavLink>
+         <C.NavLink onClick={() => handleNavigate("/documentos")}>
+          <FaBook />
+          {!isCollapsed && <span>Documentos</span>}
+        </C.NavLink>
         <C.NavLink onClick={() => handleNavigate("/demonstracao")}>
           <FaVideo />
           {!isCollapsed && <span>Demonstração</span>}
@@ -86,7 +90,7 @@ const Navbar = () => {
           {!isCollapsed && <span>Suporte</span>}
         </C.NavLink>
         <C.NavLink onClick={() => handleNavigate("/tutorial")}>
-          <FaBook />
+          <FaMousePointer />
           {!isCollapsed && <span>Tutorial</span>}
         </C.NavLink>
         <C.NavLink onClick={handleLogout}>
