@@ -266,7 +266,7 @@ const GerarDocumentoMassivoModal = () => {
         }
         dataToSend.grupoIds = selectedGrupos.map(g => g.id);
       } else if (modoSelecao === "todos") {
-        dataToSend.pessoaIds = "todos";
+        dataToSend.pessoaIds = "";
       }
 
       // Seleção de EPIs
