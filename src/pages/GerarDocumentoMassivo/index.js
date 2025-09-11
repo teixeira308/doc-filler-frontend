@@ -289,7 +289,7 @@ const GerarDocumentoMassivoModal = () => {
       }
 
 
-      console.log(dataToSend);
+      //console.log(dataToSend);
 
       let fileContent;
       if (template.tipoTemplate === "EPIs") {
