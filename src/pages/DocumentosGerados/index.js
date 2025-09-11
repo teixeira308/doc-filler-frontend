@@ -17,7 +17,7 @@ import useApiInteractions from "../../services/apiInteractions"
 
 const Grupo = () => {
   const { getInteractions } = useApiInteractions()
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [interactions, setInteractions] = useState([])
   const [selectedGrupo, setSelectedGrupo] = useState(null);
   const [searchQuery, setSearchQuery] = useState(""); // Estado para a consulta de busca
@@ -46,15 +46,16 @@ const Grupo = () => {
       <Navbar />
       <C.Title>Documentos Gerados</C.Title>
 
-     
-        <C.Button onClick={() => navigate(`/template/gerar`)}><BsPlusCircle /> Gerar documento</C.Button>
+
+      <C.Button onClick={() => navigate(`/template/gerar`)}><BsPlusCircle /> Gerar documento</C.Button>
       <C.Table>
         <thead>
           <tr>
             <C.TableHeader>Template</C.TableHeader>
             <C.TableHeader>Tipo</C.TableHeader>
-            <C.TableHeader>Pessoa</C.TableHeader>
-            <C.TableHeader>EPI</C.TableHeader>
+            <C.TableHeader>Pessoas</C.TableHeader>
+            <C.TableHeader>Grupos</C.TableHeader>
+            <C.TableHeader>EPIs</C.TableHeader>
             <C.TableHeader>Criado em</C.TableHeader>
           </tr>
         </thead>
@@ -64,24 +65,43 @@ const Grupo = () => {
               <C.TableData>{interaction.descricao}</C.TableData>
               <C.TableData>{interaction.tipoTemplate}</C.TableData>
 
-              {/* Pessoa (se existir) */}
+              {/* Pessoas (se existirem) */}
               <C.TableData>
-                {interaction.person ? interaction.person.nome : "—"}
+                {interaction.pessoas && interaction.pessoas.length > 0
+                  ? interaction.pessoas.map((p) => p.nome).join(", ")
+                  : interaction.data_used?.pessoaIds === "todos"
+                    ? "Todos"
+                    : interaction.data_used?.pessoaIds?.join(", ") || "—"
+                }
               </C.TableData>
 
-              {/* Lista de EPIs (se existir) */}
+              {/* Grupos (se existirem) */}
               <C.TableData>
-                {interaction.epis && interaction.epis.length > 0
-                  ? interaction.epis.map((epi, i) => epi.nome).join(", ")
+                {interaction.grupos && interaction.grupos.length > 0
+                  ? interaction.grupos.map((g) => g.nome).join(", ")
                   : "—"}
               </C.TableData>
-                {/* Data formatada */}
-          <C.TableData>
-            {new Date(interaction.createdAt).toLocaleString("pt-BR")}
-          </C.TableData>
 
+              {/* Lista de EPIs (com quantidade) */}
+              <C.TableData>
+                {interaction.epis && interaction.epis.length > 0
+                  ? interaction.epis
+                    .map((epi) =>
+                      epi.quantidade > 1
+                        ? `${epi.nome} (x${epi.quantidade})`
+                        : epi.nome
+                    )
+                    .join(", ")
+                  : "—"}
+              </C.TableData>
+
+              {/* Data formatada */}
+              <C.TableData>
+                {new Date(interaction.createdAt).toLocaleString("pt-BR")}
+              </C.TableData>
             </C.TableRow>
           ))}
+
         </tbody>
       </C.Table>
       <C.PaginationContainer>

@@ -242,6 +242,7 @@ const GerarDocumentoMassivoModal = () => {
     try {
       let dataToSend = { templateId: template.id };
 
+      // Seleção de pessoas ou grupos
       if (modoSelecao === "pessoa") {
         if (selectedPessoas.length === 0) {
           setError("Selecione pelo menos uma pessoa!");
@@ -256,8 +257,11 @@ const GerarDocumentoMassivoModal = () => {
           return;
         }
         dataToSend.grupoIds = selectedGrupos.map(g => g.id);
+      } else if (modoSelecao === "todos") {
+        dataToSend.pessoaIds = "todos";
       }
 
+      // Seleção de EPIs
       if (template.tipoTemplate === "EPIs") {
         if (selectedEPIs.length === 0) {
           setError("Selecione pelo menos um EPI!");
@@ -269,6 +273,7 @@ const GerarDocumentoMassivoModal = () => {
           quantidade: e.quantidade ?? 1,
         }));
       }
+
 
       //console.log(dataToSend);
 
@@ -758,7 +763,7 @@ const GerarDocumentoMassivoModal = () => {
           )}
 
           {template.tipoTemplate === "Pessoas" && stepGeracao === 1 && (
-           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
               <C.Button type="submit" disabled={isLoading}>
                 {isLoading ? "Gerando..." : "Gerar Documentos"}
               </C.Button>
