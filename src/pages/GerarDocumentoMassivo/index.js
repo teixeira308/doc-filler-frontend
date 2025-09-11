@@ -189,14 +189,22 @@ const GerarDocumentoMassivoModal = () => {
 
   const handleAdvancePage = (e) => {
     e.preventDefault();
-    if (selectedPessoas.length < 1 && modoSelecao !== "todos") {
-      setError("Selecione ao menos uma pessoa ou grupo.");
-    } else {
-      setError("");
-      setStepGeracao(2)
+
+    if (modoSelecao === "pessoa" && selectedPessoas.length < 1) {
+      setError("Selecione ao menos uma pessoa.");
+      return;
     }
 
-  }
+    if (modoSelecao === "grupo" && selectedGrupos.length < 1) {
+      setError("Selecione ao menos um grupo.");
+      return;
+    }
+
+    // Se chegou até aqui, está válido
+    setError("");
+    setStepGeracao(2);
+  };
+
 
   const handleAdvanceFinalPage = (e) => {
     e.preventDefault();
@@ -272,10 +280,16 @@ const GerarDocumentoMassivoModal = () => {
           id: e.id,
           quantidade: e.quantidade ?? 1,
         }));
+        if (selectedPessoas.length === 0 && selectedGrupos.length > 0) {
+          dataToSend.grupoIds = selectedGrupos.map(g => g.id);
+        }
+        else {
+          dataToSend.pessoaIds = selectedPessoas.map(p => p.id);
+        }
       }
 
 
-      //console.log(dataToSend);
+      console.log(dataToSend);
 
       let fileContent;
       if (template.tipoTemplate === "EPIs") {
@@ -411,7 +425,7 @@ const GerarDocumentoMassivoModal = () => {
               </C.RadioGroup>
             </>
           )}
-          {modoSelecao === "grupo" && (
+          {modoSelecao === "grupo" && stepGeracao === 1 && (
             <C.DualColumnWrapper>
               <C.Column>
                 <C.PersonListTitle>Grupos de Pessoas</C.PersonListTitle>
@@ -498,14 +512,21 @@ const GerarDocumentoMassivoModal = () => {
               {template.tipoTemplate === "EPIs" && (
                 <>
                   <C.Label>Selecionados</C.Label>
-                  {selectedPessoas.length == 0 && (
+                  {modoSelecao === "grupo" && selectedGrupos.length > 0 ? (
+                    selectedGrupos.map((grupo) => (
+                      <C.PersonItem key={grupo.id}>
+                        {grupo.nome}
+                      </C.PersonItem>
+                    ))
+                  ) : modoSelecao === "pessoa" && selectedPessoas.length > 0 ? (
+                    selectedPessoas.map((pessoa) => (
+                      <C.PersonItem key={pessoa.id}>
+                        {pessoa.nome}
+                      </C.PersonItem>
+                    ))
+                  ) : (
                     <p>Todas pessoas registradas.</p>
                   )}
-                  {selectedPessoas.map((pessoa) => (
-                    <C.PersonItem key={pessoa.id}>
-                      {pessoa.nome}
-                    </C.PersonItem>
-                  ))}
                   <br />
                   <C.Label>Selecione os EPIs: </C.Label>
                   <C.RadioGroup>
